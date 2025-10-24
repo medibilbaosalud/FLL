@@ -46,6 +46,29 @@ const config = {
     }
     return sanitized;
   },
+  webpack(config) {
+    const hasGeojsonRule = config.module?.rules?.some((rule) => {
+      if (!rule || typeof rule !== 'object') return false;
+      const test = rule.test;
+      if (!test) return false;
+      if (test instanceof RegExp) {
+        return test.test('file.geojson');
+      }
+      if (Array.isArray(test)) {
+        return test.some((entry) => entry instanceof RegExp && entry.test('file.geojson'));
+      }
+      return false;
+    });
+
+    if (!hasGeojsonRule) {
+      config.module.rules.push({
+        test: /\.geojson$/i,
+        type: 'json',
+      });
+    }
+
+    return config;
+  },
 };
 
 export default config;
