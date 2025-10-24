@@ -2,6 +2,7 @@
 node_modules/
 dist/
 build/
+tsconfig.tsbuildinfo
 *.log
 
 # datos pesados locales

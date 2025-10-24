@@ -61,11 +61,20 @@ const config = {
     });
 
     if (!hasGeojsonRule) {
+      config.module = config.module || {};
+      config.module.rules = config.module.rules || [];
       config.module.rules.push({
         test: /\.geojson$/i,
         type: 'json',
+        parser: { parse: JSON.parse },
       });
     }
+
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': path.resolve(process.cwd()),
+    };
 
     return config;
   },
