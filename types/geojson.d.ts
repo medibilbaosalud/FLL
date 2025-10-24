@@ -1,4 +1,11 @@
+import type { SiteFeature } from "@/lib/types";
+
 declare module "*.geojson" {
-  const value: unknown;
+  export interface SiteFeatureCollection {
+    type: "FeatureCollection";
+    features: SiteFeature[];
+  }
+
+  const value: SiteFeatureCollection;
   export default value;
 }
