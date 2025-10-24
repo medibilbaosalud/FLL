@@ -47,10 +47,10 @@ async function ensurePackageScripts() {
   ensureScript("build", "next build");
   ensureScript("start", "next start");
 
-  const fixCommand = "node scripts/fix-vercel-404.mjs";
-  if (scripts["fix:vercel"] !== fixCommand) {
-    console.log("[fix-vercel-404] \u2705 eguneratzen 'fix:vercel' script-a.");
-    scripts["fix:vercel"] = fixCommand;
+  const fixCommand = "node scripts/ensure-routes.mjs";
+  if (scripts["fix:routes"] !== fixCommand) {
+    console.log("[fix-vercel-404] \u2705 eguneratzen 'fix:routes' script-a.");
+    scripts["fix:routes"] = fixCommand;
     changed = true;
   }
 
@@ -209,7 +209,7 @@ export default config;
   console.log(" - Hasiera orria eta layout-a balidatu dira.");
   console.log(" - next.config.mjs prest dago eta redirect baldintzazkoa da.");
   console.log("\n[Siguientes pasos]");
-  console.log(" - pnpm run fix:vercel");
+  console.log(" - pnpm run fix:routes");
   console.log(" - pnpm dev");
   console.log(" - pnpm build && pnpm start");
 })();

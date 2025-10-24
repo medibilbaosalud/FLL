@@ -57,7 +57,7 @@ async function ensureFile(filePath, contents) {
 
 async function updateNextConfig(root, changes) {
   const configPath = path.join(root, "next.config.mjs");
-  const template = `import fs from "node:fs";\nimport path from "node:path";\nimport { fileURLToPath } from "node:url";\n\nconst moduleDir = path.dirname(fileURLToPath(import.meta.url));\n\nfunction hasAppRoute() {\n  const candidates = [\n    ["app", "app", "page.tsx"],\n    ["pages", "app", "index.tsx"],\n    ["pages", "app.tsx"],\n  ];\n  return candidates.some((segments) => fs.existsSync(path.join(moduleDir, ...segments)));\n}\n\nfunction hasGeojsonRule(rules = []) {\n  return rules.some((rule) => {\n    if (!rule || typeof rule !== "object") return false;\n    const { test } = rule;\n    if (test instanceof RegExp) return test.test("file.geojson");\n    if (Array.isArray(test)) {\n      return test.some((entry) => entry instanceof RegExp && entry.test("file.geojson"));\n    }\n    return false;\n  });\n}\n\n/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n  async redirects() {\n    if (!hasAppRoute()) {\n      return [];\n    }\n    return [{ source: "/", destination: "/app", permanent: false }];\n  },\n  webpack(webpackConfig) {\n    const configRef = webpackConfig;\n    configRef.resolve = configRef.resolve || {};\n    configRef.resolve.alias = {\n      ...(configRef.resolve.alias || {}),\n      "@": path.resolve(moduleDir),\n    };\n\n    configRef.module = configRef.module || {};\n    configRef.module.rules = configRef.module.rules || [];\n\n    if (!hasGeojsonRule(configRef.module.rules)) {\n      configRef.module.rules.push({\n        test: /\\.geojson$/i,\n        type: "json",\n        parser: { parse: JSON.parse },\n      });\n    }\n\n    return configRef;\n  },\n};\n\nexport default config;\n`;
+  const template = `import path from "node:path";\nimport { fileURLToPath } from "node:url";\n\nconst moduleDir = path.dirname(fileURLToPath(import.meta.url));\n\nfunction hasGeojsonRule(rules = []) {\n  return rules.some((rule) => {\n    if (!rule || typeof rule !== "object") return false;\n    const { test } = rule;\n    if (test instanceof RegExp) return test.test("file.geojson");\n    if (Array.isArray(test)) {\n      return test.some((entry) => entry instanceof RegExp && entry.test("file.geojson"));\n    }\n    return false;\n  });\n}\n\n/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n  webpack(webpackConfig) {\n    const configRef = webpackConfig;\n    configRef.resolve = configRef.resolve || {};\n    configRef.resolve.alias = {\n      ...(configRef.resolve.alias || {}),\n      "@": path.resolve(moduleDir),\n    };\n\n    configRef.module = configRef.module || {};\n    configRef.module.rules = configRef.module.rules || [];\n\n    if (!hasGeojsonRule(configRef.module.rules)) {\n      configRef.module.rules.push({\n        test: /\\.geojson$/i,\n        type: "json",\n        parser: { parse: JSON.parse },\n      });\n    }\n\n    return configRef;\n  },\n};\n\nexport default config;\n`;
   const exists = await pathExists(configPath);
   const current = exists ? await fs.readFile(configPath, "utf8") : "";
   if (current.trim() !== template.trim()) {
@@ -77,12 +77,10 @@ async function ensurePackageScripts(root) {
     start: "next start",
     typecheck: "tsc --noEmit",
     routes: "node scripts/print-routes.mjs",
-    "fix:vercel": "node scripts/ensure-routes.mjs",
+    "fix:routes": "node scripts/ensure-routes.mjs",
   };
   for (const [key, value] of Object.entries(desired)) {
-    if (!pkg.scripts[key]) {
-      pkg.scripts[key] = value;
-    } else if (key === "fix:vercel") {
+    if (!pkg.scripts[key] || pkg.scripts[key] === "node scripts/ensure-routes.mjs") {
       pkg.scripts[key] = value;
     }
   }
@@ -129,6 +127,10 @@ async function main() {
       path.join(appDir, "scenario", "page.tsx"),
       path.join(appDir, "settings", "page.tsx"),
       path.join(appDir, "triage", "page.tsx"),
+      path.join(appDir, "app", "reports", "page.tsx"),
+      path.join(appDir, "app", "scenario", "page.tsx"),
+      path.join(appDir, "app", "settings", "page.tsx"),
+      path.join(appDir, "app", "triage", "page.tsx"),
     ];
 
     for (const target of dynamicTargets) {
@@ -154,6 +156,22 @@ async function main() {
   await updateNextConfig(root, configChanges);
   if (configChanges.length > 0) {
     actions.push(...configChanges);
+  }
+
+  const middlewareCreated = await ensureFile(
+    path.join(root, "middleware.ts"),
+    "import type { NextRequest } from 'next/server';\nimport { NextResponse } from 'next/server';\n\nexport function middleware(req: NextRequest) {\n  const url = req.nextUrl.clone();\n  if (url.pathname === '/') {\n    url.pathname = '/app';\n    return NextResponse.rewrite(url);\n  }\n  return NextResponse.next();\n}\n\nexport const config = { matcher: ['/'] };\n",
+  );
+  if (middlewareCreated) {
+    actions.push("sortu middleware.ts");
+  }
+
+  const healthCreated = await ensureFile(
+    path.join(root, "app", "api", "health", "route.ts"),
+    "import { NextResponse } from 'next/server';\n\nexport async function GET() {\n  return NextResponse.json({ ok: true, ts: Date.now() });\n}\n",
+  );
+  if (healthCreated) {
+    actions.push("sortu app/api/health/route.ts");
   }
 
   await ensurePackageScripts(root);

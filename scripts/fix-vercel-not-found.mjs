@@ -73,7 +73,7 @@ function updatePackageJson(root, changes) {
     build: "next build",
     start: "next start",
     typecheck: "tsc --noEmit",
-    "fix:vercel": "node scripts/fix-vercel-not-found.mjs",
+    "fix:routes": "node scripts/ensure-routes.mjs",
   };
   let modified = false;
   for (const [key, value] of Object.entries(desiredScripts)) {
@@ -84,7 +84,7 @@ function updatePackageJson(root, changes) {
   }
   if (modified) {
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
-    changes.push("package.json eguneratua (Next scriptak eta fix:vercel)");
+    changes.push("package.json eguneratua (Next scriptak eta fix:routes)");
   }
 }
 

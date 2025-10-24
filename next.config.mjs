@@ -1,17 +1,7 @@
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-
-function hasAppRoute() {
-  const candidates = [
-    ["app", "app", "page.tsx"],
-    ["pages", "app", "index.tsx"],
-    ["pages", "app.tsx"],
-  ];
-  return candidates.some((segments) => fs.existsSync(path.join(moduleDir, ...segments)));
-}
 
 function hasGeojsonRule(rules = []) {
   return rules.some((rule) => {
@@ -28,12 +18,6 @@ function hasGeojsonRule(rules = []) {
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  async redirects() {
-    if (!hasAppRoute()) {
-      return [];
-    }
-    return [{ source: "/", destination: "/app", permanent: false }];
-  },
   webpack(webpackConfig) {
     const configRef = webpackConfig;
     configRef.resolve = configRef.resolve || {};

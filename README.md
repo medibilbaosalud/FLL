@@ -92,17 +92,22 @@ Arches-era eramateko, CSV/GeoJSON fitxategietan zutabe horiek prestatu behar dir
 
 ## Despliegue en Vercel
 
-- `package.json` fitxategia `web/` azpidirektorioan badago, Vercel-eko **Project Settings → Root Directory** aukeran `web` ezarri.
-- Hasiera orria eta `/app` ibilbidea bermatzeko, exekutatu auto-konpontzailea: `pnpm run fix:vercel`.
-- Deploy egin aurretik, ikus Next.js-ek zer ibilbide sortzen dituen: `pnpm run routes` (irteeran `/` eta `/app` agertu behar dute).
-- Ingurune aldagaiak: `NEXT_PUBLIC_MAPBOX_TOKEN` gehitu Vercel-en Environment Variables atalean.
-- Komando erabilgarriak:
+- Ziurtatu Vercel-eko **Project → Settings → General → Root Directory** eremua zure `package.json` ageri den direktorioari dagokiola. Proiektua erroan badago, eremua hutsik utzi; `web/` azpidirektorioa baduzu, `web` ezarri eta gorde aldaketak.
+- Hasiera orria eta `/app` ibilbidea automatikoki prestatzen ditu `pnpm run fix:routes` scriptak. Exekutatu aldaketa garrantzitsuak egin aurretik:
   ```bash
-  pnpm run fix:vercel
+  pnpm run fix:routes
+  ```
+- Deploy egin baino lehen, egiaztatu Next.js-ek zer ibilbide sortuko dituen: `pnpm run routes`. Irteeran gutxienez `/` eta `/app` agertu behar dira.
+- Ingurune aldagaiak: gehitu `NEXT_PUBLIC_MAPBOX_TOKEN` Vercel-eko Environment Variables atalean.
+- Erabat automatizatuta dauden komando erabilgarriak:
+  ```bash
+  pnpm run fix:routes
   pnpm run routes
   pnpm dev
   pnpm build && pnpm start
   ```
+- Deploy egin ondoren, osasun-puntua erabil dezakezu egiaztapen azkarra egiteko: `https://<zure-app>.vercel.app/api/health` → `{ ok: true }` jasoko duzu.
+- 404 batekin jarraituz gero, berrikusi Vercel-eko Build Logs → **Routes** atala. Ez badira `/` edo `/app` agertzen, seguruenik Root Directory ez dator bat repoaren egiturarekin.
 
 
 ## Fitxategi binarioak eta Git LFS
