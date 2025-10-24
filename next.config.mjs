@@ -10,26 +10,41 @@ const existing = {
   },
   "reactStrictMode": true
 };
-const existingRedirects = undefined;
+const existingRedirectFunction = null;
+const existingRedirectArray = [{"source":"/","destination":"/app","permanent":false}];
 
 const appRouteExists = (() => {
   const cwd = process.cwd();
-  return fs.existsSync(path.join(cwd, 'app', 'app', 'page.tsx')) || fs.existsSync(path.join(cwd, 'pages', 'app.tsx'));
+  const variants = ['.tsx', '.ts', '.jsx', '.js'];
+  const appAppDir = path.join(cwd, 'app', 'app');
+  const pagesDir = path.join(cwd, 'pages');
+  const hasApp = variants.some((ext) => fs.existsSync(path.join(appAppDir, 'page' + ext)));
+  const hasPagesDirect = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app' + ext)));
+  const hasPagesIndex = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app', 'index' + ext)));
+  return hasApp || hasPagesDirect || hasPagesIndex;
 })();
 
 const config = {
   ...existing,
   async redirects() {
-    const base = Array.isArray(existingRedirects)
-      ? existingRedirects
-      : typeof existingRedirects === 'function'
-      ? await existingRedirects()
-      : [];
-    if (!appRouteExists) {
-      return base;
+    const base = [];
+    if (Array.isArray(existingRedirectArray)) {
+      base.push(...existingRedirectArray);
     }
-    const has = base.some((route) => route.source === '/' && route.destination === '/app');
-    return has ? base : [...base, { source: '/', destination: '/app', permanent: false }];
+    if (typeof existingRedirectFunction === 'function') {
+      const original = await existingRedirectFunction();
+      if (Array.isArray(original)) {
+        base.push(...original);
+      }
+    }
+    const sanitized = base.filter((route) => !(route?.source === '/' && route?.destination === '/app' && !appRouteExists));
+    if (appRouteExists) {
+      const has = sanitized.some((route) => route.source === '/' && route.destination === '/app');
+      if (!has) {
+        sanitized.push({ source: '/', destination: '/app', permanent: false });
+      }
+    }
+    return sanitized;
   },
 };
 

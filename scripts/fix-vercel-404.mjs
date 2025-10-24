@@ -23,6 +23,12 @@ if (!projectRoot) {
 const absoluteRoot = path.resolve(projectRoot);
 console.log(`[fix-vercel-404] Erro proiektua: ${projectRoot}`);
 
+const fileVariants = [".tsx", ".ts", ".jsx", ".js"];
+
+function hasVariant(dir, baseName) {
+  return fileVariants.some((extension) => fs.existsSync(path.join(dir, `${baseName}${extension}`)));
+}
+
 async function ensurePackageScripts() {
   const pkgPath = path.join(absoluteRoot, "package.json");
   const raw = await fsp.readFile(pkgPath, "utf8");
@@ -64,7 +70,7 @@ async function ensureAppHome() {
   if (hasAppDir) {
     await fsp.mkdir(appDir, { recursive: true });
     const layoutPath = path.join(appDir, "layout.tsx");
-    if (!fs.existsSync(layoutPath)) {
+    if (!hasVariant(appDir, "layout")) {
       console.log("[fix-vercel-404] \u2705 sortzen app/layout.tsx default bat.");
       const layoutContent = `export const metadata = { title: "ArchéoSense", description: "Hasiera" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -79,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     }
 
     const homePath = path.join(appDir, "page.tsx");
-    if (!fs.existsSync(homePath)) {
+    if (!hasVariant(appDir, "page")) {
       console.log("[fix-vercel-404] \u2705 sortzen app/page.tsx hasiera sinplearekin.");
       const homeContent = `export default function Home() {
   return (
@@ -96,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   } else if (hasPagesDir) {
     await fsp.mkdir(pagesDir, { recursive: true });
     const indexPath = path.join(pagesDir, "index.tsx");
-    if (!fs.existsSync(indexPath)) {
+    if (!hasVariant(pagesDir, "index")) {
       console.log("[fix-vercel-404] \u2705 sortzen pages/index.tsx hasiera sinplearekin.");
       const indexContent = `export default function Home() {
   return (
@@ -116,8 +122,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 function detectAppRoute() {
-  const hasAppRouteInApp = fs.existsSync(path.join(absoluteRoot, "app", "app", "page.tsx"));
-  const hasAppRouteInPages = fs.existsSync(path.join(absoluteRoot, "pages", "app.tsx"));
+  const appAppDir = path.join(absoluteRoot, "app", "app");
+  const pagesDir = path.join(absoluteRoot, "pages");
+  const hasAppRouteInApp = hasVariant(appAppDir, "page");
+  const hasAppRouteInPages = hasVariant(pagesDir, "app") || hasVariant(path.join(pagesDir, "app"), "index");
   return hasAppRouteInApp || hasAppRouteInPages;
 }
 
@@ -144,32 +152,72 @@ async function ensureNextConfig({ addRedirect }) {
   }
 
   const { redirects, ...rest } = existingConfig || {};
-  const serialized = JSON.stringify(rest, null, 2);
+  const baselineConfig = {
+    experimental: { appDir: true },
+    images: { remotePatterns: [] },
+    reactStrictMode: true
+  };
+  const mergedRest = {
+    ...baselineConfig,
+    ...rest,
+    experimental: { ...baselineConfig.experimental, ...(rest?.experimental ?? {}) },
+    images: { ...baselineConfig.images, ...(rest?.images ?? {}) }
+  };
+  const serialized = JSON.stringify(mergedRest, null, 2);
+  let redirectsArray = Array.isArray(redirects) ? redirects : [];
+  if (typeof redirects === "function") {
+    try {
+      const result = await redirects();
+      if (Array.isArray(result)) {
+        redirectsArray = result;
+      } else {
+        console.warn("[fix-vercel-404] Oharra: redirects() funtzioak ez du array bat itzuli; ez da berrerabili.");
+      }
+    } catch (error) {
+      console.warn("[fix-vercel-404] Oharra: ezin izan da jatorrizko redirects funtzioa exekutatu.");
+    }
+  }
+  const redirectsArrayLiteral = JSON.stringify(redirectsArray ?? []);
 
   const template = `import fs from 'node:fs';
 import path from 'node:path';
 
 const existing = ${serialized || "{}"};
-const existingRedirects = ${typeof redirects === "function" ? "undefined" : JSON.stringify(redirects ?? null)};
+const existingRedirectFunction = null;
+const existingRedirectArray = ${redirectsArrayLiteral};
 
 const appRouteExists = (() => {
   const cwd = process.cwd();
-  return fs.existsSync(path.join(cwd, 'app', 'app', 'page.tsx')) || fs.existsSync(path.join(cwd, 'pages', 'app.tsx'));
+  const variants = ['.tsx', '.ts', '.jsx', '.js'];
+  const appAppDir = path.join(cwd, 'app', 'app');
+  const pagesDir = path.join(cwd, 'pages');
+  const hasApp = variants.some((ext) => fs.existsSync(path.join(appAppDir, 'page' + ext)));
+  const hasPagesDirect = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app' + ext)));
+  const hasPagesIndex = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app', 'index' + ext)));
+  return hasApp || hasPagesDirect || hasPagesIndex;
 })();
 
 const config = {
   ...existing,
   async redirects() {
-    const base = Array.isArray(existingRedirects)
-      ? existingRedirects
-      : typeof existingRedirects === 'function'
-      ? await existingRedirects()
-      : [];
-    if (!appRouteExists${addRedirect ? "" : " /* no redirect requested */"}) {
-      return base;
+    const base = [];
+    if (Array.isArray(existingRedirectArray)) {
+      base.push(...existingRedirectArray);
     }
-    const has = base.some((route) => route.source === '/' && route.destination === '/app');
-    return has ? base : [...base, { source: '/', destination: '/app', permanent: false }];
+    if (typeof existingRedirectFunction === 'function') {
+      const original = await existingRedirectFunction();
+      if (Array.isArray(original)) {
+        base.push(...original);
+      }
+    }
+    const sanitized = base.filter((route) => !(route?.source === '/' && route?.destination === '/app' && !${addRedirect ? "appRouteExists" : "false"}));
+    if (${addRedirect ? "appRouteExists" : "false"}) {
+      const has = sanitized.some((route) => route.source === '/' && route.destination === '/app');
+      if (!has) {
+        sanitized.push({ source: '/', destination: '/app', permanent: false });
+      }
+    }
+    return sanitized;
   },
 };
 
