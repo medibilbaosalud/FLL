@@ -6,7 +6,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { SiteFeature } from "@/lib/types";
 import { formatPriLabel } from "@/lib/utils";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+mapboxgl.accessToken = accessToken;
 
 export interface SiteMapProps {
   features: SiteFeature[];
@@ -18,7 +19,15 @@ export function SiteMap({ features, priBySite }: SiteMapProps) {
   const containerId = useMemo(() => `map-${Math.random().toString(36).slice(2, 8)}`, []);
 
   useEffect(() => {
-    if (!map && typeof window !== "undefined") {
+    return () => {
+      if (map) {
+        map.remove();
+      }
+    };
+  }, [map]);
+
+  useEffect(() => {
+    if (!map && typeof window !== "undefined" && accessToken) {
       const maxZoomLimit = features.reduce((acc, feature) => Math.min(acc, (feature as any).maxZoom ?? 22), 22);
       const created = new mapboxgl.Map({
         container: containerId,
@@ -27,6 +36,7 @@ export function SiteMap({ features, priBySite }: SiteMapProps) {
         zoom: 6.5,
         maxZoom: maxZoomLimit
       });
+
       created.addControl(new mapboxgl.NavigationControl());
       created.on("load", () => {
         created.addSource("sites", {
@@ -34,12 +44,12 @@ export function SiteMap({ features, priBySite }: SiteMapProps) {
           data: {
             type: "FeatureCollection",
             features: features.map((feature) => ({
-            ...feature,
-            properties: {
-              ...feature.properties,
-              pri: priBySite[feature.properties.id] ?? 0
-            }
-          }))
+              ...feature,
+              properties: {
+                ...feature.properties,
+                pri: priBySite[feature.properties.id] ?? 0
+              }
+            }))
           }
         });
         created.addLayer({
@@ -71,9 +81,10 @@ export function SiteMap({ features, priBySite }: SiteMapProps) {
           }
         });
       });
+
       setMap(created);
     }
-  }, [containerId, features, map]);
+  }, [accessToken, containerId, features, map]);
 
   useEffect(() => {
     if (!map) return;
@@ -115,6 +126,21 @@ export function SiteMap({ features, priBySite }: SiteMapProps) {
       map.off("click", "sites-circle", handler);
     };
   }, [map]);
+
+  if (!accessToken) {
+    return (
+      <div
+        className="flex h-[540px] w-full flex-col items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/5 text-center text-sm text-white/70"
+        role="presentation"
+      >
+        <p className="max-w-xs">
+          Mapbox tokenik gabe ezin da mapa interaktiboa kargatu. Gehitu <code className="rounded bg-black/40 px-1">NEXT_PUBLIC_MAPBOX_TOKEN</code>
+          {" "}
+          ingurune-aldagaia zure konfigurazioan.
+        </p>
+      </div>
+    );
+  }
 
   return <div id={containerId} className="h-[540px] w-full rounded-3xl border border-white/15" role="presentation" />;
 }
