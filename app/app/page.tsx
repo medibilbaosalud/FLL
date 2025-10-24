@@ -1,18 +1,11 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const fetchCache = "force-no-store";
 
-export default function AppHomePage() {
+export default function AppHome() {
   return (
-    <section className="space-y-4">
-      <h2 className="text-xl font-semibold">Mapa orokorra (demo sinplifikatua)</h2>
-      <p className="text-sm text-white/70">
-        Orri honek oraingoz ez du maparik renderizatzen; helburua Vercel-en 404 errorea saihestu eta egitura
-        minimoa martxan jartzea da.
-      </p>
-      <p className="text-sm text-white/60">
-        Datu ikusizko osagaiak eta Mapbox integratuko ditugu egonkortasuna baieztatu ondoren.
-      </p>
-    </section>
+    <main style={{ padding: 24 }}>
+      <h2>ArchéoSense aplikazioa</h2>
+      <p>Dashboard hasiera sinplea.</p>
+    </main>
   );
 }

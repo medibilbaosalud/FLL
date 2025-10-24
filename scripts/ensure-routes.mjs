@@ -19,31 +19,9 @@ async function detectRoot() {
       return full;
     }
   }
-  throw new Error("Ezin izan da Next.js proiektuaren erroa aurkitu (. edo web/).\nMesedez egiaztatu package.json fitxategia non dagoen.");
-}
-
-async function ensureFlags(filePath) {
-  if (!(await pathExists(filePath))) return false;
-  let content = await fs.readFile(filePath, "utf8");
-  let updated = false;
-
-  const entries = [
-    { line: "export const fetchCache = 'force-no-store';", regex: /export\s+const\s+fetchCache\s*=\s*['\"]force-no-store['\"];?/ },
-    { line: "export const revalidate = 0;", regex: /export\s+const\s+revalidate\s*=\s*0;?/ },
-    { line: "export const dynamic = 'force-dynamic';", regex: /export\s+const\s+dynamic\s*=\s*['\"]force-dynamic['\"];?/ },
-  ];
-
-  for (const entry of entries) {
-    if (!entry.regex.test(content)) {
-      content = `${entry.line}\n${content}`;
-      updated = true;
-    }
-  }
-
-  if (updated) {
-    await fs.writeFile(filePath, content, "utf8");
-  }
-  return updated;
+  throw new Error(
+    "Ezin izan da Next.js proiektuaren erroa aurkitu (. edo web/).\nMesedez egiaztatu package.json fitxategia non dagoen."
+  );
 }
 
 async function ensureFile(filePath, contents) {
@@ -55,16 +33,77 @@ async function ensureFile(filePath, contents) {
   return true;
 }
 
-async function updateNextConfig(root, changes) {
+async function ensureFlags(filePath) {
+  if (!(await pathExists(filePath))) return false;
+  let content = await fs.readFile(filePath, "utf8");
+  let updated = false;
+  const entries = [
+    { line: "export const revalidate = 0;", regex: /export\s+const\s+revalidate\s*=\s*0;?/ },
+    { line: "export const dynamic = 'force-dynamic';", regex: /export\s+const\s+dynamic\s*=\s*['\"]force-dynamic['\"];?/ },
+  ];
+  for (const entry of entries) {
+    if (!entry.regex.test(content)) {
+      content = `${entry.line}\n${content}`;
+      updated = true;
+    }
+  }
+  if (updated) {
+    await fs.writeFile(filePath, content, "utf8");
+  }
+  return updated;
+}
+
+async function ensureRedirectHome(filePath) {
+  if (!(await pathExists(filePath))) {
+    await ensureFile(
+      filePath,
+      "import { redirect } from 'next/navigation';\n\nexport const dynamic = 'force-dynamic';\nexport const revalidate = 0;\n\nexport default function Home() {\n  redirect('/app');\n}\n"
+    );
+    return "sortu app/page.tsx";
+  }
+  let content = await fs.readFile(filePath, "utf8");
+  let changed = false;
+  if (!/redirect\(['\"]\/app['\"]\)/.test(content)) {
+    content = "import { redirect } from 'next/navigation';\n\nexport const dynamic = 'force-dynamic';\nexport const revalidate = 0;\n\nexport default function Home() {\n  redirect('/app');\n}\n";
+    changed = true;
+  } else if (!/import\s+\{\s*redirect\s*\}/.test(content)) {
+    content = `import { redirect } from 'next/navigation';\n${content}`;
+    changed = true;
+  }
+  if (changed) {
+    await fs.writeFile(filePath, content, "utf8");
+    return "eguneratuta app/page.tsx (redirect)";
+  }
+  return null;
+}
+
+async function updateNextConfig(root, actions) {
   const configPath = path.join(root, "next.config.mjs");
-  const template = `import path from "node:path";\nimport { fileURLToPath } from "node:url";\n\nconst moduleDir = path.dirname(fileURLToPath(import.meta.url));\n\nfunction hasGeojsonRule(rules = []) {\n  return rules.some((rule) => {\n    if (!rule || typeof rule !== "object") return false;\n    const { test } = rule;\n    if (test instanceof RegExp) return test.test("file.geojson");\n    if (Array.isArray(test)) {\n      return test.some((entry) => entry instanceof RegExp && entry.test("file.geojson"));\n    }\n    return false;\n  });\n}\n\n/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n  webpack(webpackConfig) {\n    const configRef = webpackConfig;\n    configRef.resolve = configRef.resolve || {};\n    configRef.resolve.alias = {\n      ...(configRef.resolve.alias || {}),\n      "@": path.resolve(moduleDir),\n    };\n\n    configRef.module = configRef.module || {};\n    configRef.module.rules = configRef.module.rules || [];\n\n    if (!hasGeojsonRule(configRef.module.rules)) {\n      configRef.module.rules.push({\n        test: /\\.geojson$/i,\n        type: "json",\n        parser: { parse: JSON.parse },\n      });\n    }\n\n    return configRef;\n  },\n};\n\nexport default config;\n`;
+  const template = `/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n  webpack(webpackConfig) {\n    const nextConfig = webpackConfig;\n    nextConfig.module = nextConfig.module || {};\n    nextConfig.module.rules = nextConfig.module.rules || [];\n\n    const hasGeojsonRule = nextConfig.module.rules.some((rule) => {\n      if (!rule || typeof rule !== 'object') return false;\n      const { test } = rule;\n      if (test instanceof RegExp) return test.test('file.geojson');\n      if (Array.isArray(test)) {\n        return test.some((entry) => entry instanceof RegExp && entry.test('file.geojson'));\n      }\n      return false;\n    });\n\n    if (!hasGeojsonRule) {\n      nextConfig.module.rules.push({\n        test: /\\.geojson$/i,\n        type: 'json',\n        parser: { parse: JSON.parse },\n      });\n    }\n\n    return nextConfig;\n  },\n};\n\nexport default config;\n`;
   const exists = await pathExists(configPath);
   const current = exists ? await fs.readFile(configPath, "utf8") : "";
   if (current.trim() !== template.trim()) {
     await fs.writeFile(configPath, template, "utf8");
-    changes.push(exists ? "eguneratuta next.config.mjs" : "sortu next.config.mjs");
+    actions.push(exists ? "eguneratuta next.config.mjs" : "sortu next.config.mjs");
   }
-  return { created: !exists, changes };
+}
+
+async function removeMiddleware(root, actions) {
+  const candidates = ["middleware.ts", "middleware.js"];
+  for (const candidate of candidates) {
+    const full = path.join(root, candidate);
+    if (await pathExists(full)) {
+      const disabled = `${full}.disabled`;
+      await fs.rename(full, disabled).catch(async (error) => {
+        if (error.code === "EEXIST") {
+          await fs.unlink(full);
+          return;
+        }
+        throw error;
+      });
+      actions.push(`mugitu ${candidate} → ${path.basename(disabled)}`);
+    }
+  }
 }
 
 async function ensurePackageScripts(root) {
@@ -75,12 +114,11 @@ async function ensurePackageScripts(root) {
     dev: "next dev",
     build: "next build",
     start: "next start",
-    typecheck: "tsc --noEmit",
     routes: "node scripts/print-routes.mjs",
     "fix:routes": "node scripts/ensure-routes.mjs",
   };
   for (const [key, value] of Object.entries(desired)) {
-    if (!pkg.scripts[key] || pkg.scripts[key] === "node scripts/ensure-routes.mjs") {
+    if (!pkg.scripts[key]) {
       pkg.scripts[key] = value;
     }
   }
@@ -91,88 +129,49 @@ async function main() {
   const root = await detectRoot();
   const actions = [];
   const appDir = path.join(root, "app");
-  const pagesDir = path.join(root, "pages");
   const hasAppRouter = await pathExists(appDir);
-  const hasPagesRouter = await pathExists(pagesDir);
 
-  if (!hasAppRouter && !hasPagesRouter) {
+  if (!hasAppRouter) {
     await fs.mkdir(appDir, { recursive: true });
   }
 
-  const useAppRouter = hasAppRouter || !hasPagesRouter;
-
-  if (useAppRouter) {
-    const layoutCreated = await ensureFile(
-      path.join(appDir, "layout.tsx"),
-      "export const metadata = { title: 'ArchéoSense', description: 'Hasiera' };\nexport default function RootLayout({ children }) {\n  return (<html lang=\"eu\"><body style={{ fontFamily: 'system-ui, sans-serif' }}>{children}</body></html>);\n}\n",
-    );
-    if (layoutCreated) actions.push("sortu app/layout.tsx");
-
-    const homeCreated = await ensureFile(
-      path.join(appDir, "page.tsx"),
-      "export const dynamic='force-dynamic';\nexport const revalidate=0;\nexport default function Home(){return(<main style={{padding:24}}><h1>ArchéoSense</h1><a href=\"/app\">→ Ireki aplikazioa</a></main>);}\n",
-    );
-    if (homeCreated) actions.push("sortu app/page.tsx");
-
-    const appHomeCreated = await ensureFile(
-      path.join(appDir, "app", "page.tsx"),
-      "export const dynamic='force-dynamic';\nexport const revalidate=0;\nexport const fetchCache='force-no-store';\nexport default function AppHome(){return(<section style={{padding:24}}><h2>ArchéoSense aplikazioa</h2><p>Orrialde sinplea 404 arazoak saihesteko.</p></section>);}\n",
-    );
-    if (appHomeCreated) actions.push("sortu app/app/page.tsx");
-
-    const dynamicTargets = [
-      path.join(appDir, "page.tsx"),
-      path.join(appDir, "app", "page.tsx"),
-      path.join(appDir, "reports", "page.tsx"),
-      path.join(appDir, "scenario", "page.tsx"),
-      path.join(appDir, "settings", "page.tsx"),
-      path.join(appDir, "triage", "page.tsx"),
-      path.join(appDir, "app", "reports", "page.tsx"),
-      path.join(appDir, "app", "scenario", "page.tsx"),
-      path.join(appDir, "app", "settings", "page.tsx"),
-      path.join(appDir, "app", "triage", "page.tsx"),
-    ];
-
-    for (const target of dynamicTargets) {
-      if (await ensureFlags(target)) {
-        actions.push(`eguneratuta flag dinamikoak: ${path.relative(root, target)}`);
-      }
-    }
-  } else {
-    const homeCreated = await ensureFile(
-      path.join(pagesDir, "index.tsx"),
-      "export default function Home(){return(<main style={{padding:24}}><h1>ArchéoSense</h1><a href=\"/app\">→ Ireki aplikazioa</a></main>);}\n",
-    );
-    if (homeCreated) actions.push("sortu pages/index.tsx");
-
-    const appCreated = await ensureFile(
-      path.join(pagesDir, "app", "index.tsx"),
-      "export default function AppHome(){return(<main style={{padding:24}}><h1>ArchéoSense aplikazioa</h1></main>);}\n",
-    );
-    if (appCreated) actions.push("sortu pages/app/index.tsx");
-  }
-
-  const configChanges = [];
-  await updateNextConfig(root, configChanges);
-  if (configChanges.length > 0) {
-    actions.push(...configChanges);
-  }
-
-  const middlewareCreated = await ensureFile(
-    path.join(root, "middleware.ts"),
-    "import type { NextRequest } from 'next/server';\nimport { NextResponse } from 'next/server';\n\nexport function middleware(req: NextRequest) {\n  const url = req.nextUrl.clone();\n  if (url.pathname === '/') {\n    url.pathname = '/app';\n    return NextResponse.rewrite(url);\n  }\n  return NextResponse.next();\n}\n\nexport const config = { matcher: ['/'] };\n",
+  const layoutCreated = await ensureFile(
+    path.join(appDir, "layout.tsx"),
+    "export const metadata = { title: 'ArchéoSense', description: 'Hasiera' };\nexport default function RootLayout({ children }) {\n  return (<html lang=\"eu\"><body style={{ fontFamily: 'system-ui, sans-serif' }}>{children}</body></html>);\n}\n"
   );
-  if (middlewareCreated) {
-    actions.push("sortu middleware.ts");
+  if (layoutCreated) actions.push("sortu app/layout.tsx");
+
+  const redirectAction = await ensureRedirectHome(path.join(appDir, "page.tsx"));
+  if (redirectAction) actions.push(redirectAction);
+
+  const appHomeCreated = await ensureFile(
+    path.join(appDir, "app", "page.tsx"),
+    "export const dynamic='force-dynamic';\nexport const revalidate=0;\nexport default function AppHome(){return(<main style={{padding:24}}><h2>ArchéoSense aplikazioa</h2><p>Dashboard hasiera sinplea.</p></main>);}\n"
+  );
+  if (appHomeCreated) actions.push("sortu app/app/page.tsx");
+
+  const dynamicTargets = [
+    path.join(appDir, "app", "page.tsx"),
+    path.join(appDir, "reports", "page.tsx"),
+    path.join(appDir, "scenario", "page.tsx"),
+    path.join(appDir, "settings", "page.tsx"),
+    path.join(appDir, "triage", "page.tsx"),
+  ];
+
+  for (const target of dynamicTargets) {
+    if (await ensureFlags(target)) {
+      actions.push(`eguneratuta flag dinamikoak: ${path.relative(root, target)}`);
+    }
   }
+
+  await removeMiddleware(root, actions);
+  await updateNextConfig(root, actions);
 
   const healthCreated = await ensureFile(
-    path.join(root, "app", "api", "health", "route.ts"),
-    "import { NextResponse } from 'next/server';\n\nexport async function GET() {\n  return NextResponse.json({ ok: true, ts: Date.now() });\n}\n",
+    path.join(appDir, "api", "health", "route.ts"),
+    "import { NextResponse } from 'next/server';\n\nexport async function GET() {\n  return NextResponse.json({ ok: true, ts: Date.now() });\n}\n"
   );
-  if (healthCreated) {
-    actions.push("sortu app/api/health/route.ts");
-  }
+  if (healthCreated) actions.push("sortu app/api/health/route.ts");
 
   await ensurePackageScripts(root);
 
@@ -181,7 +180,7 @@ async function main() {
     console.log("Egindako aldaketak:");
     actions.forEach((action) => console.log(" -", action));
   } else {
-    console.log("Ez da aldaketarik behar izan; egitura osorik zegoen.");
+    console.log("Ez da aldaketarik behar izan; egitura prest zegoen.");
   }
   console.log("\nHurrengo pausoak:");
   console.log(" pnpm run routes   # Next-ek ikusitako ibilbideak zerrendatzeko");
