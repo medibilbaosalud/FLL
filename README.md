@@ -93,11 +93,13 @@ Arches-era eramateko, CSV/GeoJSON fitxategietan zutabe horiek prestatu behar dir
 ## Despliegue en Vercel
 
 - `package.json` fitxategia `web/` azpidirektorioan badago, Vercel-eko **Project Settings → Root Directory** aukeran `web` ezarri.
-- Ziurtatu hasiera orria dagoela `app/page.tsx` edo `pages/index.tsx` fitxategietan; zalantzarik bada, exekutatu `pnpm run fix:vercel` eta scriptak 404/NOT_FOUND arazoak konpontzeko egiaztatuko eta sortuko du.
+- Hasiera orria eta `/app` ibilbidea bermatzeko, exekutatu auto-konpontzailea: `pnpm run fix:vercel`.
+- Deploy egin aurretik, ikus Next.js-ek zer ibilbide sortzen dituen: `pnpm run routes` (irteeran `/` eta `/app` agertu behar dute).
 - Ingurune aldagaiak: `NEXT_PUBLIC_MAPBOX_TOKEN` gehitu Vercel-en Environment Variables atalean.
 - Komando erabilgarriak:
   ```bash
   pnpm run fix:vercel
+  pnpm run routes
   pnpm dev
   pnpm build && pnpm start
   ```

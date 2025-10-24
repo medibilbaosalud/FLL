@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "generate-sw": "workbox injectManifest",
-    "fix:vercel": "node scripts/fix-vercel-not-found.mjs",
-    "typecheck": "tsc --noEmit"
+    "fix:vercel": "node scripts/ensure-routes.mjs",
+    "typecheck": "tsc --noEmit",
+    "routes": "node scripts/print-routes.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.5",
