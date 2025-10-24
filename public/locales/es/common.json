@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "map": "Mapa",
+    "priorities": "Prioridades",
+    "scenario": "Escenario",
+    "reports": "Informes",
+    "settings": "Ajustes"
+  },
+  "cta_start": "Comenzar",
+  "hero": {
+    "title": "Las huellas del pasado no se perderán: aliento de la naturaleza, paso humano y voz de la piedra en un mismo mapa.",
+    "subtitle": "ArchéoSense: semáforo de riesgo, explicaciones claras y acciones precisas — para llegar a tiempo."
+  },
+  "filters": {
+    "search": "Buscar sitios",
+    "type": "Tipo",
+    "material": "Material",
+    "biome": "Bioma",
+    "pri": "Rango PRI",
+    "sensitive": "Ocultar sensibles"
+  },
+  "map": {
+    "confidence_high": "Confianza de datos: alta",
+    "confidence_medium": "Confianza de datos: media",
+    "confidence_low": "Confianza de datos: baja"
+  }
+}

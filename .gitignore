@@ -1,0 +1,12 @@
+# dependencias / builds
+node_modules/
+dist/
+build/
+*.log
+
+# datos pesados locales
+data/
+datasets/
+models/
+.checkpoints/
+.ipynb_checkpoints/

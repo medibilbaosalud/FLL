@@ -1,0 +1,22 @@
+name: LFS Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lfs-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Git LFS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
+      - name: Configure Git LFS
+        run: git lfs install
+      - name: Validate binary assets
+        run: bash scripts/check-binaries.sh

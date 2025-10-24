@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "map": "Mapa",
+    "priorities": "Lehentasunak",
+    "scenario": "Eszenarioa",
+    "reports": "Txostenak",
+    "settings": "Ezarpenak"
+  },
+  "cta_start": "Hasi",
+  "hero": {
+    "title": "Iraganaren aztarnak ez dira isilean galduko: naturaren arnasa, gizakiaren urratsa, eta harrien ahotsa, mapa berean.",
+    "subtitle": "ArchéoSense: arriskuaren semaforoa, azalpen gardenak eta ekintza zehatzak — garaiz heltzeko."
+  },
+  "filters": {
+    "search": "Bilatu guneak",
+    "type": "Mota",
+    "material": "Materiala",
+    "biome": "Bioma",
+    "pri": "PRI tartea",
+    "sensitive": "Sentsibleak ezkutatu"
+  },
+  "map": {
+    "confidence_high": "Datu-konfiantza: altua",
+    "confidence_medium": "Datu-konfiantza: ertaina",
+    "confidence_low": "Datu-konfiantza: baxua"
+  }
+}

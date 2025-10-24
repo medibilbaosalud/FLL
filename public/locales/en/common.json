@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "map": "Map",
+    "priorities": "Priorities",
+    "scenario": "Scenarios",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "cta_start": "Start",
+  "hero": {
+    "title": "Traces of the past will not fade: breath of nature, human footprints, and the voice of stones, sharing one map.",
+    "subtitle": "ArchéoSense: a risk semaphore with transparent insights and decisive actions — arriving on time."
+  },
+  "filters": {
+    "search": "Search sites",
+    "type": "Type",
+    "material": "Material",
+    "biome": "Biome",
+    "pri": "PRI range",
+    "sensitive": "Hide sensitive"
+  },
+  "map": {
+    "confidence_high": "Data confidence: high",
+    "confidence_medium": "Data confidence: medium",
+    "confidence_low": "Data confidence: low"
+  }
+}

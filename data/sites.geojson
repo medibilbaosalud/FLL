@@ -1,0 +1,135 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-1.981231, 43.322421] },
+      "properties": {
+        "id": "euskal_kliff_01",
+        "izena": "Bramanteko Itsaslabarra",
+        "mota": "kostaldeko aztarnategia",
+        "materiala": "piedra",
+        "bioma": "kostaldea",
+        "balioa": "nazionala",
+        "sentsiblea": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-2.7051, 42.8462] },
+      "properties": {
+        "id": "ibar_harresi_02",
+        "izena": "Ibar Harresi Zaharra",
+        "mota": "harresi erromatarra",
+        "materiala": "piedra",
+        "bioma": "ibarbidea",
+        "balioa": "unesco",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-0.9294, 42.7651] },
+      "properties": {
+        "id": "baso_santutegi_03",
+        "izena": "Lizar Sakratuko Santutegia",
+        "mota": "zurezko santutegia",
+        "materiala": "madera",
+        "bioma": "mendia",
+        "balioa": "lokala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-1.454, 41.986] },
+      "properties": {
+        "id": "basamortu_kastro_04",
+        "izena": "Dunetako Kastroa",
+        "mota": "basamortuko gotorlekua",
+        "materiala": "adobe",
+        "bioma": "basamortua",
+        "balioa": "nazionala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-1.999, 43.322] },
+      "properties": {
+        "id": "hiriko_balneario_05",
+        "izena": "Hiriaren Balneario Erromatarra",
+        "mota": "hiriko aztarnategia",
+        "materiala": "piedra",
+        "bioma": "hirigunea",
+        "balioa": "nazionala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-2.52, 43.14] },
+      "properties": {
+        "id": "ibai_kobazulo_06",
+        "izena": "Ibaiaren Kobazulo Margotua",
+        "mota": "kobazuloa",
+        "materiala": "piedra",
+        "bioma": "ibarbidea",
+        "balioa": "unesco",
+        "sentsiblea": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-3.15, 42.56] },
+      "properties": {
+        "id": "lautada_necropoli_07",
+        "izena": "Lautadako Nekropolia",
+        "mota": "nekropolia",
+        "materiala": "nahasia",
+        "bioma": "ibarbidea",
+        "balioa": "lokala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-1.15, 43.05] },
+      "properties": {
+        "id": "kostalde_dolmen_08",
+        "izena": "Itsasargi Dolmena",
+        "mota": "dolmen",
+        "materiala": "piedra",
+        "bioma": "kostaldea",
+        "balioa": "lokala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-2.2, 42.45] },
+      "properties": {
+        "id": "erromatar_villa_09",
+        "izena": "Ibarreko Villa",
+        "mota": "erromatar villa",
+        "materiala": "piedra",
+        "bioma": "ibarbidea",
+        "balioa": "nazionala",
+        "sentsiblea": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-3.5, 43.3] },
+      "properties": {
+        "id": "itsaspeko_10",
+        "izena": "Itsaspeko Arkitektura",
+        "mota": "itsaspeko aztarnak",
+        "materiala": "metal",
+        "bioma": "kostaldea",
+        "balioa": "lokala",
+        "sentsiblea": true
+      }
+    }
+  ]
+}
