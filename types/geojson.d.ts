@@ -9,3 +9,8 @@ declare module "@/data/*.geojson" {
   const value: FeatureCollection;
   export default value;
 }
+
+declare module "@/data/sites.geojson" {
+  const value: FeatureCollection;
+  export default value;
+}
