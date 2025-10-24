@@ -129,6 +129,7 @@ async function ensureNextConfig() {
 
   const template = `import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const variants = [".tsx", ".ts", ".jsx", ".js"];
 
@@ -144,6 +145,8 @@ function hasAppWorkspaceRoute() {
 }
 
 const appRouteExists = hasAppWorkspaceRoute();
+
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -182,7 +185,7 @@ const config = {
     webpackConfig.resolve = webpackConfig.resolve || {};
     webpackConfig.resolve.alias = {
       ...(webpackConfig.resolve.alias || {}),
-      "@": path.resolve(__dirname),
+      "@": path.resolve(moduleDir),
     };
 
     return webpackConfig;
