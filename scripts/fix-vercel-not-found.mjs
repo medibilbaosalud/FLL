@@ -88,12 +88,12 @@ function updatePackageJson(root, changes) {
   }
 }
 
-function ensureRedirect(root, changes, hasAppRoute) {
+function ensureConfig(root, changes) {
   const configPath = path.join(root, "next.config.mjs");
   if (!fs.existsSync(configPath)) {
-    const minimal = `/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n  async redirects() {\n    return ${hasAppRoute ? "[{ source: '/', destination: '/app', permanent: false }]" : "[]"};\n  },\n};\nexport default config;\n`;
+    const minimal = `/** @type {import('next').NextConfig} */\nconst config = {\n  reactStrictMode: true,\n};\nexport default config;\n`;
     fs.writeFileSync(configPath, minimal, "utf8");
-    changes.push("next.config.mjs sortu da redirectarekin");
+    changes.push("next.config.mjs sortu da");
     return;
   }
 
@@ -103,17 +103,6 @@ function ensureRedirect(root, changes, hasAppRoute) {
     fs.writeFileSync(configPath, withoutOutput, "utf8");
     source = withoutOutput;
     changes.push("next.config.mjs -> output: 'export' kenduta");
-  }
-
-  if (hasAppRoute && !/destination['\"]?\s*:\s*['\"]\/app['\"]/.test(source)) {
-    const redirectSnippet = `\n  async redirects() {\n    const base = [];\n    return [...base, { source: '/', destination: '/app', permanent: false }];\n  },\n`;
-    if (/async redirects\s*\(/.test(source)) {
-      // leave existing redirects intact; do nothing to avoid corrupting custom logic
-    } else {
-      source = source.replace(/export default config;\s*$/, `${redirectSnippet}\nexport default config;\n`);
-      fs.writeFileSync(configPath, source, "utf8");
-      changes.push("next.config.mjs eguneratua (/ -> /app redirect)");
-    }
   }
 }
 
@@ -170,8 +159,7 @@ const dynamicTargets = [
 ];
 dynamicTargets.forEach((target) => prependFlags(root, target, changes));
 
-const hasAppRoute = fs.existsSync(path.join(appDir, "app")) || fs.existsSync(path.join(pagesDir, "app"));
-ensureRedirect(root, changes, hasAppRoute);
+ensureConfig(root, changes);
 updatePackageJson(root, changes);
 
 console.log(`Root hautatua: ${root}`);

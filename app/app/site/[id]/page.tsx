@@ -1,20 +1,19 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getSitesWithRisk } from "@/lib/data";
-import { SiteDetail } from "@/components/site-detail";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export default function SitePage({ params }: { params: { id: string } }) {
-  const sites = getSitesWithRisk();
-  const site = sites.find((item) => item.feature.properties.id === params.id);
-  if (!site) {
-    notFound();
-  }
+type SitePageProps = {
+  params: { id: string };
+};
+
+export default function SitePlaceholderPage({ params }: SitePageProps) {
   return (
-    <div className="px-6 py-10">
-      <Link href="/app" className="text-sm text-white/70 hover:text-white">
-        ← Itzuli mapara
-      </Link>
-      <SiteDetail site={site} />
-    </div>
+    <section className="space-y-4">
+      <h2 className="text-xl font-semibold">Gunea: {params.id}</h2>
+      <p className="text-sm text-white/70">
+        Xehetasun orri hau oraingoz sinplifikatuta dago. Datu zehatzak eta grafikak beranduago aktibatuko dira,
+        aplikazioa egonkor dagoenean.
+      </p>
+    </section>
   );
 }
