@@ -1,4 +1,4 @@
-import type { SiteFeature } from "@/lib/types";
+import type { SiteFeature } from "../lib/types";
 
 declare module "*.geojson" {
   export interface SiteFeatureCollection {
