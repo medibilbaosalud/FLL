@@ -11,27 +11,55 @@ export interface SiteWithRisk {
   risk: RiskResult;
 }
 
-type SiteFeatureCollection = FeatureCollection<SiteFeature["geometry"], SiteFeature["properties"]>;
+type SiteFeatureCollection = FeatureCollection<
+  SiteFeature["geometry"],
+  SiteFeature["properties"]
+>;
+
+function toFeatureCollection(raw: unknown): SiteFeatureCollection {
+  const fallback: SiteFeatureCollection = { type: "FeatureCollection", features: [] };
+  if (!raw || typeof raw !== "object") {
+    return fallback;
+  }
+  const candidate = raw as Partial<SiteFeatureCollection>;
+  if (!Array.isArray(candidate.features)) {
+    return fallback;
+  }
+  return candidate as SiteFeatureCollection;
+}
+
+function toTimeSeriesMap(entries: unknown): Map<string, SiteTimeSeries> {
+  const map = new Map<string, SiteTimeSeries>();
+  if (!Array.isArray(entries)) {
+    return map;
+  }
+  (entries as SiteTimeSeries[]).forEach((entry) => {
+    if (entry && typeof entry.id === "string") {
+      map.set(entry.id, entry);
+    }
+  });
+  return map;
+}
 
 export function getSitesWithRisk(): SiteWithRisk[] {
-  const featureCollection = (sites as SiteFeatureCollection) || { type: "FeatureCollection", features: [] };
+  const featureCollection = toFeatureCollection(sites);
   const features = featureCollection.features ?? [];
-  const mapSeries = new Map<string, SiteTimeSeries>();
-  const timeSeriesEntries = (series as SiteTimeSeries[]) ?? [];
-  timeSeriesEntries.forEach((entry) => {
-    mapSeries.set(entry.id, entry);
-  });
+  const seriesMap = toTimeSeriesMap(series);
+
   return features.map((feature) => {
     const safeFeature = feature.properties.sentsiblea
       ? preparePublicFeature(feature)
       : feature;
-    const timeSeries = mapSeries.get(feature.properties.id);
-    const fallbackSeries: SiteTimeSeries = { id: safeFeature.properties.id, serie: [] };
-    const risk = calculateRisk(safeFeature, timeSeries ?? fallbackSeries);
+
+    const timeSeries = seriesMap.get(feature.properties.id);
+    const fallbackSeries: SiteTimeSeries = { id: feature.properties.id, serie: [] };
+    const resolvedSeries = timeSeries ?? fallbackSeries;
+    const risk = calculateRisk(safeFeature, resolvedSeries);
+
     return {
       feature: safeFeature,
-      timeSeries: timeSeries ?? fallbackSeries,
-      risk
+      timeSeries: resolvedSeries,
+      risk,
     };
   });
 }
