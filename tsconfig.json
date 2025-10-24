@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,51 +11,12 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "allowArbitraryExtensions": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": [
-      "node"
-    ],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@/data/*": [
-        "./data/*"
-      ],
-      "@/data/sites.geojson": [
-        "./data/sites.geojson"
-      ],
-      "@/data/time_series.json": [
-        "./data/time_series.json"
-      ]
-    },
-    "typeRoots": [
-      "./types",
-      "./node_modules/@types"
-    ]
+    "types": ["node"],
+    "baseUrl": "."
   },
-  "include": [
-    "next-env.d.ts",
-    "global.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.d.ts",
-    "**/*.cjs",
-    "**/*.mjs",
-    "types",
-    "types/**/*.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
+  "exclude": ["node_modules"]
 }
