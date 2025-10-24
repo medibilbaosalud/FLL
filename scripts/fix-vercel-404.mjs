@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import { createRequire } from "node:module";
-import { pathToFileURL } from "node:url";
 
 const { promises: fsp } = fs;
 
@@ -121,135 +119,73 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }
 }
 
-function detectAppRoute() {
-  const appAppDir = path.join(absoluteRoot, "app", "app");
-  const pagesDir = path.join(absoluteRoot, "pages");
-  const hasAppRouteInApp = hasVariant(appAppDir, "page");
-  const hasAppRouteInPages = hasVariant(pagesDir, "app") || hasVariant(path.join(pagesDir, "app"), "index");
+async function ensureNextConfig() {
+  const configPath = path.join(absoluteRoot, "next.config.mjs");
+  const legacyPath = path.join(absoluteRoot, "next.config.js");
+
+  if (fs.existsSync(legacyPath)) {
+    console.warn("[fix-vercel-404] next.config.js atzeman da; next.config.mjs gainidatziko da eta output:'export' ezabatuko da.");
+  }
+
+  const template = `import fs from "node:fs";
+import path from "node:path";
+
+const variants = [".tsx", ".ts", ".jsx", ".js"];
+
+function hasAppWorkspaceRoute() {
+  const cwd = process.cwd();
+  const appAppDir = path.join(cwd, "app", "app");
+  const pagesDir = path.join(cwd, "pages");
+  const hasAppRouteInApp = variants.some((ext) => fs.existsSync(path.join(appAppDir, "page" + ext)));
+  const hasAppRouteInPages =
+    variants.some((ext) => fs.existsSync(path.join(pagesDir, "app" + ext))) ||
+    variants.some((ext) => fs.existsSync(path.join(pagesDir, "app", "index" + ext)));
   return hasAppRouteInApp || hasAppRouteInPages;
 }
 
-async function ensureNextConfig({ addRedirect }) {
-  const configPath = path.join(absoluteRoot, "next.config.mjs");
-  const legacyPath = path.join(absoluteRoot, "next.config.js");
-  const require = createRequire(import.meta.url);
+const appRouteExists = hasAppWorkspaceRoute();
 
-  let existingConfig = {};
-  if (fs.existsSync(configPath)) {
-    try {
-      const imported = await import(pathToFileURL(configPath));
-      existingConfig = imported.default ?? imported;
-    } catch (error) {
-      console.warn("[fix-vercel-404] Ezin izan da dagoen next.config.mjs kargatu, konfigurazio huts bat erabiliko da.");
-    }
-  } else if (fs.existsSync(legacyPath)) {
-    try {
-      existingConfig = require(path.join(absoluteRoot, "next.config.js"));
-      console.log("[fix-vercel-404] \u2705 aurkitutako next.config.js irakurri da.");
-    } catch (error) {
-      console.warn("[fix-vercel-404] Ezin izan da next.config.js kargatu, konfigurazio huts bat erabiliko da.");
-    }
-  }
-
-  const { redirects, ...rest } = existingConfig || {};
-  const baselineConfig = {
-    experimental: { appDir: true },
-    images: { remotePatterns: [] },
-    reactStrictMode: true
-  };
-  const mergedRest = {
-    ...baselineConfig,
-    ...rest,
-    experimental: { ...baselineConfig.experimental, ...(rest?.experimental ?? {}) },
-    images: { ...baselineConfig.images, ...(rest?.images ?? {}) }
-  };
-  const serialized = JSON.stringify(mergedRest, null, 2);
-  let redirectsArray = Array.isArray(redirects) ? redirects : [];
-  if (typeof redirects === "function") {
-    try {
-      const result = await redirects();
-      if (Array.isArray(result)) {
-        redirectsArray = result;
-      } else {
-        console.warn("[fix-vercel-404] Oharra: redirects() funtzioak ez du array bat itzuli; ez da berrerabili.");
-      }
-    } catch (error) {
-      console.warn("[fix-vercel-404] Oharra: ezin izan da jatorrizko redirects funtzioa exekutatu.");
-    }
-  }
-  const redirectsArrayLiteral = JSON.stringify(redirectsArray ?? []);
-
-const template = `import fs from 'node:fs';
-import path from 'node:path';
-
-const existing = ${serialized || "{}"};
-const existingRedirectFunction = null;
-const existingRedirectArray = ${redirectsArrayLiteral};
-
-const appRouteExists = (() => {
-  const cwd = process.cwd();
-  const variants = ['.tsx', '.ts', '.jsx', '.js'];
-  const appAppDir = path.join(cwd, 'app', 'app');
-  const pagesDir = path.join(cwd, 'pages');
-  const hasApp = variants.some((ext) => fs.existsSync(path.join(appAppDir, 'page' + ext)));
-  const hasPagesDirect = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app' + ext)));
-  const hasPagesIndex = variants.some((ext) => fs.existsSync(path.join(pagesDir, 'app', 'index' + ext)));
-  return hasApp || hasPagesDirect || hasPagesIndex;
-})();
-
+/** @type {import('next').NextConfig} */
 const config = {
-  ...existing,
+  reactStrictMode: true,
+  experimental: { appDir: true },
+  images: { remotePatterns: [] },
   async redirects() {
-    const base = [];
-    if (Array.isArray(existingRedirectArray)) {
-      base.push(...existingRedirectArray);
+    if (!appRouteExists) {
+      return [];
     }
-    if (typeof existingRedirectFunction === 'function') {
-      const original = await existingRedirectFunction();
-      if (Array.isArray(original)) {
-        base.push(...original);
-      }
-    }
-    const sanitized = base.filter((route) => !(route?.source === '/' && route?.destination === '/app' && !${addRedirect ? "appRouteExists" : "false"}));
-    if (${addRedirect ? "appRouteExists" : "false"}) {
-      const has = sanitized.some((route) => route.source === '/' && route.destination === '/app');
-      if (!has) {
-        sanitized.push({ source: '/', destination: '/app', permanent: false });
-      }
-    }
-    return sanitized;
+    return [{ source: "/", destination: "/app", permanent: false }];
   },
-  webpack(config) {
-    const hasGeojsonRule = config.module?.rules?.some((rule) => {
-      if (!rule || typeof rule !== 'object') return false;
+  webpack(webpackConfig) {
+    const hasGeojsonRule = webpackConfig.module?.rules?.some((rule) => {
+      if (!rule || typeof rule !== "object") return false;
       const test = rule.test;
-      if (!test) return false;
       if (test instanceof RegExp) {
-        return test.test('file.geojson');
+        return test.test("example.geojson");
       }
       if (Array.isArray(test)) {
-        return test.some((entry) => entry instanceof RegExp && entry.test('file.geojson'));
+        return test.some((entry) => entry instanceof RegExp && entry.test("example.geojson"));
       }
       return false;
     });
 
     if (!hasGeojsonRule) {
-      config.module = config.module || {};
-      config.module.rules = config.module.rules || [];
-      config.module.rules.push({
+      webpackConfig.module = webpackConfig.module || {};
+      webpackConfig.module.rules = webpackConfig.module.rules || [];
+      webpackConfig.module.rules.push({
         test: /\\.geojson$/i,
-        type: 'json',
+        type: "json",
         parser: { parse: JSON.parse },
       });
     }
 
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@': path.resolve(process.cwd()),
+    webpackConfig.resolve = webpackConfig.resolve || {};
+    webpackConfig.resolve.alias = {
+      ...(webpackConfig.resolve.alias || {}),
+      "@": path.resolve(__dirname),
     };
 
-    return config;
+    return webpackConfig;
   },
 };
 
@@ -257,18 +193,13 @@ export default config;
 `;
 
   await fsp.writeFile(configPath, template, "utf8");
-  if (fs.existsSync(legacyPath)) {
-    console.log("[fix-vercel-404] \u2139\ufe0f next.config.mjs sortu da; kontuan izan next.config.js zaharkituta gera daitekeela.");
-  } else {
-    console.log("[fix-vercel-404] \u2705 next.config.mjs eguneratu da.");
-  }
+  console.log("[fix-vercel-404] \u2705 next.config.mjs eguneratu da (output: 'export' gabe).");
 }
 
 (async () => {
   await ensurePackageScripts();
   await ensureAppHome();
-  const redirectNeeded = detectAppRoute();
-  await ensureNextConfig({ addRedirect: redirectNeeded });
+  await ensureNextConfig();
 
   console.log("\n[fix-vercel-404] Laburpena");
   console.log(" - Scripts eguneratu dira (badagoen neurrian).");
