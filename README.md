@@ -90,6 +90,19 @@ Exportatutako JSONek honako mapeoa jarraitzen du:
 Arches-era eramateko, CSV/GeoJSON fitxategietan zutabe horiek prestatu behar dira.
 
 
+## Despliegue en Vercel
+
+- `package.json` fitxategia `web/` azpidirektorioan badago, Vercel-eko **Project Settings → Root Directory** aukeran `web` ezarri.
+- Ziurtatu hasiera orria dagoela `app/page.tsx` edo `pages/index.tsx` fitxategietan; zalantzarik bada, exekutatu `pnpm run fix:vercel` eta scriptak egiaztatu/ sortuko du.
+- Ingurune aldagaiak: `NEXT_PUBLIC_MAPBOX_TOKEN` gehitu Vercel-en Environment Variables atalean.
+- Komando erabilgarriak:
+  ```bash
+  pnpm run fix:vercel
+  pnpm dev
+  pnpm build && pnpm start
+  ```
+
+
 ## Fitxategi binarioak eta Git LFS
 
 ArchéoSense proiektuak LFS (Large File Storage) erabiltzen du irudi, bideo eta bestelako fitxategi astunak modu seguruan partekatzeko. Horrela, PR-ek ez dituzte 100MB-ko muga gainditzen eta repoaren historia arin mantentzen da.
