@@ -70,10 +70,6 @@ export function MapDashboard({ sites }: MapDashboardProps) {
     });
   }, [filters, getWindowPri, search, sites]);
 
-  const priBySite = useMemo(() => {
-    return Object.fromEntries(filteredSites.map((site) => [site.feature.properties.id, getWindowPri(site)]));
-  }, [filteredSites, getWindowPri]);
-
   const sorted = useMemo(() => {
     return [...filteredSites].sort((a, b) => getWindowPri(b) - getWindowPri(a));
   }, [filteredSites, getWindowPri]);
@@ -153,7 +149,7 @@ export function MapDashboard({ sites }: MapDashboardProps) {
             features={filteredSites.map((site) => site.feature)}
             priBySite={Object.fromEntries(
               filteredSites.map((site) => [site.feature.properties.id, getWindowPri(site)])
-            )
+            )}
           />
         </motion.div>
       </div>
@@ -168,7 +164,9 @@ export function MapDashboard({ sites }: MapDashboardProps) {
               return (
                 <li key={site.feature.properties.id} className="flex items-start justify-between gap-4 rounded-2xl bg-white/5 p-4">
                   <div>
-                    <Link href={`/app/site/${site.feature.properties.id}`} className="text-sm font-semibold text-white hover:text-ozeano-200">{site.feature.properties.izena}</Link>
+                    <Link href={`/app/site/${site.feature.properties.id}`} className="text-sm font-semibold text-white hover:text-ozeano-200">
+                      {site.feature.properties.izena}
+                    </Link>
                     <p className="text-xs text-white/60">PRI {pri.toFixed(2)}</p>
                     <p className="mt-2 text-xs text-white/60">{formatPriSentence(pri)}</p>
                   </div>
