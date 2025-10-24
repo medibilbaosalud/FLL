@@ -22,7 +22,9 @@ export function getSitesWithRisk(): SiteWithRisk[] {
     mapSeries.set(entry.id, entry);
   });
   return features.map((feature) => {
-    const safeFeature = feature.properties.sentsiblea ? preparePublicFeature(feature) : feature;
+    const safeFeature = feature.properties.sentsiblea
+      ? preparePublicFeature(feature)
+      : feature;
     const timeSeries = mapSeries.get(feature.properties.id);
     const fallbackSeries: SiteTimeSeries = { id: safeFeature.properties.id, serie: [] };
     const risk = calculateRisk(safeFeature, timeSeries ?? fallbackSeries);
