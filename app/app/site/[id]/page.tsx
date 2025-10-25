@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { Section } from "components/ui/section";
 
 interface SitePageProps {
   params: { id: string };
@@ -20,12 +19,22 @@ export default function SitePage({ params }: SitePageProps) {
   }
 
   return (
-    <Section desc="Gune honen egoera laburra eta hurrengo urratsak" title={site.name}>
-      <p>{site.summary}</p>
-      <p>
-        Fitxa osoa prestatzen ari gara: arrisku indizeak, joerak eta ekintza planak integratuko dira. Aldi berean,
-        mapa interaktiboan kokapen eguneratua erakutsiko dugu.
-      </p>
-    </Section>
+    <section className="section-card" aria-labelledby="site-heading">
+      <header className="section-header">
+        <div>
+          <h1 className="section-title" id="site-heading">
+            {site.name}
+          </h1>
+          <p className="section-desc">Gune honen egoera laburra eta hurrengo urratsak</p>
+        </div>
+      </header>
+      <div>
+        <p>{site.summary}</p>
+        <p>
+          Fitxa osoa prestatzen ari gara: arrisku indizeak, joerak eta ekintza planak integratuko dira. Aldi berean,
+          mapa interaktiboan kokapen eguneratua erakutsiko dugu.
+        </p>
+      </div>
+    </section>
   );
 }

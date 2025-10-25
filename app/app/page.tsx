@@ -1,3 +1,9 @@
+"use client";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 import dynamic from "next/dynamic";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";

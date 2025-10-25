@@ -87,7 +87,7 @@ export default function SiteMap() {
   const { riskMin, layers } = useRiskStore((state) => ({ riskMin: state.riskMin, layers: state.layers }));
 
   useEffect(() => {
-    if (!containerRef.current) {
+    if (typeof window === "undefined" || !containerRef.current) {
       return;
     }
 
