@@ -3,292 +3,231 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { LanguageToggle } from "components/ui/language-toggle";
-import { Icon } from "components/ui/icon";
 import { useLanguage } from "components/providers/language-context";
+import { LanguageToggle } from "components/ui/language-toggle";
 
-type HeroStat = { label: string; value: string };
-type SimpleCard = { title: string; description: string; icon?: keyof typeof IconMap };
+type CopySection = {
+  title: string;
+  description: string;
+};
+
+type ModulePreview = CopySection & {
+  tag: string;
+  pill: string;
+};
 
 type LandingCopy = {
-  nav: { href: string; label: string }[];
   hero: {
     eyebrow: string;
     title: string;
     description: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    stats: HeroStat[];
   };
-  challenge: { title: string; description: string; cards: SimpleCard[] };
-  solution: { title: string; description: string; cards: SimpleCard[] };
-  pri: {
-    title: string;
-    description: string;
-    steps: { title: string; description: string }[];
-    noteTitle: string;
-    noteSubtitle: string;
-  };
-  previews: { title: string; description: string; label: string }[];
-  impact: { title: string; cards: SimpleCard[] };
-  cta: { title: string; description: string; primary: string; secondary: string };
-};
-
-type IconName =
-  | "map"
-  | "table"
-  | "flask"
-  | "report"
-  | "settings"
-  | "home"
-  | "spark"
-  | "shield";
-
-const IconMap: Record<IconName, IconName> = {
-  map: "map",
-  table: "table",
-  flask: "flask",
-  report: "report",
-  settings: "settings",
-  home: "home",
-  spark: "spark",
-  shield: "shield",
+  highlights: { title: string; description: string }[];
+  flow: { title: string; description: string; icon: string }[];
+  modules: ModulePreview[];
+  impact: CopySection[];
+  footer: { title: string; description: string; primary: string; secondary: string };
 };
 
 const COPY: Record<"es" | "eu", LandingCopy> = {
   es: {
-    nav: [
-      { href: "#inicio", label: "Inicio" },
-      { href: "#reto", label: "Reto" },
-      { href: "#solucion", label: "Solución" },
-      { href: "#pri", label: "PRI" },
-      { href: "#app", label: "La app" },
-      { href: "#impacto", label: "Impacto" },
-    ],
     hero: {
-      eyebrow: "ArchéoSense · Clima · Patrimonio",
-      title: "Protege el pasado con decisiones claras.",
+      eyebrow: "ArchéoSense · Patrimonio vivo",
+      title: "Convierte datos dispersos en prioridades claras.",
       description:
-        "Unimos clima, satélite y actividad humana para convertirlos en un semáforo comprensible y en planes de acción listos para actuar.",
-      ctaPrimary: "Entrar a la demo",
-      ctaSecondary: "Ver cómo funciona",
-      stats: [
-        { label: "Sitios vigilados", value: "10" },
-        { label: "Alertas al mes", value: "15" },
-        { label: "Escenarios guardados", value: "28" },
-      ],
+        "ArchéoSense reúne clima, satélite y observaciones de campo para decidir qué yacimiento atender primero, por qué y con qué acción concreta.",
+      ctaPrimary: "Abrir espacio de trabajo",
+      ctaSecondary: "Descubrir módulos",
     },
-    challenge: {
-      title: "Por qué hace falta",
-      description:
-        "Clima extremo, saturación turística y datos dispersos. ArchéoSense resume la urgencia en un vistazo.",
-      cards: [
-        {
-          title: "Clima impredecible",
-          description: "Inundaciones, olas de calor y incendios dañan el patrimonio antes de poder reaccionar.",
-          icon: "shield",
-        },
-        {
-          title: "Demasiados datos sueltos",
-          description: "Sensores, satélite y visitas generan ruido. Necesitamos priorizar con criterio.",
-          icon: "table",
-        },
-        {
-          title: "Decisiones lentas",
-          description: "Sin un semáforo claro, el presupuesto se diluye y llegan tarde las acciones preventivas.",
-          icon: "spark",
-        },
-      ],
-    },
-    solution: {
-      title: "Qué ofrece la plataforma",
-      description: "Cinco módulos que conectan alerta temprana, explicación y respuesta.",
-      cards: [
-        { title: "Mapa vivo", description: "Clusters, colores por riesgo y capas temáticas en segundos.", icon: "map" },
-        {
-          title: "Triage inteligente",
-          description: "Ordena inspecciones y exporta CSV con lo urgente primero.",
-          icon: "table",
-        },
-        {
-          title: "Laboratorio de escenarios",
-          description: "Simula lluvia, calor o picos de turismo y ve cómo cambia el riesgo.",
-          icon: "flask",
-        },
-        {
-          title: "Informes listos",
-          description: "PDF y CSV con mapas, drivers y acciones recomendadas.",
-          icon: "report",
-        },
-        {
-          title: "Preferencias",
-          description: "Ajusta pesos y umbrales para adaptarlo a tu realidad.",
-          icon: "settings",
-        },
-      ],
-    },
-    pri: {
-      title: "Así calculamos el PRI",
-      description: "Un flujo corto explica de dónde sale cada color del semáforo.",
-      steps: [
-        { title: "Reunimos datos", description: "Clima, deformación, visitas y estado del sitio." },
-        { title: "Calculamos el índice", description: "Combinamos peligro, vulnerabilidad, exposición y valor." },
-        { title: "Explicamos el porqué", description: "Mostramos los tres factores que más empujan el riesgo." },
-        { title: "Sugerimos acciones", description: "Cada medida indica cuánto reduce el riesgo y su coste." },
-      ],
-      noteTitle: "PRI (0-100)",
-      noteSubtitle: "Normalizamos la fórmula y coloreamos según umbrales configurables.",
-    },
-    previews: [
+    highlights: [
       {
-        label: "Inicio",
-        title: "Panel de salud",
-        description: "KPIs rápidos, alertas recientes y acceso directo al mapa vivo.",
+        title: "Un vistazo basta",
+        description: "Semáforo de riesgo con contexto humano y ambiental resumido en tarjetas limpias.",
       },
       {
-        label: "Mapa",
-        title: "Explora y filtra",
-        description: "Verás cada sitio por riesgo, podrás filtrar por país y abrir la ficha instantánea.",
+        title: "Explicación inmediata",
+        description: "Mostramos qué factores empujan el riesgo y qué acción reduce el impacto.",
       },
       {
-        label: "Triage",
-        title: "Prioriza",
-        description: "Aquí aparecerá la tabla con acciones masivas, filtros por material y exportación.",
-      },
-      {
-        label: "Escenarios",
-        title: "Simula",
-        description: "Controla sliders de lluvia, temperatura y turismo para prever qué pasará.",
-      },
-      {
-        label: "Informes",
-        title: "Comparte",
-        description: "Genera PDFs estilizados y CSV para tu equipo o aliados.",
-      },
-      {
-        label: "Ezarpenak",
-        title: "Configura",
-        description: "Define pesos del PRI, idioma y límites de color sin salir de la app.",
+        title: "Modo sensible",
+        description: "Las ubicaciones delicadas se ofuscan por defecto y sólo se revelan a equipos autorizados.",
       },
     ],
-    impact: {
-      title: "Qué conseguimos",
-      cards: [
-        { title: "Actuar antes", description: "Alertas y escenarios en menos de un minuto para evitar daños." },
-        { title: "Explicar fácil", description: "El semáforo muestra riesgo y motivos con lenguaje claro." },
-        { title: "Compartir seguro", description: "Datos sensibles ofuscados por defecto y exportables cuando toca." },
-      ],
-    },
-    cta: {
-      title: "¿Listo para probar ArchéoSense?",
-      description: "Explora la demo y descubre cómo priorizar la protección del patrimonio con datos claros.",
-      primary: "Abrir demo",
-      secondary: "Escríbenos",
+    flow: [
+      {
+        title: "Observa",
+        description: "Aquí aparecerán alertas visuales y pequeñas historias que explican qué está cambiando.",
+        icon: "👁️",
+      },
+      {
+        title: "Prioriza",
+        description: "El Índice de Prioridad de Riesgo (PRI) combina peligro, vulnerabilidad, exposición y valor.",
+        icon: "🚦",
+      },
+      {
+        title: "Actúa",
+        description: "Cada ficha propondrá acciones con impacto estimado y esfuerzo asociado.",
+        icon: "🛠️",
+      },
+    ],
+    modules: [
+      {
+        tag: "Inicio",
+        pill: "En construcción",
+        title: "Panel general",
+        description: "Aquí verás indicadores clave, alertas recientes y accesos directos al mapa y al triage.",
+      },
+      {
+        tag: "Mapa",
+        pill: "Demo visual",
+        title: "Exploración geográfica",
+        description: "En este espacio aparecerá el mapa interactivo con colores por riesgo, clusters y filtros por país.",
+      },
+      {
+        tag: "Triage",
+        pill: "Próximamente",
+        title: "Lista accionable",
+        description: "Aquí se mostrará la tabla priorizada para programar inspecciones y exportar CSV.",
+      },
+      {
+        tag: "Escenarios",
+        pill: "Próximamente",
+        title: "Laboratorio",
+        description: "Verás sliders de lluvia, temperatura y visitas para anticipar cómo cambia el PRI.",
+      },
+      {
+        tag: "Informes",
+        pill: "Próximamente",
+        title: "Centro de reportes",
+        description: "Se generarán PDFs listos para presentar con mapas, métricas y planes de acción.",
+      },
+      {
+        tag: "Ajustes",
+        pill: "Próximamente",
+        title: "Personalización",
+        description: "Podrás ajustar pesos, idioma y umbrales de color para adaptarlo a cada equipo.",
+      },
+    ],
+    impact: [
+      {
+        title: "Del dato a la decisión",
+        description: "Traducimos capas climáticas y humanas en un lenguaje que cualquier gestora entiende.",
+      },
+      {
+        title: "Trabajo coordinado",
+        description: "La app muestra qué equipo debe intervenir y qué documentación debe acompañar cada acción.",
+      },
+      {
+        title: "Aprendizaje continuo",
+        description: "Guardamos escenarios y resultados para mejorar el modelo conforme llegan nuevas evidencias.",
+      },
+    ],
+    footer: {
+      title: "Prueba ArchéoSense hoy mismo",
+      description: "Explora la demo y ayúdanos a pulir los módulos con tus comentarios.",
+      primary: "Ir al espacio /app",
+      secondary: "Solicitar contacto",
     },
   },
   eu: {
-    nav: [
-      { href: "#inicio", label: "Hasiera" },
-      { href: "#reto", label: "Erronka" },
-      { href: "#solucion", label: "Konponbidea" },
-      { href: "#pri", label: "PRI" },
-      { href: "#app", label: "Aplikazioa" },
-      { href: "#impacto", label: "Eragina" },
-    ],
     hero: {
-      eyebrow: "ArchéoSense · Klima · Ondarea",
-      title: "Babestu aztarnategiak erabaki gardenekin.",
+      eyebrow: "ArchéoSense · Ondare bizia",
+      title: "Datu sakabanatuak lehentasun bihurtu.",
       description:
-        "Klimako, sateliteko eta jarduera humanoaren datuak uztartzen ditugu semaforo ulerterrazean eta ekintza-planean.",
-      ctaPrimary: "Demoan sartu",
-      ctaSecondary: "Ikusi nola dabilen",
-      stats: [
-        { label: "Gainbegiratutako guneak", value: "10" },
-        { label: "Alertak hilabetean", value: "15" },
-        { label: "Gordetako eszenarioak", value: "28" },
-      ],
+        "ArchéoSensek klima, satelite eta lurralde behaketak uztartzen ditu zein aztarnategiri ekin lehenengo, zergatik eta zein ekintzarekin erabakitzeko.",
+      ctaPrimary: "Ireki lan eremua",
+      ctaSecondary: "Ezagutu moduluak",
     },
-    challenge: {
-      title: "Zergatik behar da",
-      description: "Klima muturrekoa, turismoa eta datu sakabanatuak. ArchéoSensek egoera kolpe batez laburbiltzen du.",
-      cards: [
-        {
-          title: "Klima aldakorra",
-          description: "Uholdeak, bero-boladak eta suteak kalteak eragiten dituzte garaiz erreakzionatu aurretik.",
-          icon: "shield",
-        },
-        {
-          title: "Datu gehiegi",
-          description: "Sentsore, satelite eta bisitarien informazioa irizpide argiz ordenatu behar da.",
-          icon: "table",
-        },
-        {
-          title: "Erabaki motelak",
-          description: "Semaforo argirik gabe, aurrekontua sakabanatu egiten da eta prebentzioa berandu heltzen da.",
-          icon: "spark",
-        },
-      ],
-    },
-    solution: {
-      title: "Zer eskaintzen du",
-      description: "Bost moduluk lotzen dute alerta goiztiarra, azalpena eta erantzuna.",
-      cards: [
-        { title: "Mapa bizia", description: "Cluster eta arrisku koloreak segundotan.", icon: "map" },
-        { title: "Triage adimentsua", description: "Inspekzioak ordenatu eta CSV esportatu lehentasunarekin.", icon: "table" },
-        { title: "Eszenario laborategia", description: "Euria, beroa edo turismoa aldatuz ikusi nola mugitzen den PRI.", icon: "flask" },
-        { title: "Txosten prest", description: "PDF eta CSV mapekin, driverrekin eta gomendioekin.", icon: "report" },
-        { title: "Hobespenak", description: "Pisuen eta atalaseen kontrol erraza.", icon: "settings" },
-      ],
-    },
-    pri: {
-      title: "PRI nola kalkulatzen da",
-      description: "Lau pausu labur, semaforoaren atzean dagoen logika ulertzeko.",
-      steps: [
-        { title: "Datuak batzen ditugu", description: "Klima, deformazioa, bisitariak eta gune egoera." },
-        { title: "Indizea kalkulatzen dugu", description: "Arriskua × ahultasuna × esposizioa × balioa." },
-        { title: "Zergatia azaltzen dugu", description: "Top 3 driverrek arriskua zergatik igo den erakusten dute." },
-        { title: "Ekintzak gomendatzen ditugu", description: "Neurri bakoitzak arriskua zenbat jaisten duen eta kostua agertzen da." },
-      ],
-      noteTitle: "PRI (0-100)",
-      noteSubtitle: "Formula normalizatu eta kolore semaforo bidez bistaratzen dugu.",
-    },
-    previews: [
-      { label: "Hasiera", title: "Osasun panela", description: "KPI azkarrak, azken alertak eta mapa bizira sarbide zuzena." },
+    highlights: [
       {
-        label: "Mapa",
-        title: "Arakatu",
-        description: "Arriskuaren arabera ikusiko duzu guztia, herrialdearen arabera iragazi eta fitxa zabaldu momentuan.",
+        title: "Begirada bakarrean",
+        description: "Arrisku semaforoa testuinguru klimatiko eta humanoarekin, modu garbian.",
       },
       {
-        label: "Triage",
-        title: "Lehentasunak",
-        description: "Hemen agertuko da ekintza masiboetarako taula eta materialaren araberako iragazkia.",
+        title: "Azalpen zuzena",
+        description: "Arriskua gora daramaten faktore nagusiak eta jaitsiera ekarriko duen ekintza adieraziko dira.",
       },
       {
-        label: "Eszenarioak",
-        title: "Simulatu",
-        description: "Euria, tenperatura eta turismo sliderrekin etorkizuneko arriskua aurreikusi.",
-      },
-      { label: "Txostenak", title: "Partekatu", description: "PDF dotoreak eta CSV-ak taldearentzat edo aliatuentzat." },
-      {
-        label: "Ezarpenak",
-        title: "Konfiguratu",
-        description: "PRI pisuak, hizkuntza eta kolore mugak unean bertan egokitu.",
+        title: "Modu sentikorra",
+        description: "Kokapen sentikorrak lehenetsiz ofuskatzen dira eta soilik baimendutako taldeek ikusiko dituzte.",
       },
     ],
-    impact: {
-      title: "Zer lortzen dugu",
-      cards: [
-        { title: "Aurretiazko erreakzioa", description: "Alertak eta eszenarioak minutu batean erantzuteko." },
-        { title: "Azalpen gardena", description: "Semaforoak arriskua eta arrazoiak hizkera arruntean erakusten ditu." },
-        { title: "Partekatze segurua", description: "Datu sentikorrak lehenetsiz ofuskatuta eta behar denean esportagarri." },
-      ],
-    },
-    cta: {
-      title: "Prest al zaude ArchéoSense probatzeko?",
-      description: "Demoa arakatu eta ondarea babesteko lehentasunak datu argiekin antolatu.",
-      primary: "Demoa ireki",
-      secondary: "Idatzi guri",
+    flow: [
+      {
+        title: "Behatu",
+        description: "Hemen azalduko dira aldaketa nagusien abisu bisualak eta kontakizun laburrak.",
+        icon: "👁️",
+      },
+      {
+        title: "Lehentasunak ezarri",
+        description: "PRI indizeak arriskua, ahultasuna, esposizioa eta balioa konbinatzen ditu.",
+        icon: "🚦",
+      },
+      {
+        title: "Ekin",
+        description: "Fitxa bakoitzak neurriak proposatuko ditu, eraginaren eta esfortzuaren estimazioarekin.",
+        icon: "🛠️",
+      },
+    ],
+    modules: [
+      {
+        tag: "Hasiera",
+        pill: "Eraikitzen",
+        title: "Panel orokorra",
+        description: "Hemen agertuko dira KPI nagusiak, azken alertak eta mapa zein triagera sarbide azkarrak.",
+      },
+      {
+        tag: "Mapa",
+        pill: "Demo bisuala",
+        title: "Esplorazioa",
+        description: "Eremu honetan arriskuaren arabera koloreztatutako mapa interaktiboa ikusiko duzu, herrialdearen araberako filtroekin.",
+      },
+      {
+        tag: "Triage",
+        pill: "Laster",
+        title: "Ekintza zerrenda",
+        description: "Taula lehentasunduna hemen azalduko da, esportazio eta iragazki aurreratuekin.",
+      },
+      {
+        tag: "Eszenarioak",
+        pill: "Laster",
+        title: "Laborategia",
+        description: "Euri, tenperatura eta bisitari sliderrekin PRI nola mugitzen den aurreikusiko duzu.",
+      },
+      {
+        tag: "Txostenak",
+        pill: "Laster",
+        title: "Txosten zentroa",
+        description: "Mapa, metrika eta ekintza planez hornitutako PDF dotoreak sortuko dira hemen.",
+      },
+      {
+        tag: "Ezarpenak",
+        pill: "Laster",
+        title: "Pertsonalizazioa",
+        description: "Pisuen, hizkuntzaren eta kolore atalaseen moldaketa erraza izango duzu.",
+      },
+    ],
+    impact: [
+      {
+        title: "Datuetatik erabakietara",
+        description: "Klima eta giza datuak hizkera arruntera ekartzen ditugu erabakiak arintzeko.",
+      },
+      {
+        title: "Talde lana",
+        description: "Aplikazioak zein taldek jardun behar duen eta zein dokumentazio erantsi behar den azalduko du.",
+      },
+      {
+        title: "Ikasketa etengabea",
+        description: "Eszenarioak eta emaitzak gordeko ditugu eredua etengabe fintzeko.",
+      },
+    ],
+    footer: {
+      title: "Probatu ArchéoSense gaur",
+      description: "Sartu demoan eta bidali zure iruzkinak moduluak fintzeko.",
+      primary: "Joan /app gunera",
+      secondary: "Jarri gurekin harremanetan",
     },
   },
 };
@@ -299,149 +238,107 @@ export default function HomePage() {
 
   return (
     <main className="landing" id="inicio">
-      <section className="landing-hero">
-        <div className="landing-hero-inner">
-          <div className="landing-hero-copy">
+      <div className="landing-hero glass hairline">
+        <div className="landing-hero-content">
+          <header>
             <div className="landing-hero-top">
               <span className="landing-eyebrow">{copy.hero.eyebrow}</span>
               <LanguageToggle />
             </div>
             <h1>{copy.hero.title}</h1>
             <p>{copy.hero.description}</p>
-            <div className="landing-actions">
-              <Link className="landing-primary" href="/app">
-                {copy.hero.ctaPrimary}
-              </Link>
-              <a className="landing-secondary" href="#solucion">
-                {copy.hero.ctaSecondary}
-              </a>
-            </div>
-            <dl className="landing-stats">
-              {copy.hero.stats.map((stat) => (
-                <div key={stat.label}>
-                  <dt>{stat.label}</dt>
-                  <dd>{stat.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div className="landing-hero-visual">
-            <Image alt="Vista previa de ArchéoSense" height={520} src="/images/landing-hero.svg" width={560} />
-          </div>
-        </div>
-        <nav aria-label="Secciones principales" className="landing-nav">
-          {copy.nav.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-      </section>
-
-      <section className="landing-section" id="reto">
-        <header className="landing-section-header">
-          <h2>{copy.challenge.title}</h2>
-          <p>{copy.challenge.description}</p>
-        </header>
-        <div className="landing-grid">
-          {copy.challenge.cards.map((card) => (
-            <article className="landing-card" key={card.title}>
-              {card.icon ? <Icon className="landing-card-icon" name={IconMap[card.icon]} /> : null}
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section" id="solucion">
-        <header className="landing-section-header">
-          <h2>{copy.solution.title}</h2>
-          <p>{copy.solution.description}</p>
-        </header>
-        <div className="landing-module-grid">
-          {copy.solution.cards.map((card) => (
-            <article className="landing-card" key={card.title}>
-              {card.icon ? <Icon className="landing-card-icon" name={IconMap[card.icon]} /> : null}
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section landing-section-split" id="pri">
-        <header className="landing-section-header">
-          <h2>{copy.pri.title}</h2>
-          <p>{copy.pri.description}</p>
-        </header>
-        <div className="landing-pri">
-          <ol>
-            {copy.pri.steps.map((step, index) => (
-              <li key={step.title}>
-                <span>{index + 1}</span>
-                <div>
-                  <strong>{step.title}</strong>
-                  <p>{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="landing-media">
-            <div className="landing-media-card">
-              <span>{copy.pri.noteTitle}</span>
-              <strong>hazard × vulnerability × exposure × value</strong>
-              <p>{copy.pri.noteSubtitle}</p>
-            </div>
-            <Image alt="Diagrama del flujo del PRI" height={280} src="/images/landing-pri.svg" width={360} />
-          </div>
-        </div>
-      </section>
-
-      <section className="landing-section" id="app">
-        <header className="landing-section-header">
-          <h2>ArchéoSense app</h2>
-          <p>{language === "es" ? "Un vistazo a lo que verás en cada módulo." : "Modulu bakoitzean ikusiko duzuna"}</p>
-        </header>
-        <div className="landing-screens">
-          {copy.previews.map((screen) => (
-            <article className="landing-screen" key={screen.label}>
-              <div aria-hidden="true" className="landing-screen-visual">
-                <span>{screen.label}</span>
-              </div>
-              <h3>{screen.title}</h3>
-              <p>{screen.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section" id="impacto">
-        <header className="landing-section-header">
-          <h2>{copy.impact.title}</h2>
-        </header>
-        <div className="landing-grid">
-          {copy.impact.cards.map((card) => (
-            <article className="landing-card" key={card.title}>
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section" id="cta">
-        <div className="landing-cta-card">
-          <div>
-            <h2>{copy.cta.title}</h2>
-            <p>{copy.cta.description}</p>
-          </div>
-          <div className="landing-cta-actions">
+          </header>
+          <div className="landing-actions">
             <Link className="landing-primary" href="/app">
-              {copy.cta.primary}
+              {copy.hero.ctaPrimary}
             </Link>
-            <a className="landing-secondary" href="mailto:hello@archeosense.io">
-              {copy.cta.secondary}
+            <a className="landing-secondary" href="#modules">
+              {copy.hero.ctaSecondary}
+            </a>
+          </div>
+          <div className="landing-highlight-grid">
+            {copy.highlights.map((item) => (
+              <div className="landing-highlight" key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="landing-hero-visual">
+          <Image
+            alt="ArchéoSense overview"
+            height={420}
+            priority
+            src="/images/landing-hero.svg"
+            width={560}
+          />
+        </div>
+      </div>
+
+      <section className="landing-flow" id="reto">
+        <h2>{language === "es" ? "Cómo funciona ArchéoSense" : "Nola dabil ArchéoSense"}</h2>
+        <p>
+          {language === "es"
+            ? "Observa el estado del sitio, entiende el PRI y actúa con un plan sencillo."
+            : "Ikusi aztarnategiaren egoera, ulertu PRI eta ekin plan erraz batekin."}
+        </p>
+        <div className="flow-grid">
+          {copy.flow.map((step) => (
+            <article className="flow-card" key={step.title}>
+              <span className="flow-icon" aria-hidden>{step.icon}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-modules" id="modules">
+        <header>
+          <h2>{language === "es" ? "Próximos módulos" : "Datoak eta moduluak"}</h2>
+          <p>
+            {language === "es"
+              ? "Cada bloque mostrará exactamente qué verás cuando pulamos la demo final."
+              : "Bloke bakoitzean azken demoan ikusiko duzuna azaltzen dugu."}
+          </p>
+        </header>
+        <div className="module-grid">
+          {copy.modules.map((module) => (
+            <article className="module-card glass hairline" key={module.title}>
+              <div className="module-card-top">
+                <span className="module-tag">{module.tag}</span>
+                <span className="module-pill">{module.pill}</span>
+              </div>
+              <h3>{module.title}</h3>
+              <p>{module.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-impact" id="impacto">
+        <h2>{language === "es" ? "Impacto" : "Eragina"}</h2>
+        <div className="impact-grid">
+          {copy.impact.map((card) => (
+            <article className="impact-card" key={card.title}>
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-footer">
+        <div className="landing-footer-card glass hairline">
+          <h2>{copy.footer.title}</h2>
+          <p>{copy.footer.description}</p>
+          <div className="landing-actions">
+            <Link className="landing-primary" href="/app">
+              {copy.footer.primary}
+            </Link>
+            <a className="landing-secondary" href="mailto:hola@archeosense.org">
+              {copy.footer.secondary}
             </a>
           </div>
         </div>
@@ -449,3 +346,4 @@ export default function HomePage() {
     </main>
   );
 }
+

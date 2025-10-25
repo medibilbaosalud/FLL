@@ -6,63 +6,100 @@ import Link from "next/link";
 import { useLanguage } from "components/providers/language-context";
 import { Badge } from "components/ui/badge";
 
-const COPY = {
+type MapCopy = {
+  title: string;
+  body: string;
+  badge: string;
+  actions: { href: string; label: string }[];
+  features: { title: string; description: string }[];
+};
+
+const COPY: Record<"es" | "eu", MapCopy> = {
   es: {
-    title: "Mapa interactivo (en preparación)",
+    title: "Aquí aparecerá el mapa vivo",
     body:
-      "Aquí verás el mapa vivo con colores por riesgo, clusters y búsqueda inmediata. Estamos afinando los datos demo para que funcione con fluidez.",
-    ctaPrimary: "Ver ficha de muestra",
-    ctaSecondary: "Volver a inicio",
-    badge: "Demostración",
+      "Estamos construyendo la vista geográfica. Verás clusters por riesgo, filtros por país y accesos rápidos a cada ficha.",
+    badge: "En desarrollo",
+    actions: [
+      { href: "/app/site/1", label: "Ver ficha de ejemplo" },
+      { href: "/app/triage", label: "Explorar triage" },
+    ],
+    features: [
+      {
+        title: "Colores por riesgo",
+        description: "Los puntos se teñirán en verde, ámbar o rojo según el PRI actual.",
+      },
+      {
+        title: "Cluster inteligente",
+        description: "Acércate y verás cómo se separan para revelar cada yacimiento.",
+      },
+      {
+        title: "Detalle instantáneo",
+        description: "Un panel lateral contará la historia rápida y propondrá acciones.",
+      },
+    ],
   },
   eu: {
-    title: "Mapa interaktiboa (laster)",
+    title: "Hemen agertuko da mapa bizia",
     body:
-      "Hemen ikusiko duzu arriskuaren arabera koloreztatutako mapa, cluster dinamikoekin eta bilaketa berehalakoarekin. Demo datuak fintzen ari gara ondo funtziona dezan.",
-    ctaPrimary: "Ikusi adibide-fitxa",
-    ctaSecondary: "Hasierara itzuli",
-    badge: "Demo",
+      "Ikuspegi geografikoa osatzen ari gara. Arriskuaren arabera koloreztatutako cluster dinamikoak eta fitxetara sarbide azkarrak izango dituzu.",
+    badge: "Garapen fasean",
+    actions: [
+      { href: "/app/site/1", label: "Ikusi adibide-fitxa" },
+      { href: "/app/triage", label: "Arakatu triage" },
+    ],
+    features: [
+      {
+        title: "Arrisku koloreak",
+        description: "Puntuak berde, hori edo gorri ikusiko dituzu uneko PRIaren arabera.",
+      },
+      {
+        title: "Cluster adimentsua",
+        description: "Gerturatzean banatu egingo dira aztarnategi bakoitza erakusteko.",
+      },
+      {
+        title: "Xehetasun bizkorra",
+        description: "Alboko panel batek egoera azaldu eta gomendatutako ekintzak erakutsiko ditu.",
+      },
+    ],
   },
-} as const;
+};
 
 export default function SiteMap() {
   const { language } = useLanguage();
   const copy = COPY[language];
 
   return (
-    <div className="map-placeholder card glass hairline" style={{ padding: "24px", display: "grid", gap: "20px" }}>
+    <div className="map-placeholder card glass hairline" style={{ padding: "28px", display: "grid", gap: "24px" }}>
       <Badge tone="neutral">{copy.badge}</Badge>
-      <div style={{ display: "grid", gap: "12px" }}>
-        <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 600 }}>{copy.title}</h3>
-        <p style={{ margin: 0, color: "#475569", lineHeight: 1.6 }}>{copy.body}</p>
+      <div className="map-placeholder-header">
+        <h3>{copy.title}</h3>
+        <p>{copy.body}</p>
       </div>
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          borderRadius: "24px",
-          overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(79,70,229,0.15), rgba(14,116,144,0.15))",
-          minHeight: "220px",
-          display: "grid",
-          placeItems: "center",
-        }}
-      >
-        <Image
-          alt={language === "es" ? "Ilustración del mapa de ArchéoSense" : "ArchéoSense maparen ilustrazioa"}
-          height={240}
-          src="/images/landing-pri.svg"
-          width={480}
-          style={{ objectFit: "cover", width: "100%", height: "100%", opacity: 0.9 }}
-        />
+      <div className="map-placeholder-body">
+        <div className="map-placeholder-visual">
+          <Image
+            alt={language === "es" ? "Visual del mapa" : "Maparen irudia"}
+            height={320}
+            src="/images/landing-pri.svg"
+            width={520}
+          />
+        </div>
+        <ul className="map-placeholder-list">
+          {copy.features.map((feature) => (
+            <li key={feature.title}>
+              <h4>{feature.title}</h4>
+              <p>{feature.description}</p>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-        <Link className="btn btn-primary" href="/app/site/1">
-          {copy.ctaPrimary}
-        </Link>
-        <Link className="btn btn-ghost" href="/app">
-          {copy.ctaSecondary}
-        </Link>
+      <div className="map-placeholder-actions">
+        {copy.actions.map((action) => (
+          <Link className="btn" href={action.href} key={action.href}>
+            {action.label}
+          </Link>
+        ))}
       </div>
     </div>
   );
