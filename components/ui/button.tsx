@@ -1,3 +1,5 @@
+"use client";
+
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
 export type ButtonVariant = "primary" | "ghost" | "soft" | "icon";
