@@ -192,7 +192,7 @@ export default function SiteMap() {
       const clusterId = clusterFeature.properties?.cluster_id;
       if (!source || typeof clusterId !== "number") return;
       source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-        if (err) return;
+        if (err || typeof zoom !== "number") return;
         const coords =
           clusterFeature.geometry?.type === "Point"
             ? (clusterFeature.geometry.coordinates as [number, number])
