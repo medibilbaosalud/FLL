@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import { useLanguage } from "components/providers/language-context";
-import { Badge } from "components/ui/badge";
 import { FeatureCard } from "components/ui/feature-card";
 import { Icon } from "components/ui/icon";
 
@@ -11,64 +10,85 @@ const COPY = {
   es: {
     hero: {
       tag: "Espacio de trabajo",
-      title: "Tu control diario está casi listo",
+      title: "Tu centro diario para cuidar los yacimientos",
       description:
-        "Muy pronto abrirás un tablero vivo con KPI, alertas y accesos directos. Mientras tanto, te mostramos cómo se sentirá.",
+        "Estamos ultimando un panel calmado donde verás el índice PRI, tendencias y alertas sin ruido. Aquí tienes un anticipo de la experiencia.",
       primary: "Recorrido guiado",
       secondary: "Ver fichas demo",
-      tiles: [
+      highlights: [
         {
           icon: "spark" as const,
-          title: "Resumen al instante",
-          description: "Aquí aparecerá un mosaico respirable con PRI, tendencias y alertas clave.",
+          title: "Visión 360°",
+          description: "El tablero mostrará PRI, tendencia y confianza del dato en una sola mirada.",
         },
         {
           icon: "map" as const,
-          title: "Alertas explicadas",
-          description: "Cada tarjeta contará qué factor dispara el riesgo y la acción sugerida.",
+          title: "Mapa conectado",
+          description: "Accede a cada yacimiento sin perder el contexto ni el historial de alertas.",
         },
         {
           icon: "shield" as const,
-          title: "Protección activa",
-          description: "Las zonas sensibles llegarán ofuscadas y con registro de cambios.",
+          title: "Sitios protegidos",
+          description: "Las ubicaciones sensibles llegarán ofuscadas y con registro de cambios.",
         },
       ] as const,
+      preview: {
+        title: "Lo que tendrás a la vista",
+        metrics: [
+          { label: "Sitios monitorizados", value: "12" },
+          { label: "Alertas críticas", value: "3" },
+          { label: "Última sincronización", value: "Hace 12 min" },
+        ] as const,
+        note: "Mockup ilustrativo mientras conectamos los flujos de datos reales.",
+      },
     },
     map: {
-      badge: "Mapa en construcción",
-      title: "Así explorarás el territorio",
+      badge: "Mapa inmersivo en camino",
+      title: "Explora y prioriza sin prisas",
       description:
-        "Estamos diseñando un mapa táctil con clusters, filtros y panel lateral para entender cada sitio en segundos.",
-      note: "Mientras lo terminamos, puedes abrir los ejemplos y revisar la lista prioritaria.",
-      callouts: [
+        "En esta vista reunirás clusters suaves, leyenda viva y panel lateral explicativo para decidir qué hacer primero.",
+      features: [
         {
           icon: "map" as const,
-          title: "Clusters vivos",
-          description: "Colores por nivel de riesgo y zoom suave hasta cada yacimiento.",
+          title: "Clusters con calma",
+          description: "Agruparemos sitios por riesgo para moverte con fluidez entre regiones.",
+        },
+        {
+          icon: "search" as const,
+          title: "Búsqueda difusa",
+          description: "Encuentra un sitio por nombre, país o material aunque no recuerdes la ortografía exacta.",
         },
         {
           icon: "table" as const,
           title: "Panel lateral",
-          description: "Top drivers, tendencia y acciones sugeridas sin salir del mapa.",
+          description: "Top-drivers, tendencia y acciones sugeridas sin abandonar el mapa.",
         },
         {
-          icon: "search" as const,
-          title: "Filtros inteligentes",
-          description: "Búsqueda por nombre, país o material con coincidencia difusa.",
+          icon: "shield" as const,
+          title: "Modo sensible",
+          description: "Coordenadas suavizadas y zoom limitado para los yacimientos delicados.",
         },
       ] as const,
-      placeholderTitle: "Mapa interactivo en progreso",
-      placeholderDescription:
-        "Aquí verás MapLibre con datos locales, leyenda adaptable y controles de riesgo que reaccionan al instante.",
-      footerNote: "Mockup conceptual mientras integramos datos reales.",
+      placeholder: {
+        label: "Vista previa",
+        headline: "Aquí verás MapLibre con datos locales y leyenda adaptable",
+        body: "Podrás filtrar por país, nivel de riesgo o presión humana y guardar los focos que necesites vigilar.",
+        chips: [
+          "Zoom cinematográfico",
+          "Controles de riesgo en vivo",
+          "Panel lateral explicativo",
+          "Atajos a la ficha",
+        ] as const,
+        note: "Diseño conceptual mientras integramos el motor interactivo.",
+      },
       actions: [
-        { label: "Abrir ficha de ejemplo", href: "/app/site/1" },
-        { label: "Ver lista prioritaria", href: "/app/triage" },
+        { label: "Abrir ficha demo", href: "/app/site/1" },
+        { label: "Ver prioridades", href: "/app/triage" },
       ] as const,
     },
     modules: {
       title: "Lo que activaremos a continuación",
-      description: "Cada módulo aportará contexto distinto para decidir mejor en el día a día.",
+      description: "Cada módulo aportará un ángulo distinto para decidir mejor en el día a día.",
       items: [
         {
           icon: "table" as const,
@@ -111,76 +131,97 @@ const COPY = {
   eu: {
     hero: {
       tag: "Lan eremua",
-      title: "Zure eguneroko aginte-mahaia prest dagoenbidean",
+      title: "Zure eguneroko aginte-mahaia prest dago",
       description:
-        "Oso laster KPIak, alertak eta sarbide azkarrak izango dituen taula bizia zabalduko dugu. Bien bitartean, ikus nola sentituko den.",
+        "Panel lasai bat prestatzen ari gara, PRI indizea, joerak eta alertak ikus ditzazun zaratarik gabe. Hona hemen esperientziaren aurrerapen bat.",
       primary: "Bisita gidatua",
       secondary: "Ireki demo-fitxak",
-      tiles: [
+      highlights: [
         {
           icon: "spark" as const,
-          title: "Berehalako laburpena",
-          description: "Hemen agertuko da PRIa, joerak eta alertak modu arinean.",
+          title: "Ikuspegi osoa",
+          description: "Taulak PRIa, joera eta datuaren konfiantza erakutsiko ditu begirada bakarrean.",
         },
         {
           icon: "map" as const,
-          title: "Alertak ulertuta",
-          description: "Faktore eragilea eta gomendatutako ekintza hizkera lausoan azalduko dira.",
+          title: "Mapa konektatua",
+          description: "Gune bakoitzera sartuko zara testuingurua eta alerta historia galdu gabe.",
         },
         {
           icon: "shield" as const,
-          title: "Babes aktiboa",
-          description: "Gune sentikorrak ofuskatuta eta aldaketen erregistroarekin ikusiko dira.",
+          title: "Gune sentikorrak",
+          description: "Kokapen delikatuak ofuskatuta eta aldaketa-erregistroarekin iritsiko dira.",
         },
       ] as const,
+      preview: {
+        title: "Hasierako ikuspegia",
+        metrics: [
+          { label: "Gainbegiratutako guneak", value: "12" },
+          { label: "Alertak kritikoak", value: "3" },
+          { label: "Azken sinkronizazioa", value: "Duela 12 min" },
+        ] as const,
+        note: "Benetako datu-fluxuak konektatzen ditugun bitarteko maketa da.",
+      },
     },
     map: {
-      badge: "Mapa prestatzen",
-      title: "Honela arakatuko dugu lurraldea",
+      badge: "Mapa murgiltzailea bidean",
+      title: "Arakatu eta lehenetsi presarik gabe",
       description:
-        "MapLibre oinarritutako mapa eraikitzen ari gara, cluster dinamiko eta iragazki adimendunekin, gunea segundo batean ulertzeko.",
-      note: "Amaitzen dugun bitartean, ireki adibide-fitxak edo begiratu lehentasunen zerrenda.",
-      callouts: [
+        "Ikuspegi honetan cluster leunak, legenda bizia eta azalpen-panelek lagunduko dizute lehenetsi beharrekoa argitzen.",
+      features: [
         {
           icon: "map" as const,
-          title: "Cluster biziak",
-          description: "Arrisku mailaren arabera koloreztuta eta zoom leunarekin.",
+          title: "Cluster leunak",
+          description: "Arriskuaren arabera taldekatuko ditugu guneak eskualdez eskualde arinki mugitzeko.",
+        },
+        {
+          icon: "search" as const,
+          title: "Bilaketa lausoa",
+          description: "Izenaren, herrialdearen edo materialaren arabera aurkituko duzu gunea ortografia zehatza gabe ere.",
         },
         {
           icon: "table" as const,
           title: "Alboko panela",
-          description: "Top-driver, joera eta gomendioak mapatik irten gabe.",
+          description: "Top driver, joera eta gomendioak mapa utzi gabe ikusiko dituzu.",
         },
         {
-          icon: "search" as const,
-          title: "Iragazki adimentsuak",
-          description: "Izen, herrialde edo materialaren arabera bilaketa lausoarekin.",
+          icon: "shield" as const,
+          title: "Modu sentikorra",
+          description: "Kokapen arindua eta zoom murriztua gune delikatuentzat.",
         },
       ] as const,
-      placeholderTitle: "Mapa interaktiboa martxan jartzen",
-      placeholderDescription:
-        "Hemen ikusiko duzu MapLibre datu lokalekin, legenda moldagarriarekin eta arriskuen kontrol erreaktiboekin.",
-      footerNote: "Kontzeptu-irudia datu errealak gehitu bitartean.",
+      placeholder: {
+        label: "Aurrebista",
+        headline: "Hemen ikusiko duzu MapLibre datu lokal eta legenda moldakorrarekin",
+        body: "Herrialde, arrisku maila edo presio humanoaren arabera iragaziko duzu eta zaindu beharreko fokuen zerrenda gordeko duzu.",
+        chips: [
+          "Zoom zinematikoa",
+          "Arrisku-kontrolak bizirik",
+          "Alboko azalpen-panela",
+          "Fitxara bide zuzena",
+        ] as const,
+        note: "Motorraren garapena amaitu bitarteko diseinu kontzeptuala.",
+      },
       actions: [
-        { label: "Ireki adibide-fitxa", href: "/app/site/1" },
-        { label: "Ikusi lehentasunen zerrenda", href: "/app/triage" },
+        { label: "Ireki demo-fitxa", href: "/app/site/1" },
+        { label: "Ikusi lehentasunak", href: "/app/triage" },
       ] as const,
     },
     modules: {
       title: "Hurrengo aktibazioak",
-      description: "Modulu bakoitzak erabaki hobeak hartzeko testuinguru desberdina eskainiko du.",
+      description: "Modulu bakoitzak testuinguru desberdina ekarriko du erabaki hobeak hartzeko.",
       items: [
         {
           icon: "table" as const,
           title: "Triage",
-          description: "Arrisku eta presioaren arabera ordenatutako taula, ikuskapenak planifikatzeko.",
+          description: "Arrisku eta presioaren arabera ordenatutako zerrenda ikuskapenak antolatzeko.",
           bullets: ["Iragazki konbinatuak", "CSV esportazioa"] as const,
           badge: "Laster",
         },
         {
           icon: "flask" as const,
           title: "Eszenario laborategia",
-          description: "Euri bortitza, bisita gailurra edo obrak simulatu ahal izango dituzu.",
+          description: "Euri bortitza, bisitari gailurra edo obrak simulatu eta aurrea hartu.",
           bullets: ["Slider errazak", "Gordetze lokala"] as const,
           badge: "Prototipoan",
         },
@@ -197,13 +238,13 @@ const COPY = {
       title: "Zure ibilbidea ArchéoSense-n",
       items: [
         { title: "Behatu", description: "Panelera iritsi eta zer aldatu den ikusiko duzu." },
-        { title: "Aztertu", description: "Fitxa ireki, faktore kritikoak eta plana ikusiko dituzu." },
+        { title: "Aztertu", description: "Fitxa ireki eta faktore kritikoak eta plana ikusiko dituzu." },
         { title: "Ekin", description: "Ekintzak esleitu, eszenarioak gorde eta txostenak sortu." },
       ] as const,
     },
     closing: {
       title: "Lagundu nahi diguzu?",
-      description: "Demo ikuspegiak arakatu eta esan zer beharko zenuketen taldean lehentasunak argitzeko.",
+      description: "Demo ikuspegiak arakatu eta esan zer behar duzu taldean lehentasunak argitzeko.",
       primary: "Moduluak arakatu",
       secondary: "Bidali iritzia",
     },
@@ -215,15 +256,25 @@ export function DashboardClient() {
   const copy = COPY[language];
 
   return (
-    <div className="flex flex-col gap-14">
-      <section className="relative overflow-hidden glass hairline soft rounded-3xl p-10">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-200/40 via-white/30 to-transparent" />
-        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-          <div className="space-y-5">
-            <Badge tone="neutral">{copy.hero.tag}</Badge>
-            <h1 className="text-3xl font-semibold leading-tight lg:text-4xl">{copy.hero.title}</h1>
-            <p className="text-base text-slate-600 lg:text-lg">{copy.hero.description}</p>
-            <div className="flex flex-wrap gap-3 pt-2">
+    <div className="space-y-20 px-4 pb-24 pt-10 md:px-10">
+      <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_40px_90px_-50px_rgba(15,23,42,0.9)]">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 -right-20 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-24 -left-14 h-64 w-64 rounded-full bg-indigo-500/30 blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.18),transparent_55%)]" />
+        </div>
+        <div className="relative grid gap-12 p-8 md:p-12 md:grid-cols-[1.05fr_0.95fr] md:items-center">
+          <div className="space-y-8">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white/80 backdrop-blur">
+              {copy.hero.tag}
+            </span>
+            <div className="space-y-5">
+              <h1 className="text-3xl font-semibold leading-tight text-white md:text-4xl">
+                {copy.hero.title}
+              </h1>
+              <p className="max-w-xl text-base text-white/70 md:text-lg">{copy.hero.description}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
               <Link className="btn btn-primary" href="#mapa">
                 {copy.hero.primary}
               </Link>
@@ -231,39 +282,83 @@ export function DashboardClient() {
                 {copy.hero.secondary}
               </Link>
             </div>
-          </div>
-          <div className="grid gap-4">
-            {copy.hero.tiles.map((tile) => (
-              <div
-                className="group rounded-2xl border border-white/70 bg-white/80 p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-card"
-                key={tile.title}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-inner">
-                    <Icon className="h-5 w-5" name={tile.icon} />
-                  </span>
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-900">{tile.title}</p>
-                    <p className="text-xs text-slate-600">{tile.description}</p>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {copy.hero.highlights.map((item) => (
+                <div
+                  className="group rounded-2xl bg-white/8 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] backdrop-blur transition duration-300 hover:bg-white/12"
+                  key={item.title}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">
+                      <Icon className="h-4 w-4" name={item.icon} />
+                    </span>
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-white">{item.title}</p>
+                      <p className="text-xs text-white/70">{item.description}</p>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
+          <div className="relative">
+            <div className="relative rounded-[32px] bg-white/8 p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] backdrop-blur-xl">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-medium text-white/80">{copy.hero.preview.title}</p>
+                <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/70">
+                  ArchéoSense
+                </span>
               </div>
-            ))}
+              <div className="mt-6 grid gap-4">
+                {copy.hero.preview.metrics.map((metric) => (
+                  <div
+                    className="rounded-2xl bg-white/10 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                    key={metric.label}
+                  >
+                    <p className="text-xs uppercase tracking-[0.24em] text-white/60">{metric.label}</p>
+                    <p className="mt-3 text-2xl font-semibold text-white">{metric.value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-6 text-xs text-white/60">{copy.hero.preview.note}</p>
+            </div>
           </div>
         </div>
       </section>
 
       <section
-        className="relative overflow-hidden glass hairline rounded-3xl bg-gradient-to-br from-white/75 via-white to-indigo-50 p-8 md:p-10"
+        className="relative overflow-hidden rounded-[36px] bg-white/80 p-8 shadow-card backdrop-blur md:p-12"
         id="mapa"
       >
-        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
-          <div className="space-y-5">
-            <Badge tone="neutral">{copy.map.badge}</Badge>
-            <h2 className="text-2xl font-semibold lg:text-3xl">{copy.map.title}</h2>
-            <p className="text-base text-slate-600 lg:text-lg">{copy.map.description}</p>
-            <p className="text-sm text-slate-500">{copy.map.note}</p>
-            <div className="flex flex-wrap gap-3 pt-2">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.18),transparent_60%)]" />
+        <div className="relative grid gap-12 md:grid-cols-[1.05fr_0.95fr] md:items-center">
+          <div className="space-y-6">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-slate-900/5 px-4 py-2 text-sm font-medium text-slate-600">
+              {copy.map.badge}
+            </span>
+            <div className="space-y-4">
+              <h2 className="text-3xl font-semibold text-slate-900 md:text-4xl">{copy.map.title}</h2>
+              <p className="max-w-2xl text-base text-slate-600 md:text-lg">{copy.map.description}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {copy.map.features.map((feature) => (
+                <div
+                  className="rounded-2xl border border-slate-200/60 bg-white/80 p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-card"
+                  key={feature.title}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900/5 text-slate-900">
+                      <Icon className="h-4 w-4" name={feature.icon} />
+                    </span>
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-slate-900">{feature.title}</p>
+                      <p className="text-xs text-slate-600">{feature.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3">
               {copy.map.actions.map((action) => (
                 <Link className="btn btn-soft" href={action.href} key={action.href}>
                   {action.label}
@@ -271,45 +366,39 @@ export function DashboardClient() {
               ))}
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-[28px] bg-slate-900 text-white shadow-card">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-slate-900 to-slate-900" />
-            <div className="relative space-y-5 p-8">
-              <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/60">
-                  {copy.map.placeholderTitle}
-                </p>
-                <p className="mt-3 text-sm text-white/80 lg:text-base">{copy.map.placeholderDescription}</p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {copy.map.callouts.map((item) => (
-                  <div
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 transition duration-300 hover:border-white/20"
-                    key={item.title}
+          <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-indigo-500 via-indigo-600 to-slate-900 text-white shadow-[0_40px_70px_-45px_rgba(30,64,175,0.65)]">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-20 -right-24 h-56 w-56 rounded-full bg-white/20 blur-3xl" />
+              <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-slate-900/40 blur-3xl" />
+            </div>
+            <div className="relative space-y-6 p-8 md:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">{copy.map.placeholder.label}</p>
+              <h3 className="text-2xl font-semibold leading-tight text-white md:text-3xl">
+                {copy.map.placeholder.headline}
+              </h3>
+              <p className="text-sm text-white/75 md:text-base">{copy.map.placeholder.body}</p>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {copy.map.placeholder.chips.map((chip) => (
+                  <li
+                    className="rounded-2xl bg-white/10 px-4 py-3 text-sm text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]"
+                    key={chip}
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">
-                        <Icon className="h-4 w-4" name={item.icon} />
-                      </span>
-                      <div className="space-y-1">
-                        <p className="text-sm font-semibold text-white">{item.title}</p>
-                        <p className="text-xs text-white/70">{item.description}</p>
-                      </div>
-                    </div>
-                  </div>
+                    {chip}
+                  </li>
                 ))}
+              </ul>
+              <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs text-white/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]">
+                {copy.map.placeholder.note}
               </div>
-              <p className="text-xs text-white/60">{copy.map.footerNote}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="glass hairline rounded-3xl p-8 md:p-10">
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold lg:text-3xl">{copy.modules.title}</h2>
-            <p className="text-base text-slate-600">{copy.modules.description}</p>
-          </div>
+      <section className="glass hairline rounded-[32px] p-8 md:p-12">
+        <div className="mb-8 space-y-4">
+          <h2 className="text-3xl font-semibold text-slate-900 md:text-4xl">{copy.modules.title}</h2>
+          <p className="max-w-2xl text-base text-slate-600 md:text-lg">{copy.modules.description}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {copy.modules.items.map((item) => (
@@ -325,21 +414,21 @@ export function DashboardClient() {
         </div>
       </section>
 
-      <section className="glass hairline rounded-3xl p-8 md:p-10">
-        <h2 className="text-2xl font-semibold lg:text-3xl">{copy.steps.title}</h2>
-        <div className="mt-6 grid gap-5 md:grid-cols-3">
+      <section className="glass hairline rounded-[32px] p-8 md:p-12">
+        <h2 className="text-3xl font-semibold text-slate-900 md:text-4xl">{copy.steps.title}</h2>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
           {copy.steps.items.map((item) => (
-            <div className="rounded-2xl border border-white/60 bg-white/70 p-6 shadow-soft" key={item.title}>
-              <h3 className="text-lg font-semibold">{item.title}</h3>
+            <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-6 shadow-soft" key={item.title}>
+              <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
               <p className="mt-2 text-sm text-slate-600">{item.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="glass hairline rounded-3xl bg-slate-900/95 p-10 text-white">
-        <h2 className="text-2xl font-semibold lg:text-3xl">{copy.closing.title}</h2>
-        <p className="mt-3 max-w-2xl text-sm text-slate-200 lg:text-base">{copy.closing.description}</p>
+      <section className="rounded-[32px] bg-slate-950 p-10 text-white shadow-[0_40px_80px_-45px_rgba(15,23,42,0.9)] md:p-12">
+        <h2 className="text-3xl font-semibold md:text-4xl">{copy.closing.title}</h2>
+        <p className="mt-4 max-w-2xl text-sm text-white/70 md:text-base">{copy.closing.description}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link className="btn btn-primary" href="/app/triage">
             {copy.closing.primary}
