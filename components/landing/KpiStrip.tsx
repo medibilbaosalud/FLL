@@ -1,5 +1,9 @@
+import { Map, AlertTriangle, Clock, Globe2 } from "lucide-react";
+
 import { LanguageText } from "./LanguageText";
 import type { LocalizedString } from "lib/landing";
+
+const icons = [Map, AlertTriangle, Clock, Globe2];
 
 type KpiItem = {
   value: LocalizedString;
@@ -12,23 +16,25 @@ type KpiStripProps = {
 
 export default function KpiStrip({ items }: KpiStripProps) {
   return (
-    <section className="py-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <article
-            key={item.label.es}
-            className="glass rounded-3xl border border-white/60 px-6 py-6 shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
-          >
-            <dl>
-              <LanguageText value={item.label} as="dt" className="text-sm text-slate-500" />
-              <LanguageText
-                value={item.value}
-                as="dd"
-                className="mt-2 text-3xl font-semibold tracking-tight text-slate-900"
-              />
-            </dl>
-          </article>
-        ))}
+    <section aria-labelledby="status-strip" className="landing-container section-spacing">
+      <h2 id="status-strip" className="sr-only">
+        Estado general
+      </h2>
+      <div className="hero-stats" role="list">
+        {items.slice(0, 4).map((item, index) => {
+          const Icon = icons[index] ?? Map;
+          return (
+            <article key={item.label.es} className="stat-card" role="listitem">
+              <span className="stat-label">
+                <span className="stat-icon" aria-hidden>
+                  <Icon size={18} />
+                </span>
+                <LanguageText value={item.label} />
+              </span>
+              <LanguageText value={item.value} as="p" className="stat-value" />
+            </article>
+          );
+        })}
       </div>
     </section>
   );

@@ -1,3 +1,5 @@
+import { FileDown, RadioReceiver, Satellite, SlidersHorizontal } from "lucide-react";
+
 import { LanguageText } from "./LanguageText";
 import type { LocalizedString } from "lib/landing";
 
@@ -6,19 +8,25 @@ type RoadmapProps = {
   items: LocalizedString[];
 };
 
+const timelineIcons = [Satellite, SlidersHorizontal, FileDown, RadioReceiver];
+
 export default function Roadmap({ title, items }: RoadmapProps) {
   return (
-    <section className="py-16">
-      <header className="max-w-2xl space-y-3">
-        <LanguageText value={title} as="h2" className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl" />
-      </header>
-      <div className="mt-10 space-y-6 border-l border-slate-200 pl-6">
-        {items.map((item) => (
-          <article key={item.es} className="relative pl-6">
-            <span className="absolute -left-9 top-1.5 h-3 w-3 rounded-full bg-slate-900" aria-hidden />
-            <LanguageText value={item} as="p" className="text-base text-slate-600" />
-          </article>
-        ))}
+    <section aria-labelledby="roadmap" className="landing-container roadmap-section section-spacing">
+      <LanguageText value={title} as="h2" className="vision-heading" id="roadmap" />
+      <div className="roadmap-list">
+        {items.map((item, index) => {
+          const Icon = timelineIcons[index] ?? Satellite;
+          return (
+            <article key={item.es} className="roadmap-item">
+              <span className="roadmap-dot" aria-hidden />
+              <span className="stat-icon" aria-hidden>
+                <Icon size={18} />
+              </span>
+              <LanguageText value={item} as="p" className="roadmap-text" />
+            </article>
+          );
+        })}
       </div>
     </section>
   );
