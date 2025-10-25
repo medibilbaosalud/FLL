@@ -9,8 +9,10 @@ export const metadata = {
 // Oinarrizko layout-ak hizkuntza eta estilo globalak ezartzen ditu.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="eu">
-      <body style={{ background: "#0F241F", color: "#F6FDF9", minHeight: "100vh", margin: 0 }}>{children}</body>
+    <html lang="eu" className="h-full">
+      <body className="min-h-full bg-slate-50 text-slate-900 antialiased">
+        {children}
+      </body>
     </html>
   );
 }

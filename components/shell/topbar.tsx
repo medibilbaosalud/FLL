@@ -12,19 +12,20 @@ export interface TopbarProps {
 export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps) {
   const [search, setSearch] = useState("");
   const [language, setLanguage] = useState("eu");
+  const storageKey = "lang";
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? window.localStorage.getItem("archeosense-lang") : null;
+    const stored = typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null;
     if (stored) {
       setLanguage(stored);
     }
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem("archeosense-lang", language);
+      window.localStorage.setItem(storageKey, language);
     }
-  }, [language]);
+  }, [language, storageKey]);
 
   return (
     <header className="app-topbar">
@@ -39,20 +40,16 @@ export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps
         </button>
         <button
           aria-label={collapsed ? "Zabaldu albo-barra" : "Tolestu albo-barra"}
+          className="topbar-toggle"
           onClick={onToggleSidebar}
-          style={{
-            background: "rgba(255,255,255,0.08)",
-            border: "none",
-            borderRadius: "12px",
-            padding: "8px 12px",
-            color: "inherit",
-            cursor: "pointer",
-          }}
           type="button"
         >
-          <Icon name="chevron" style={{ width: 18, height: 18, transform: collapsed ? "rotate(180deg)" : "rotate(0deg)" }} />
+          <Icon
+            name="chevron"
+            style={{ width: 18, height: 18, transform: collapsed ? "rotate(180deg)" : "rotate(0deg)" }}
+          />
         </button>
-        <span style={{ fontWeight: 600, letterSpacing: "0.04em" }}>ArchéoSense</span>
+        <span className="topbar-title">ArchéoSense</span>
       </div>
       <div className="topbar-group">
         <label className="topbar-search">

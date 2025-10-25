@@ -9,6 +9,7 @@ interface SidebarLink {
   href: string;
   label: string;
   icon: IconName;
+  match?: (pathname: string) => boolean;
 }
 
 export interface SidebarProps {
@@ -19,8 +20,8 @@ export interface SidebarProps {
 }
 
 const LINKS: SidebarLink[] = [
-  { href: "/app", label: "Hasiera", icon: "home" },
-  { href: "/app/site/1", label: "Mapa", icon: "map" },
+  { href: "/app", label: "Hasiera", icon: "home", match: (path) => path === "/app" },
+  { href: "/app/site/1", label: "Mapa", icon: "map", match: (path) => path.startsWith("/app/site") },
   { href: "/app/triage", label: "Triage", icon: "table" },
   { href: "/app/scenario", label: "Eszenarioak", icon: "flask" },
   { href: "/app/reports", label: "Txostenak", icon: "report" },
@@ -61,7 +62,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile }: Side
       </div>
       <nav className="nav-list">
         {LINKS.map((link) => {
-          const active = pathname === link.href || (link.href !== "/app" && pathname.startsWith(link.href));
+          const active = link.match
+            ? link.match(pathname)
+            : pathname === link.href || (link.href !== "/app" && pathname.startsWith(link.href));
           return (
             <Link
               aria-label={link.label}

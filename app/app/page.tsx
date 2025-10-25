@@ -3,10 +3,10 @@ import { Section } from "components/ui/section";
 import { Skeleton } from "components/ui/skeleton";
 
 const KPI_DATA = [
-  { title: "Guneak", value: "28", hint: "+3 aste honetan" },
+  { title: "Guneak", value: "42", hint: "+3 aste honetan" },
   { title: "Arrisku altua", value: "7", hint: "3 ↗ alerta" },
-  { title: "Alerta aktiboak", value: "12", hint: "Azken 48 orduak" },
-  { title: "Eguneraketak", value: "5", hint: "Lan taldearen jarduera" },
+  { title: "Alerta aktiboak", value: "3", hint: "Azken 48 orduak" },
+  { title: "Azken eguneraketa", value: "Duela 2h", hint: "Lan taldearen jarduera" },
 ];
 
 const ALERTS = [
@@ -19,7 +19,7 @@ const ALERTS = [
 
 export default function AppHome() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+    <div className="dashboard-stack">
       <Section desc="Egungo egoeraren laburpena eta erantzun azkarra" title="Hasiera-panela">
         <div className="kpi-grid">
           {KPI_DATA.map((item) => (
@@ -30,8 +30,8 @@ export default function AppHome() {
       <div className="dashboard-grid">
         <Section desc="Mapa interaktiboa laster egongo da erabilgarri" title="Mapa operatiboa">
           <div className="map-placeholder" role="presentation">
-            <div style={{ width: "100%", height: "100%" }}>
-              <Skeleton className="map-skeleton" style={{ width: "100%", height: "100%" }} />
+            <div className="map-shell">
+              <Skeleton className="map-skeleton" />
               <p style={{ marginTop: "16px" }}>Mapa prest egongo da demoaren hurrengo fasean.</p>
             </div>
           </div>
