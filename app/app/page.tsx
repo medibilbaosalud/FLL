@@ -1,6 +1,15 @@
+import dynamic from "next/dynamic";
+import { Badge } from "components/ui/badge";
+import { Button } from "components/ui/button";
 import { KpiCard } from "components/ui/kpi-card";
 import { Section } from "components/ui/section";
 import { Skeleton } from "components/ui/skeleton";
+import { MapControls } from "components/map/controls";
+
+const SiteMap = dynamic(() => import("components/map/site-map"), {
+  ssr: false,
+  loading: () => <Skeleton style={{ height: 420, width: "100%" }} />,
+});
 
 const KPI_DATA = [
   { title: "Guneak", value: "42", hint: "+3 aste honetan" },
@@ -20,7 +29,11 @@ const ALERTS = [
 export default function AppHome() {
   return (
     <div className="dashboard-stack">
-      <Section desc="Egungo egoeraren laburpena eta erantzun azkarra" title="Hasiera-panela">
+      <Section
+        actions={<Badge tone="neutral">Demo fasea</Badge>}
+        desc="Egungo egoeraren laburpena eta erantzun azkarra"
+        title="Hasiera-panela"
+      >
         <div className="kpi-grid">
           {KPI_DATA.map((item) => (
             <KpiCard hint={item.hint} key={item.title} title={item.title} value={item.value} />
@@ -28,11 +41,23 @@ export default function AppHome() {
         </div>
       </Section>
       <div className="dashboard-grid">
-        <Section desc="Mapa interaktiboa laster egongo da erabilgarri" title="Mapa operatiboa">
-          <div className="map-placeholder" role="presentation">
-            <div className="map-shell">
-              <Skeleton className="map-skeleton" />
-              <p style={{ marginTop: "16px" }}>Mapa prest egongo da demoaren hurrengo fasean.</p>
+        <Section
+          actions={
+            <Button onClick={() => console.log("[txostenak] esportatu egoera")} type="button" variant="ghost">
+              Esportatu egoera
+            </Button>
+          }
+          desc="Mapa interaktiboa eta arrisku iragazkiak"
+          id="mapa"
+          title="Mapa operatiboa"
+        >
+          <div className="map-layout">
+            <div className="section-card glass hairline" style={{ padding: "20px" }}>
+              <h3 style={{ margin: "0 0 12px", fontSize: "1rem", fontWeight: 600 }}>Kontrolak</h3>
+              <MapControls />
+            </div>
+            <div className="map-panel">
+              <SiteMap />
             </div>
           </div>
         </Section>

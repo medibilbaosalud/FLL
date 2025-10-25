@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "components/ui/button";
 import { Icon } from "components/ui/icon";
+import { Input } from "components/ui/input";
 
 export interface TopbarProps {
   onMobileMenu: () => void;
@@ -27,35 +29,42 @@ export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps
     }
   }, [language, storageKey]);
 
+  const chevronStyle = {
+    width: 18,
+    height: 18,
+    transform: collapsed ? "rotate(180deg)" : "rotate(0deg)",
+    transition: "transform 0.3s ease",
+  } as const;
+
   return (
-    <header className="app-topbar">
+    <header className="app-topbar glass hairline soft">
       <div className="topbar-group">
-        <button
+        <Button
           aria-label="Ireki nabigazioa"
           className="mobile-menu-button"
           onClick={onMobileMenu}
           type="button"
+          variant="icon"
         >
           <Icon name="menu" style={{ width: 22, height: 22 }} />
-        </button>
-        <button
+        </Button>
+        <Button
           aria-label={collapsed ? "Zabaldu albo-barra" : "Tolestu albo-barra"}
           className="topbar-toggle"
           onClick={onToggleSidebar}
           type="button"
+          variant="icon"
         >
-          <Icon
-            name="chevron"
-            style={{ width: 18, height: 18, transform: collapsed ? "rotate(180deg)" : "rotate(0deg)" }}
-          />
-        </button>
+          <Icon name="chevron" style={chevronStyle} />
+        </Button>
         <span className="topbar-title">ArchéoSense</span>
       </div>
       <div className="topbar-group">
-        <label className="topbar-search">
+        <label className="topbar-search" htmlFor="dashboard-search">
           <Icon name="search" style={{ width: 18, height: 18 }} />
-          <input
+          <Input
             aria-label="Bilatu guneak"
+            id="dashboard-search"
             onChange={(event) => {
               setSearch(event.target.value);
               console.log("[bilaketa]", event.target.value);

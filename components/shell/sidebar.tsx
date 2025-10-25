@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Icon, type IconName } from "components/ui/icon";
 
 interface SidebarLink {
   href: string;
   label: string;
   icon: IconName;
-  match?: (pathname: string) => boolean;
+  match?: (pathname: string, hash: string) => boolean;
 }
 
 export interface SidebarProps {
@@ -21,7 +21,7 @@ export interface SidebarProps {
 
 const LINKS: SidebarLink[] = [
   { href: "/app", label: "Hasiera", icon: "home", match: (path) => path === "/app" },
-  { href: "/app/site/1", label: "Mapa", icon: "map", match: (path) => path.startsWith("/app/site") },
+  { href: "/app#mapa", label: "Mapa", icon: "map", match: (path, hash) => path === "/app" && hash === "#mapa" },
   { href: "/app/triage", label: "Triage", icon: "table" },
   { href: "/app/scenario", label: "Eszenarioak", icon: "flask" },
   { href: "/app/reports", label: "Txostenak", icon: "report" },
@@ -30,6 +30,17 @@ const LINKS: SidebarLink[] = [
 
 export function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
+  const [hash, setHash] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) {
@@ -44,13 +55,21 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile }: Side
     return () => window.removeEventListener("keydown", handleKey);
   }, [mobileOpen, onCloseMobile]);
 
+  const className = [
+    "app-sidebar",
+    "glass",
+    "hairline",
+    "soft",
+    collapsed ? "collapsed" : "",
+    mobileOpen ? "open" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <aside
-      aria-label="Aplikazioaren nabigazioa"
-      className={`app-sidebar ${collapsed ? "collapsed" : ""} ${mobileOpen ? "open" : ""}`.trim()}
-      role="navigation"
-    >
+    <aside aria-label="Aplikazioaren nabigazioa" className={className} role="navigation">
       <div className="sidebar-header">
+        {!collapsed ? <span className="brand">ArchéoSense</span> : <span className="sr-only">ArchéoSense</span>}
         <button
           aria-label={collapsed ? "Zabaldu albo-barra" : "Tolestu albo-barra"}
           className="sidebar-toggle"
@@ -63,7 +82,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile }: Side
       <nav className="nav-list">
         {LINKS.map((link) => {
           const active = link.match
-            ? link.match(pathname)
+            ? link.match(pathname, hash)
             : pathname === link.href || (link.href !== "/app" && pathname.startsWith(link.href));
           return (
             <Link

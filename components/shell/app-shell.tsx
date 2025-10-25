@@ -44,8 +44,12 @@ export default function AppShell({ children }: AppShellProps) {
     return () => document.body.classList.remove("no-scroll");
   }, [mobileOpen]);
 
+  const className = ["app-shell", collapsed ? "is-collapsed" : "", mobileOpen ? "mobile-open" : ""]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`app-shell ${collapsed ? "is-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`.trim()}>
+    <div className={className}>
       {mobileOpen ? (
         <button
           aria-label="Itxi nabigazioa"

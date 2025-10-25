@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "1",
+        "name": "Itsaslabarrak",
+        "risk": 78,
+        "biome": "Kostaldea",
+        "description": "Itsasgora bortitzek eta haizeak higatzen duten aztarnategia."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.933, 43.262]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "2",
+        "name": "Ibarreko santutegia",
+        "risk": 54,
+        "biome": "Ibarbidea",
+        "description": "Ibaiertzeko hezetasun aldaketek eragindako deformazioak."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.67, 42.85]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "3",
+        "name": "Basoko trikuharria",
+        "risk": 32,
+        "biome": "Basoa",
+        "description": "Oihaneko lur hezetasunaren gorabeheren menpeko egitura."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.98, 43.06]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "4",
+        "name": "Harrizko gaztelua",
+        "risk": 65,
+        "biome": "Hirigunea",
+        "description": "Bisita masiboek eta bibrazioek eragindako higadura."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.64, 42.82]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "5",
+        "name": "Duna sakratua",
+        "risk": 25,
+        "biome": "Basamortua",
+        "description": "Haizea eta turistak tarteko, egonkortasun zaurgarria du."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.11, 31.08]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "6",
+        "name": "Gailurreko santutegia",
+        "risk": 88,
+        "biome": "Mendia",
+        "description": "Elur urtzea eta lur-jausi arrisku bizia."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.28, 45.94]
+      }
+    }
+  ]
+}
