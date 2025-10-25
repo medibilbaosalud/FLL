@@ -8,7 +8,7 @@ export interface FeatureCardProps {
   icon: IconName;
   title: string;
   description: string;
-  bullets?: string[];
+  bullets?: readonly string[];
   badge?: ReactNode;
 }
 
