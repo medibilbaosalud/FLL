@@ -1,6 +1,5 @@
 "use client";
 
-import dynamicImport from "next/dynamic";
 import { useCallback } from "react";
 
 import { useLanguage } from "components/providers/language-context";
@@ -8,13 +7,8 @@ import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { KpiCard } from "components/ui/kpi-card";
 import { Section } from "components/ui/section";
-import { Skeleton } from "components/ui/skeleton";
 import { MapControls } from "components/map/controls";
-
-const SiteMap = dynamicImport(() => import("components/map/site-map"), {
-  ssr: false,
-  loading: () => <Skeleton style={{ height: 420, width: "100%" }} />,
-});
+import SiteMap from "components/map/site-map";
 
 const COPY = {
   es: {

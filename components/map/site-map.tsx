@@ -1,623 +1,69 @@
 "use client";
 
-import "maplibre-gl/dist/maplibre-gl.css";
-
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import type {
-  GeoJSONSource,
-  Map as MapLibreMap,
-  MapGeoJSONFeature,
-  MapLayerMouseEvent,
-  StyleSpecification,
-} from "maplibre-gl";
 
 import { useLanguage } from "components/providers/language-context";
 import { Badge } from "components/ui/badge";
-import { Button } from "components/ui/button";
-import { Sheet } from "components/ui/sheet";
-import { useRiskStore } from "hooks/use-risk-store";
 
-interface SiteProperties {
-  id: string;
-  name: string;
-  risk?: number;
-  biome?: string;
-  description?: string;
-}
-
-interface TooltipState {
-  x: number;
-  y: number;
-  name: string;
-  risk: number;
-}
-
-type MinimalFeature = {
-  type: "Feature";
-  properties: Record<string, unknown>;
-  geometry: { type: "Point"; coordinates: [number, number] };
-};
-
-type MinimalFeatureCollection = {
-  type: "FeatureCollection";
-  features: MinimalFeature[];
-};
-
-const FALLBACK_GEOJSON: MinimalFeatureCollection = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      properties: {
-        id: "1",
-        name: "Itsaslabarrak",
-        risk: 78,
-        biome: "Kostaldea",
-        description: "Kostaldeko aztarnategi nagusia; ekaitzek higadura bizia eragiten dute.",
-      },
-      geometry: { type: "Point", coordinates: [-2.919, 43.257] },
-    },
-    {
-      type: "Feature",
-      properties: {
-        id: "2",
-        name: "Ibaiertzeko herrixka",
-        risk: 54,
-        biome: "Ibarbidea",
-        description: "Ibarbidean kokatutako herrixka erromatarra, uholdeak arrisku nagusia dira.",
-      },
-      geometry: { type: "Point", coordinates: [-1.92, 42.31] },
-    },
-    {
-      type: "Feature",
-      properties: {
-        id: "3",
-        name: "Basoko santutegia",
-        risk: 32,
-        biome: "Basoa",
-        description: "Basoko santutegi megalitikoak hezetasun aldaketekiko sentikortasuna du.",
-      },
-      geometry: { type: "Point", coordinates: [-2.45, 43.08] },
-    },
-    {
-      type: "Feature",
-      properties: {
-        id: "4",
-        name: "Dunetako aztarnategia",
-        risk: 61,
-        biome: "Duna",
-        description: "Harea duna trantsizioan dagoen aztarnategia, haize eta turismo presioarekin.",
-      },
-      geometry: { type: "Point", coordinates: [-3.02, 43.41] },
-    },
-    {
-      type: "Feature",
-      properties: {
-        id: "5",
-        name: "Hiri azpiko galeriak",
-        risk: 71,
-        biome: "Hirigunea",
-        description: "Hiri erdialdeko aztarnategi subterraneoa bibrazio mekanikoen eraginpean.",
-      },
-      geometry: { type: "Point", coordinates: [-1.98, 43.32] },
-    },
-    {
-      type: "Feature",
-      properties: {
-        id: "6",
-        name: "Gailurreko santutegia",
-        risk: 88,
-        biome: "Mendia",
-        description: "Elur urtzea eta lur-jausi arrisku bizia.",
-      },
-      geometry: { type: "Point", coordinates: [7.28, 45.94] },
-    },
-  ],
-};
-
-const SITE_TRANSLATIONS = {
+const COPY = {
   es: {
-    "1": { name: "Acantilados", biome: "Costa", description: "Erosión acelerada por temporales y oleaje." },
-    "2": { name: "Poblado ribereño", biome: "Ribera", description: "Inundaciones periódicas afectan a estructuras romanas." },
-    "3": { name: "Santuario del bosque", biome: "Bosque", description: "La humedad variable compromete las losas megalíticas." },
-    "4": { name: "Yacimiento dunar", biome: "Duna", description: "Viento y turismo generan presión constante sobre el sitio." },
-    "5": { name: "Galerías subterráneas", biome: "Urbano", description: "Vibraciones urbanas y tráfico amenazan la estabilidad." },
-    "6": { name: "Santuario de cumbre", biome: "Montaña", description: "Deshielo y desprendimientos suponen el principal riesgo." },
+    title: "Mapa interactivo (en preparación)",
+    body:
+      "Aquí verás el mapa vivo con colores por riesgo, clusters y búsqueda inmediata. Estamos afinando los datos demo para que funcione con fluidez.",
+    ctaPrimary: "Ver ficha de muestra",
+    ctaSecondary: "Volver a inicio",
+    badge: "Demostración",
   },
   eu: {
-    "1": { name: "Itsaslabarrak", biome: "Kostaldea", description: "Ekaitzek eta olatuek higadura bizia eragiten dute." },
-    "2": { name: "Ibaiertzeko herrixka", biome: "Ibarbidea", description: "Uholdeek egitura erromatarrak arriskuan jartzen dituzte." },
-    "3": { name: "Basoko santutegia", biome: "Basoa", description: "Hezetasun aldaketek trikuharriari eragiten diote." },
-    "4": { name: "Dunetako aztarnategia", biome: "Duna", description: "Haizeak eta turismoak egonkortasuna kolokan jartzen dute." },
-    "5": { name: "Hiri azpiko galeriak", biome: "Hirigunea", description: "Bibrazio mekanikoek egitura arriskuan uzten dute." },
-    "6": { name: "Gailurreko santutegia", biome: "Mendia", description: "Elur urtzeak eta lur-jausiek mehatxu zuzena sortzen dute." },
+    title: "Mapa interaktiboa (laster)",
+    body:
+      "Hemen ikusiko duzu arriskuaren arabera koloreztatutako mapa, cluster dinamikoekin eta bilaketa berehalakoarekin. Demo datuak fintzen ari gara ondo funtziona dezan.",
+    ctaPrimary: "Ikusi adibide-fitxa",
+    ctaSecondary: "Hasierara itzuli",
+    badge: "Demo",
   },
 } as const;
-
-const TEXT = {
-  es: {
-    mapLabel: "Mapa de riesgo interactivo",
-    controlsTitle: "Controles",
-    badgePrefix: "Nivel de riesgo",
-    badgeSuffix: (risk: number) => `${risk}`,
-    biomeLabel: "Bioma",
-    descriptionLabel: "Resumen",
-    openSite: "Ver ficha",
-    addTriage: "Añadir a triage",
-    errorTitle: "El mapa no se pudo cargar",
-    retry: "Reintentar",
-    tooltipPri: (risk: number) => `PRI: ${risk}`,
-  },
-  eu: {
-    mapLabel: "Arrisku mapa interaktiboa",
-    controlsTitle: "Kontrolak",
-    badgePrefix: "Arrisku maila",
-    badgeSuffix: (risk: number) => `${risk}`,
-    biomeLabel: "Bioma",
-    descriptionLabel: "Laburpena",
-    openSite: "Ireki fitxa",
-    addTriage: "Gehitu triagera",
-    errorTitle: "Mapa ezin da kargatu",
-    retry: "Saiatu berriro",
-    tooltipPri: (risk: number) => `PRI: ${risk}`,
-  },
-} as const;
-
-const defaultStyle: StyleSpecification = {
-  version: 8,
-  sources: {
-    osm: {
-      type: "raster",
-      tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-      tileSize: 256,
-      attribution: "© OpenStreetMap ekarpenak",
-    },
-  },
-  layers: [
-    {
-      id: "osm",
-      type: "raster",
-      source: "osm",
-    },
-  ],
-};
-
-const mapStyle = (() => {
-  const style = process.env.NEXT_PUBLIC_MAP_STYLE;
-  if (!style) {
-    return defaultStyle;
-  }
-  try {
-    return style.trim().startsWith("{") ? (JSON.parse(style) as StyleSpecification) : style;
-  } catch (error) {
-    console.warn("[map] Ezin izan da estilo pertsonalizatua irakurri", error);
-    return defaultStyle;
-  }
-})();
-
-function featureToSite(feature?: MapGeoJSONFeature): SiteProperties | null {
-  if (!feature) {
-    return null;
-  }
-  const props = feature.properties ?? {};
-  const risk = Number(props.risk ?? props.PRI ?? 0);
-  return {
-    id: String(props.id ?? ""),
-    name: String(props.name ?? props.izena ?? "Kokapena"),
-    risk: Number.isFinite(risk) ? risk : 0,
-    biome: typeof props.biome === "string" ? props.biome : undefined,
-    description: typeof props.description === "string" ? props.description : undefined,
-  };
-}
-
-function riskTone(risk: number) {
-  if (risk >= 66) return "danger" as const;
-  if (risk >= 33) return "warning" as const;
-  return "success" as const;
-}
 
 export default function SiteMap() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<MapLibreMap | null>(null);
-  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
-  const [selected, setSelected] = useState<SiteProperties | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const { riskMin, layers } = useRiskStore((state) => ({ riskMin: state.riskMin, layers: state.layers }));
-  const filtersRef = useRef({ riskMin, layers });
-  const dataset = useMemo(() => FALLBACK_GEOJSON, []);
   const { language } = useLanguage();
-  const ui = TEXT[language];
-  const translationMap = useMemo(
-    () =>
-      (SITE_TRANSLATIONS[language] as Record<string, { name?: string; biome?: string; description?: string }>) ?? {},
-    [language],
-  );
-
-  useEffect(() => {
-    filtersRef.current = { riskMin, layers };
-  }, [layers, riskMin]);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !containerRef.current || mapRef.current) {
-      return;
-    }
-
-    let cancelled = false;
-    let map: MapLibreMap | null = null;
-
-    let loadHandler: (() => void) | null = null;
-    let clusterClick: ((event: MapLayerMouseEvent) => void) | null = null;
-    let pointClick: ((event: MapLayerMouseEvent) => void) | null = null;
-    let pointEnter: ((event: MapLayerMouseEvent) => void) | null = null;
-    let pointMove: ((event: MapLayerMouseEvent) => void) | null = null;
-    let pointLeave: (() => void) | null = null;
-    let errorListener: ((evt: { error?: Error }) => void) | null = null;
-
-    (async () => {
-      try {
-        const maplibre = await import("maplibre-gl");
-
-        const anyMaplibre = maplibre as unknown as { workerClass?: unknown } & typeof import("maplibre-gl");
-        if (typeof window !== "undefined" && !anyMaplibre.workerClass) {
-          try {
-            anyMaplibre.workerClass = class extends Worker {
-              constructor() {
-                super(new URL("maplibre-gl/dist/maplibre-gl-csp-worker.js", import.meta.url), {
-                  type: "module",
-                });
-              }
-            } as unknown as typeof Worker;
-          } catch (workerError) {
-            console.warn("[map] ezin izan da worker klase pertsonalizatua ezarri", workerError);
-          }
-        }
-
-        const { Map, NavigationControl } = maplibre;
-
-        map = new Map({
-          container: containerRef.current as HTMLDivElement,
-          style: mapStyle as StyleSpecification | string,
-          center: [-2.2, 43.1],
-          zoom: 4.5,
-          attributionControl: true,
-        }) as MapLibreMap;
-
-        mapRef.current = map;
-        setError(null);
-
-        map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
-
-        loadHandler = async () => {
-          try {
-            let geojson: MinimalFeatureCollection = dataset;
-            try {
-              const url = new URL("/data/sites.geojson", window.location.origin);
-              const response = await fetch(url.toString(), { cache: "no-store" });
-              if (response.ok) {
-                const parsed = (await response.json()) as MinimalFeatureCollection;
-                if (parsed?.type === "FeatureCollection" && Array.isArray(parsed.features)) {
-                  geojson = parsed;
-                } else {
-                  console.warn("[map] GeoJSON ez du egitura onartua, fallback erabiliko da");
-                }
-              } else {
-                console.warn(`[map] GeoJSON kargak ${response.status} kodea itzuli du, fallback erabiliko da`);
-              }
-            } catch (fetchError) {
-              console.warn("[map] GeoJSON ezin izan da eskuratu, fallback erabiliko da", fetchError);
-            }
-
-            const { riskMin: initialRisk, layers: initialLayers } = filtersRef.current;
-
-            if (!map?.getSource("sites")) {
-              map?.addSource("sites", {
-                type: "geojson",
-                data: geojson,
-                cluster: true,
-                clusterRadius: 40,
-              });
-            } else {
-              (map.getSource("sites") as GeoJSONSource).setData(geojson);
-            }
-
-            if (!map?.getLayer("site-clusters")) {
-              map?.addLayer({
-                id: "site-clusters",
-                type: "circle",
-                source: "sites",
-                filter: ["has", "point_count"],
-                paint: {
-                  "circle-color": "#6366f1",
-                  "circle-radius": ["step", ["get", "point_count"], 20, 10, 28, 25, 34],
-                  "circle-opacity": 0.82,
-                },
-              });
-            }
-
-            if (!map?.getLayer("site-cluster-count")) {
-              map?.addLayer({
-                id: "site-cluster-count",
-                type: "symbol",
-                source: "sites",
-                filter: ["has", "point_count"],
-                layout: {
-                  "text-field": ["get", "point_count_abbreviated"],
-                  "text-size": 14,
-                },
-                paint: { "text-color": "#1e1b4b" },
-              });
-            }
-
-            if (!map?.getLayer("site-points")) {
-              map?.addLayer({
-                id: "site-points",
-                type: "circle",
-                source: "sites",
-                filter: ["!", ["has", "point_count"]],
-                paint: {
-                  "circle-color": [
-                    "case",
-                    ["<", ["coalesce", ["get", "risk"], 0], 33],
-                    "#16a34a",
-                    ["<", ["coalesce", ["get", "risk"], 0], 66],
-                    "#f59e0b",
-                    "#dc2626",
-                  ],
-                  "circle-radius": 10,
-                  "circle-stroke-width": 1.5,
-                  "circle-stroke-color": "white",
-                  "circle-opacity": 0.92,
-                },
-              });
-            }
-
-            const clusterVisibility = initialLayers.clusters ? "visible" : "none";
-            map?.setLayoutProperty("site-clusters", "visibility", clusterVisibility);
-            map?.setLayoutProperty("site-cluster-count", "visibility", clusterVisibility);
-            map?.setLayoutProperty("site-points", "visibility", initialLayers.points ? "visible" : "none");
-            map?.setFilter("site-points", [
-              "all",
-              ["!", ["has", "point_count"]],
-              [">=", ["coalesce", ["get", "risk"], 0], initialRisk],
-            ]);
-          } catch (loadError) {
-            console.error("[map] Ezin izan da GeoJSON kargatu", loadError);
-            if (!cancelled) {
-              setError(loadError instanceof Error ? loadError.message : "GeoJSON kargak huts egin du");
-            }
-          }
-        };
-
-        map.on("load", loadHandler);
-
-        clusterClick = (event: MapLayerMouseEvent) => {
-          const mapInstance = mapRef.current;
-          if (!mapInstance) return;
-          const features = mapInstance.queryRenderedFeatures(event.point, { layers: ["site-clusters"] }) ?? [];
-          const clusterFeature = features[0];
-          if (!clusterFeature) return;
-          const source = mapInstance.getSource("sites") as GeoJSONSource;
-          const clusterId = clusterFeature.properties?.cluster_id;
-          if (!source || typeof clusterId !== "number") return;
-          source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-            if (err || typeof zoom !== "number") return;
-            const activeMap = mapRef.current;
-            if (!activeMap) return;
-            const coords =
-              clusterFeature.geometry?.type === "Point"
-                ? (clusterFeature.geometry.coordinates as [number, number])
-                : undefined;
-            activeMap.easeTo({ center: coords ?? event.lngLat, zoom });
-          });
-        };
-
-        pointClick = (event: MapLayerMouseEvent) => {
-          const feature = event.features?.[0];
-          const site = featureToSite(feature as MapGeoJSONFeature);
-          if (!site) return;
-          setSelected(site);
-        };
-
-        pointEnter = (event: MapLayerMouseEvent) => {
-          const mapInstance = mapRef.current;
-          if (!mapInstance) return;
-          mapInstance.getCanvas().style.cursor = "pointer";
-          const feature = event.features?.[0];
-          const site = featureToSite(feature as MapGeoJSONFeature);
-          if (!site) {
-            setTooltip(null);
-            return;
-          }
-          const localized = translationMap[site.id] ?? {};
-          setTooltip({
-            x: event.point.x,
-            y: event.point.y,
-            name: localized.name ?? site.name,
-            risk: site.risk ?? 0,
-          });
-        };
-
-        pointMove = (event: MapLayerMouseEvent) => {
-          const feature = event.features?.[0];
-          if (!feature) return;
-          const site = featureToSite(feature as MapGeoJSONFeature);
-          if (!site) return;
-          const localized = translationMap[site.id] ?? {};
-          setTooltip({
-            x: event.point.x,
-            y: event.point.y,
-            name: localized.name ?? site.name,
-            risk: site.risk ?? 0,
-          });
-        };
-
-        pointLeave = () => {
-          const mapInstance = mapRef.current;
-          if (mapInstance) {
-            mapInstance.getCanvas().style.cursor = "";
-          }
-          setTooltip(null);
-        };
-
-        map.on("click", "site-clusters", clusterClick);
-        map.on("click", "site-points", pointClick);
-        map.on("mouseenter", "site-points", pointEnter);
-        map.on("mousemove", "site-points", pointMove);
-        map.on("mouseleave", "site-points", pointLeave);
-
-        errorListener = (evt: { error?: Error }) => {
-          if (!cancelled && evt?.error) {
-            console.error("[map] runtime error", evt.error);
-            setError(evt.error.message ?? "Maparen errore ezezaguna");
-          }
-        };
-
-        map.on("error", errorListener as () => void);
-      } catch (initError) {
-        console.error("[map] inicializazioak huts egin du", initError);
-        if (!cancelled) {
-          setError(initError instanceof Error ? initError.message : "Mapa ezin izan da abiarazi");
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      if (map) {
-        if (loadHandler) {
-          map.off("load", loadHandler);
-        }
-        if (clusterClick) {
-          map.off("click", "site-clusters", clusterClick);
-        }
-        if (pointClick) {
-          map.off("click", "site-points", pointClick);
-        }
-        if (pointEnter) {
-          map.off("mouseenter", "site-points", pointEnter);
-        }
-        if (pointMove) {
-          map.off("mousemove", "site-points", pointMove);
-        }
-        if (pointLeave) {
-          map.off("mouseleave", "site-points", pointLeave);
-        }
-        if (errorListener) {
-          map.off("error", errorListener as () => void);
-        }
-        map.remove();
-      }
-      mapRef.current = null;
-    };
-  }, [dataset]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) {
-      return;
-    }
-
-    const applyLayers = () => {
-      const visibility = layers.clusters ? "visible" : "none";
-      if (map.getLayer("site-clusters")) {
-        map.setLayoutProperty("site-clusters", "visibility", visibility);
-      }
-      if (map.getLayer("site-cluster-count")) {
-        map.setLayoutProperty("site-cluster-count", "visibility", visibility);
-      }
-      if (map.getLayer("site-points")) {
-        map.setLayoutProperty("site-points", "visibility", layers.points ? "visible" : "none");
-        map.setFilter("site-points", [
-          "all",
-          ["!", ["has", "point_count"]],
-          [">=", ["coalesce", ["get", "risk"], 0], riskMin],
-        ]);
-      }
-    };
-
-    if (map.isStyleLoaded()) {
-      applyLayers();
-      return;
-    }
-
-    const applyOnce = () => {
-      applyLayers();
-      map.off("load", applyOnce);
-    };
-
-    map.on("load", applyOnce);
-    return () => {
-      map.off("load", applyOnce);
-    };
-  }, [layers, riskMin]);
-
-  const tooltipStyle = tooltip
-    ? {
-        left: tooltip.x,
-        top: tooltip.y,
-      }
-    : undefined;
-
-  const badgeTone = riskTone(selected?.risk ?? 0);
-
-  const decoratedSelected = selected ? { ...selected, ...(translationMap[selected.id] ?? {}) } : null;
-  const sheetTitleFallback = language === "es" ? "Sitio" : "Gunea";
-
-  if (error) {
-    return (
-      <div className="map-wrapper card" role="alert" style={{ minHeight: "420px", padding: "1.5rem" }}>
-        <h3 style={{ marginTop: 0, marginBottom: "0.75rem" }}>{ui.errorTitle}</h3>
-        <p style={{ margin: 0, color: "#334155" }}>{error}</p>
-        <Button onClick={() => window.location.reload()} type="button" variant="soft">
-          {ui.retry}
-        </Button>
-      </div>
-    );
-  }
+  const copy = COPY[language];
 
   return (
-    <div className="map-wrapper" style={{ minHeight: "420px" }}>
-      <div className="map-container" ref={containerRef} role="img" aria-label={ui.mapLabel} />
-      {tooltip ? (
-        <div className="map-tooltip" style={tooltipStyle}>
-          <strong>{tooltip.name}</strong>
-          <div>{ui.tooltipPri(tooltip.risk)}</div>
-        </div>
-      ) : null}
-      <Sheet
-        onClose={() => setSelected(null)}
-        open={Boolean(decoratedSelected)}
-        title={decoratedSelected?.name ?? sheetTitleFallback}
+    <div className="map-placeholder card glass hairline" style={{ padding: "24px", display: "grid", gap: "20px" }}>
+      <Badge tone="neutral">{copy.badge}</Badge>
+      <div style={{ display: "grid", gap: "12px" }}>
+        <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 600 }}>{copy.title}</h3>
+        <p style={{ margin: 0, color: "#475569", lineHeight: 1.6 }}>{copy.body}</p>
+      </div>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          borderRadius: "24px",
+          overflow: "hidden",
+          background: "linear-gradient(135deg, rgba(79,70,229,0.15), rgba(14,116,144,0.15))",
+          minHeight: "220px",
+          display: "grid",
+          placeItems: "center",
+        }}
       >
-        {decoratedSelected ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <Badge tone={badgeTone}>
-              {ui.badgePrefix}: {ui.badgeSuffix(decoratedSelected.risk ?? 0)}
-            </Badge>
-            {decoratedSelected.biome ? (
-              <p style={{ margin: 0 }}>
-                <strong>{ui.biomeLabel}:</strong> {decoratedSelected.biome}
-              </p>
-            ) : null}
-            {decoratedSelected.description ? (
-              <p style={{ margin: 0 }}>
-                <strong>{ui.descriptionLabel}:</strong> {decoratedSelected.description}
-              </p>
-            ) : null}
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <Link href={`/app/site/${decoratedSelected.id}`}>
-                <Button type="button" variant="primary">
-                  {ui.openSite}
-                </Button>
-              </Link>
-              <Button onClick={() => console.log("[triage]", decoratedSelected.id)} type="button" variant="ghost">
-                {ui.addTriage}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-      </Sheet>
+        <Image
+          alt={language === "es" ? "Ilustración del mapa de ArchéoSense" : "ArchéoSense maparen ilustrazioa"}
+          height={240}
+          src="/images/landing-pri.svg"
+          width={480}
+          style={{ objectFit: "cover", width: "100%", height: "100%", opacity: 0.9 }}
+        />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+        <Link className="btn btn-primary" href="/app/site/1">
+          {copy.ctaPrimary}
+        </Link>
+        <Link className="btn btn-ghost" href="/app">
+          {copy.ctaSecondary}
+        </Link>
+      </div>
     </div>
   );
 }
