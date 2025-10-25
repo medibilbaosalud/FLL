@@ -1,0 +1,29 @@
+{
+  "landing": {
+    "heroTitle": "Arriskua begirada bakarrean, lasai",
+    "heroLead": "Hona hemen panela: klima, satelite eta lurralde datuak konektatzean ikusiko duzuna. Diseinu arina, erabakiak presarik gabe hartzeko.",
+    "heroPrimary": "Mapa demo ikusi",
+    "heroSecondary": "Moduluak arakatu",
+    "kpiSites": "Gune prestak",
+    "kpiCritical": "Alerta kritikoak",
+    "kpiUpdate": "Azken eguneratzea",
+    "kpiCoverage": "Estaldura",
+    "visionTitle": "ArcheoMap Ikuspegia",
+    "visionLead": "Mapa bizia, cluster arnasgarriak eta sarbide azkarrak, narriadura aurretik ekiteko.",
+    "visionItem1Title": "Berde / anbar / gorriko cluster",
+    "visionItem1Body": "Hurbiltasun eta arriskuaren arabera taldekatzen dugu. Koloreak arnasten du.",
+    "visionItem2Title": "Iragazkia PRI ≥ 0.45",
+    "visionItem2Body": "Slider batek zarata garbitzen du eta garrantzitsua bistaratzen du.",
+    "visionItem3Title": "Ekintza azkarra",
+    "visionItem3Body": "Klik bakarrarekin fitxa eta proposatutako plana irekitzen dira.",
+    "roadmapTitle": "Laster",
+    "roadmap1": "Satelite geruza (Sentinel/Landsat) eguneratze planifikatuekin.",
+    "roadmap2": "Eszenario slider-ak (euria, olatua, giza presioa).",
+    "roadmap3": "Txosten laburren esportazioa PDF eta CSV formatuan.",
+    "roadmap4": "Sentsore lokalekin integrazioa (demo).",
+    "ctaTitle": "Prest al zaude maparen arnasa ikusteko?",
+    "ctaLead": "Gida labur bat erakutsiko dizugu: arrisku indizearen logika eta demo datuak.",
+    "ctaPrimary": "Demoa hasi",
+    "ctaSecondary": "Fitxa adibidea ireki"
+  }
+}

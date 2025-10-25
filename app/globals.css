@@ -71,8 +71,13 @@ select:focus-visible {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: saturate(140%) blur(14px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.radial-fade {
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0) 65%);
 }
 
 .card {

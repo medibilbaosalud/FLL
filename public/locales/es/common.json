@@ -1,0 +1,29 @@
+{
+  "landing": {
+    "heroTitle": "Todo el riesgo, en un vistazo sereno",
+    "heroLead": "Así se verá el panel cuando conectemos datos climáticos, satelitales y de campo. Un diseño ligero para decidir con calma antes de que el riesgo suba.",
+    "heroPrimary": "Ver demo del mapa",
+    "heroSecondary": "Explorar módulos",
+    "kpiSites": "Sitios listos",
+    "kpiCritical": "Alertas críticas",
+    "kpiUpdate": "Última actualización",
+    "kpiCoverage": "Cobertura",
+    "visionTitle": "ArcheoMap Vision",
+    "visionLead": "Mapa vivo, clusters respirables y accesos rápidos para actuar un paso antes del deterioro.",
+    "visionItem1Title": "Clusters verde / ámbar / rojo",
+    "visionItem1Body": "Agrupamos por proximidad y riesgo. El color respira, no grita.",
+    "visionItem2Title": "Filtro PRI ≥ 0.45",
+    "visionItem2Body": "Un deslizador limpia el ruido y deja ver lo relevante de inmediato.",
+    "visionItem3Title": "Acción rápida",
+    "visionItem3Body": "Un clic abre la ficha y su plan propuesto: claro, concreto y accionable.",
+    "roadmapTitle": "Lo siguiente en llegar",
+    "roadmap1": "Capa satelital (Sentinel/Landsat) con actualización programada.",
+    "roadmap2": "Deslizadores de escenario (lluvia, oleaje, presión humana).",
+    "roadmap3": "Exportación de informe corto en PDF y CSV.",
+    "roadmap4": "Integración con sensores locales (demo).",
+    "ctaTitle": "¿Listo para ver cómo respira el mapa?",
+    "ctaLead": "Te mostramos un recorrido guiado con datos demo y la lógica del índice de riesgo.",
+    "ctaPrimary": "Iniciar demo",
+    "ctaSecondary": "Abrir ficha ejemplo"
+  }
+}
