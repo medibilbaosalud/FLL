@@ -1,20 +1,21 @@
+import "./globals.css";
 import type { ReactNode } from "react";
 
 export const metadata = {
   title: "ArchéoSense",
-  description: "Hasiera sinplea ArchéoSense proiekturako.",
+  description: "Hasiera orria / Página inicial",
 };
 
+// Oinarrizko layout-ak hizkuntza eta estilo globalak ezartzen ditu.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="eu">
       <body
         style={{
-          margin: 0,
-          fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+          background: "#0F241F",
+          color: "#F6FDF9",
           minHeight: "100vh",
-          background: "#0b1b16",
-          color: "#f6fdf9",
+          margin: 0,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
