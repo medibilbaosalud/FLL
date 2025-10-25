@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   GeoJSONSource,
   Map as MapLibreMap,
@@ -30,6 +30,78 @@ interface TooltipState {
   name: string;
   risk: number;
 }
+
+type MinimalFeature = {
+  type: "Feature";
+  properties: Record<string, unknown>;
+  geometry: { type: "Point"; coordinates: [number, number] };
+};
+
+type MinimalFeatureCollection = {
+  type: "FeatureCollection";
+  features: MinimalFeature[];
+};
+
+const FALLBACK_GEOJSON: MinimalFeatureCollection = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: {
+        id: "1",
+        name: "Itsaslabarrak",
+        risk: 78,
+        biome: "Kostaldea",
+        description: "Kostaldeko aztarnategi nagusia; ekaitzek higadura bizia eragiten dute.",
+      },
+      geometry: { type: "Point", coordinates: [-2.919, 43.257] },
+    },
+    {
+      type: "Feature",
+      properties: {
+        id: "2",
+        name: "Ibaiertzeko herrixka",
+        risk: 54,
+        biome: "Ibarbidea",
+        description: "Ibarbidean kokatutako herrixka erromatarra, uholdeak arrisku nagusia dira.",
+      },
+      geometry: { type: "Point", coordinates: [-1.92, 42.31] },
+    },
+    {
+      type: "Feature",
+      properties: {
+        id: "3",
+        name: "Basoko santutegia",
+        risk: 32,
+        biome: "Basoa",
+        description: "Basoko santutegi megalitikoak hezetasun aldaketekiko sentikortasuna du.",
+      },
+      geometry: { type: "Point", coordinates: [-2.45, 43.08] },
+    },
+    {
+      type: "Feature",
+      properties: {
+        id: "4",
+        name: "Dunetako aztarnategia",
+        risk: 61,
+        biome: "Duna",
+        description: "Harea duna trantsizioan dagoen aztarnategia, haize eta turismo presioarekin.",
+      },
+      geometry: { type: "Point", coordinates: [-3.02, 43.41] },
+    },
+    {
+      type: "Feature",
+      properties: {
+        id: "5",
+        name: "Hiri azpiko galeriak",
+        risk: 71,
+        biome: "Hirigunea",
+        description: "Hiri erdialdeko aztarnategi subterraneoa bibrazio mekanikoen eraginpean.",
+      },
+      geometry: { type: "Point", coordinates: [-1.98, 43.32] },
+    },
+  ],
+};
 
 const defaultStyle: StyleSpecification = {
   version: 8,
@@ -92,6 +164,7 @@ export default function SiteMap() {
   const [error, setError] = useState<string | null>(null);
   const { riskMin, layers } = useRiskStore((state) => ({ riskMin: state.riskMin, layers: state.layers }));
   const filtersRef = useRef({ riskMin, layers });
+  const dataset = useMemo(() => FALLBACK_GEOJSON, []);
 
   useEffect(() => {
     filtersRef.current = { riskMin, layers };
@@ -133,11 +206,23 @@ export default function SiteMap() {
 
         loadHandler = async () => {
           try {
-            const response = await fetch("/data/sites.geojson");
-            if (!response.ok) {
-              throw new Error(`GeoJSON kargak ${response.status} kodea itzuli du`);
+            let geojson: MinimalFeatureCollection = dataset;
+            try {
+              const url = new URL("/data/sites.geojson", window.location.origin);
+              const response = await fetch(url.toString(), { cache: "no-store" });
+              if (response.ok) {
+                const parsed = (await response.json()) as MinimalFeatureCollection;
+                if (parsed?.type === "FeatureCollection" && Array.isArray(parsed.features)) {
+                  geojson = parsed;
+                } else {
+                  console.warn("[map] GeoJSON ez du egitura onartua, fallback erabiliko da");
+                }
+              } else {
+                console.warn(`[map] GeoJSON kargak ${response.status} kodea itzuli du, fallback erabiliko da`);
+              }
+            } catch (fetchError) {
+              console.warn("[map] GeoJSON ezin izan da eskuratu, fallback erabiliko da", fetchError);
             }
-            const geojson = await response.json();
 
             const { riskMin: initialRisk, layers: initialLayers } = filtersRef.current;
 
