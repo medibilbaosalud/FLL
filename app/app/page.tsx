@@ -154,7 +154,7 @@ export default function AppHome() {
   );
 }
 
-type HeroProps = (typeof COPY)["es"]["hero"];
+type HeroProps = (typeof COPY)[keyof typeof COPY]["hero"];
 
 function HeroSection({ tag, title, subtitle, ctas, metrics, highlights }: HeroProps) {
   return (
@@ -206,7 +206,7 @@ function HeroSection({ tag, title, subtitle, ctas, metrics, highlights }: HeroPr
   );
 }
 
-type MapProps = (typeof COPY)["es"]["map"];
+type MapProps = (typeof COPY)[keyof typeof COPY]["map"];
 
 function MapPreview({ title, body, chips, previewTitle, note, actions }: MapProps) {
   return (
@@ -261,7 +261,7 @@ function MapPreview({ title, body, chips, previewTitle, note, actions }: MapProp
   );
 }
 
-type ModulesProps = (typeof COPY)["es"]["modules"];
+type ModulesProps = (typeof COPY)[keyof typeof COPY]["modules"];
 
 function ModuleGrid({ title, items }: ModulesProps) {
   return (
@@ -291,7 +291,7 @@ function ModuleGrid({ title, items }: ModulesProps) {
   );
 }
 
-type ClosingProps = (typeof COPY)["es"]["closing"];
+type ClosingProps = (typeof COPY)[keyof typeof COPY]["closing"];
 
 function ClosingCallout({ title, subtitle, primary, secondary }: ClosingProps) {
   return (
