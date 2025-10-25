@@ -189,6 +189,22 @@ export default function SiteMap() {
     (async () => {
       try {
         const maplibre = await import("maplibre-gl");
+
+        const anyMaplibre = maplibre as unknown as { workerClass?: unknown } & typeof import("maplibre-gl");
+        if (typeof window !== "undefined" && !anyMaplibre.workerClass) {
+          try {
+            anyMaplibre.workerClass = class extends Worker {
+              constructor() {
+                super(new URL("maplibre-gl/dist/maplibre-gl-csp-worker.js", import.meta.url), {
+                  type: "module",
+                });
+              }
+            } as unknown as typeof Worker;
+          } catch (workerError) {
+            console.warn("[map] ezin izan da worker klase pertsonalizatua ezarri", workerError);
+          }
+        }
+
         const { Map, NavigationControl } = maplibre;
 
         map = new Map({
