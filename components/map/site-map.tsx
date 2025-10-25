@@ -231,11 +231,13 @@ export default function SiteMap() {
           if (!source || typeof clusterId !== "number") return;
           source.getClusterExpansionZoom(clusterId, (err, zoom) => {
             if (err || typeof zoom !== "number") return;
+            const activeMap = map;
+            if (!activeMap) return;
             const coords =
               clusterFeature.geometry?.type === "Point"
                 ? (clusterFeature.geometry.coordinates as [number, number])
                 : undefined;
-            map.easeTo({ center: coords ?? event.lngLat, zoom });
+            activeMap.easeTo({ center: coords ?? event.lngLat, zoom });
           });
         };
 
