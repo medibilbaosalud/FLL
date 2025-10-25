@@ -4,6 +4,24 @@ import { LanguageText } from "./LanguageText";
 import type { LocalizedString } from "lib/landing";
 
 const icons = [Map, AlertTriangle, Clock, Globe2];
+const footnotes: LocalizedString[] = [
+  {
+    es: "Colecciones demo sincronizadas",
+    eu: "Bilduma demoak sinkronizatuta",
+  },
+  {
+    es: "Alertas que vigilan cada turno",
+    eu: "Txandak gainbegiratzen dituzten alertak",
+  },
+  {
+    es: "Dato más reciente procesado",
+    eu: "Azkenengo prozesatutako datua",
+  },
+  {
+    es: "Biomas cubiertos en el piloto",
+    eu: "Pilotuak estaltzen dituen biomak",
+  },
+];
 
 type KpiItem = {
   value: LocalizedString;
@@ -26,20 +44,18 @@ export default function KpiStrip({ items }: KpiStripProps) {
           return (
             <article
               key={item.label.es}
-              className="group relative overflow-hidden rounded-3xl border border-white/70 bg-white/80 p-6 shadow-elev transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+              className="metric-card"
               role="listitem"
             >
-              <span className="flex items-center gap-2 text-sm font-medium text-muted">
-                <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+              <div className="flex items-center gap-3 text-sm font-medium text-muted">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/15 to-blue-400/15 text-brand">
                   <Icon size={18} aria-hidden />
                 </span>
                 <LanguageText value={item.label} />
-              </span>
-              <LanguageText
-                value={item.value}
-                as="p"
-                className="mt-4 text-3xl font-semibold tracking-tight text-ink"
-              />
+              </div>
+              <LanguageText value={item.value} as="p" className="metric-value" />
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-black/10 to-transparent" />
+              <LanguageText value={footnotes[index] ?? footnotes[0]} as="p" className="text-xs text-muted" />
             </article>
           );
         })}

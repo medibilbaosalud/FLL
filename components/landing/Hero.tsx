@@ -39,14 +39,14 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-surface via-white to-white">
-      <div className="pointer-events-none absolute inset-x-0 -top-20 h-72 bg-gradient-to-b from-brand/15 via-transparent to-transparent blur-3xl" />
-      <div className="relative mx-auto flex max-w-7xl flex-col gap-12 px-4 pb-16 pt-20 sm:px-6 md:flex-row md:items-center md:pb-20 md:pt-28 lg:px-8">
-        <div className="flex-1 space-y-8">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-1 text-sm font-semibold text-brand shadow-sm ring-1 ring-black/5">
+      <div className="pointer-events-none absolute inset-x-0 -top-24 h-80 bg-gradient-to-b from-brand/15 via-transparent to-transparent blur-3xl" />
+      <div className="relative mx-auto grid max-w-7xl gap-14 px-4 pb-16 pt-20 sm:px-6 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:items-center md:pb-24 md:pt-28 lg:px-8">
+        <div className="flex flex-col gap-8">
+          <span className="chip-muted">
             <Sparkles aria-hidden size={16} />
             {badge[language]}
           </span>
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl md:text-6xl">
+          <h1 className="font-display text-gradient text-4xl leading-tight tracking-tight sm:text-5xl md:text-6xl">
             {title[language]}
           </h1>
           <p className="max-w-2xl text-base text-muted sm:text-lg">
@@ -64,35 +64,30 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
             <Link
               href={secondaryCta.href}
               aria-label={secondaryCta.label[language]}
-              className="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/70 px-6 py-2.5 text-sm font-semibold text-ink shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60"
+              className="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/80 px-6 py-2.5 text-sm font-semibold text-ink shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand/60"
             >
               {secondaryCta.label[language]}
             </Link>
           </div>
           {highlights.length > 0 && (
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="feature-grid">
               {highlights.map((item) => {
                 const Icon = highlightIcons[item.icon] ?? Sparkles;
                 return (
-                  <article
-                    key={item.title.es}
-                    className="flex gap-3 rounded-3xl border border-white/70 bg-white/80 p-4 shadow-sm shadow-brand/5"
-                  >
-                    <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                  <article key={item.title.es} className="feature-card">
+                    <span className="feature-icon">
                       <Icon size={18} aria-hidden />
                     </span>
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold text-ink">{item.title[language]}</p>
-                      <p className="text-xs text-muted">{item.description[language]}</p>
-                    </div>
+                    <h3 className="mt-4 font-semibold text-ink">{item.title[language]}</h3>
+                    <p className="text-sm text-muted">{item.description[language]}</p>
                   </article>
                 );
               })}
             </div>
           )}
         </div>
-        <div className="flex max-w-md flex-1 flex-col items-center gap-4">
-          <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 shadow-[0_30px_70px_-45px_rgba(37,99,235,0.45)]">
+        <div className="flex w-full max-w-md flex-col items-center gap-4">
+          <div className="relative w-full overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/75 shadow-[0_38px_90px_-50px_rgba(37,99,235,0.55)]">
             <Image
               src="/images/landing-hero.svg"
               alt={title[language]}
@@ -103,7 +98,7 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent" />
           </div>
-          <div className="flex w-full items-center justify-between rounded-2xl border border-black/5 bg-white/80 px-4 py-3 text-xs text-muted shadow-sm">
+          <div className="flex w-full items-center justify-between rounded-2xl border border-black/5 bg-white/85 px-5 py-3 text-xs text-muted shadow-sm">
             <span>{badge[language]}</span>
             <span className="font-medium text-ink">ArchéoSense demo</span>
           </div>
