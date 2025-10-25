@@ -6,21 +6,21 @@ import { Section } from "components/ui/section";
 const triageHighlights = [
   {
     icon: "table" as const,
-    title: "Lehentasun ordenatua",
-    description: "PRI, presio humana eta azken eguneraketaren arabera auto-eguneratuko da zerrenda.",
-    bullets: ["Filtru konbinatuak (materiala, herrialdea, arrisku tartea)", "Alertetan denbora errealeko badgeak"],
+    title: "Hemen agertuko da",
+    description: "PRI eta presioaren arabera ordenatutako taula bizia, lehen begiratuan ulertzeko modukoa.",
+    bullets: ["Filtru konbinatuak materiala, herrialdea eta arrisku tartearekin", "Alertetan kolore eta ikono argiak"],
   },
   {
     icon: "report" as const,
-    title: "Bulk ekintzak",
-    description: "Ikuskapenak programatu, txostenak sortu eta CSV esportazioa klik bakarrean.",
-    bullets: ["Esportazioak UTF-8 BOM eta dataren arabera", "Txantiloi pertsonalizagarriak PDFetarako"],
+    title: "Ekiteko prest",
+    description: "Ikuskapenak programatzeko eta CSV esportatzeko botoiak hemen kokatuko ditugu modu intuitiboan.",
+    bullets: ["Deskarga zuzena CSV eta PDF formatuan", "Ikuskapen egoerak kolorez"],
   },
   {
     icon: "settings" as const,
-    title: "Workflow pertsonalizatua",
-    description: "Zure taldeak markatutako egoerak eta etiketa koloreak gordeko dira.",
-    bullets: ["Kanban ikuspegia azkar aktibatzeko prest", "API webhookak (betearazteko)"],
+    title: "Workflow argia",
+    description: "Talde bakoitzak bere etiketak eta egoerak gorde ahal izango ditu, lan erritmoari egokituta.",
+    bullets: ["Kanban ikuspegia aukera", "Webhojak eta oharrak integratzeko atea"],
   },
 ];
 
@@ -34,16 +34,15 @@ export default function TriagePage() {
       </div>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="feature-card">
-          <h3>Proben plangintza</h3>
+          <h3>Nola erabiliko dugu</h3>
           <p>
-            Demoan ikusiko duzu nola aukeratu hainbat gune batera, ikuskapen data proposatu eta audit trail batean
-            gordetzen diren oharrak gehitu.
+            Aukeratu hainbat gune batera, ezarri ikuskapen data eta utzi oharrak, guztiak audit trail batean gordeta.
           </p>
         </div>
         <div className="feature-card">
-          <h3>Delta arriskuaren jarraipena</h3>
+          <h3>Arriskuaren mugimendua</h3>
           <p>
-            KPI txartel interaktiboek azken 14 egunetako joera erakusten dute, goranzko arriskuak lehenesten lagunduz.
+            KPI mini-grafikoek azken 14 egunetako gorabeherak erakutsiko dituzte, norabidea gezi bakar batekin.
           </p>
         </div>
       </div>

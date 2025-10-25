@@ -2,176 +2,144 @@ import Link from "next/link";
 import { Icon } from "components/ui/icon";
 
 const navItems = [
-  { href: "#beharra", label: "Beharra" },
-  { href: "#produktua", label: "Produktua" },
-  { href: "#roadmap", label: "Roadmap" },
-  { href: "#impactua", label: "Impactua" },
-  { href: "#amaiera", label: "Ekiteko garaia" },
+  { href: "#hasiera", label: "Hasiera" },
+  { href: "#arazoa", label: "Arazoa" },
+  { href: "#soluzioa", label: "Soluzioa" },
+  { href: "#pri", label: "PRI nola" },
+  { href: "#sekzioak", label: "Pantailak" },
+  { href: "#amaiera", label: "Ekin" },
 ];
 
 const heroStats = [
-  { label: "Ondarea arriskuan", value: "73%", ref: "2" },
-  { label: "Alertak abian", value: "+15", ref: "6" },
-  { label: "Eszenario azkarrak", value: "< 30s", ref: "12" },
+  { label: "Ondarean presioa", value: "73%", ref: "2" },
+  { label: "Alertak hilabetean", value: "+15", ref: "6" },
+  { label: "Simulazioak", value: "<30 seg", ref: "12" },
 ];
 
-const contextHighlights = [
+const problemCards = [
   {
-    title: "Klima aldaketaren presioa",
+    title: "Klima muturrekoa",
     description:
-      "UNESCOk ohartarazi du olatu beroak, suteak eta uholdeak gero eta handiagoak direla ondarearentzat.",
+      "Uholdeak, bero-boladak eta suteak gero eta maizagoak dira, eta ondarea lehenago kaltetzen dute.",
     ref: "1",
   },
   {
-    title: "Urari lotutako mehatxuak",
+    title: "Uraren mehatxua",
     description:
-      "UNESCO-WRIk 2025ean zabaldu zuen ondarearen %73ak urarekin lotutako arrisku handia duela.",
+      "UNESCO-WRIk ohartarazi du ondarearen %73a urarekin lotutako arrisku altuan dagoela gaur egun.",
     ref: "2",
   },
   {
-    title: "Klima + turismoaren talkak",
+    title: "Bisitarien zama",
     description:
-      "Venezia eta Rapa Nui bezalako kasuek erakusten dute presio konbinatuak erabaki azkarrak eskatzen dituela.",
+      "Venezia edo Rapa Nui bezalako kasuek erakusten dute turismoak eta klimak batera arriskua biderkatzen dutela.",
     ref: "3",
   },
 ];
 
-const modules = [
+const solutionTiles = [
   {
     icon: "map" as const,
-    title: "Mapa adimentsua",
+    title: "Mapa bisuala",
     description:
-      "Cluster eta semaforo koloreekin arrisku eremuen ikuspegia. Layer interaktiboek euriak, deformazioak eta bisitari fluxua erakusten dute.",
+      "Semaforo koloreak, cluster adimentsuak eta " +
+      "zoom bakarrean ikusiko diren gune kritikoak.",
   },
   {
     icon: "table" as const,
-    title: "Triage mahaia",
-    description:
-      "PRI arabera ordenatutako taula bizia: denboran goraka doazen guneak, bulk ekintzak eta esportazio azkarrak CSVra.",
+    title: "Triage taula",
+    description: "Lehenetsi ekintzak PRI, presio humana eta datu konfiantzarekin.",
   },
   {
     icon: "flask" as const,
-    title: "Eszenario laborategia",
+    title: "Eszenarioak",
     description:
-      "Slider eta preset-ekin jolastu: ekaitza, turismo puntakoa edo uda lehorra. Segundu gutxian PRI berria eta Top-Drivers agertzen dira.",
+      "Slider intuitiboekin probatu: ekaitza, uda lehorra edo turismoaren igoera, eta ikus nola aldatzen den arriskua.",
   },
   {
     icon: "report" as const,
-    title: "Txosten automatikoak",
+    title: "Txostenak",
     description:
-      "PDF profesionalak eta CSV esportazioak, mapa laburpenarekin, arriskuaren azalpenarekin eta ekintza-planekin.",
+      "PDF eta CSV profesionalak automatikoki, mapa eta azalpenekin partekatzeko prest.",
   },
   {
     icon: "settings" as const,
-    title: "Ezarpen aurreratuak",
-    description:
-      "Pisu eta atalase pertsonalizagarriak (hazard, human, sat...). Konfigurazioa partekatu eta eguneratzeak gordeta.",
+    title: "Pertsonalizazioa",
+    description: "Pisuak eta atalaseak egokitu zure errealitatera klik gutxitan.",
   },
 ];
 
-const workflowSteps = [
+const calculationSteps = [
   {
-    title: "1 · Datuak bateratu",
-    description: "Klima, satelite eta bisitari datuak murgiltzen dira PRI kalkulu bakarrean.",
+    step: "1",
+    title: "Bildu",
+    description: "Klima, satelite eta bisitari datuak automatikoki batzen dira.",
     ref: "4",
   },
   {
-    title: "2 · Arriskua azaldu",
-    description: "Top-Driverrek argi azaltzen dute zergatik dagoen gunea gorrian edo horian.",
+    step: "2",
+    title: "Ulertu",
+    description: "PRI kalkuluak semaforo kolorea eta 3 driver nagusiak erakusten ditu.",
   },
   {
-    title: "3 · Ekintza aukeratu",
-    description: "Ekintza planak Δ-riesgo estimatua eta kostu/denbora etiketa erakusten du.",
+    step: "3",
+    title: "Ekin",
+    description: "Ekintza bakoitzak Δ-arriskua, kostua eta denbora etiketa jasotzen du.",
   },
   {
-    title: "4 · Simulatu eta partekatu",
-    description: "Scenario Laben hipotesiak gordeta PDFan sartzen dira, interesdunekin partekatzeko.",
-  },
-];
-
-const roadmap = [
-  {
-    title: "1-2 aste — Ikerketa",
-    description: "ABC metodologiaren eta UNESCO/WRI gomendioen berrikuspena, gune demoen bilketa.",
-    ref: "5",
-  },
-  {
-    title: "3-5 aste — Prototipoa",
-    description: "Mapa, triage taula, fitxa eta PDF sortzailea. SAR/NDVI adibide irekiak integratuta.",
-    ref: "7",
-  },
-  {
-    title: "6-7 aste — Feedbacka",
-    description: "Arches/EAMENA, UCL-ISH eta InSAR adituekin berrikuspenak eta iterazioak.",
-    ref: "9",
-  },
-  {
-    title: "8-10 aste — Pilotoa",
-    description: "Bi kasu erreal, eszenario gordetako txostenak eta 1 minutuko demo bideoa.",
+    step: "4",
+    title: "Partekatu",
+    description: "Txosten eta eszenario gardenei esker, erabakiak koordinatuta heltzen dira.",
   },
 ];
 
-const expertNetwork = [
+const screenPreviews = [
   {
-    name: "May Cassar",
-    role: "UCL · Institute for Sustainable Heritage",
-    focus: "Prebentziozko kontserbazioa eta klima-arriskua.",
-    ref: "17",
+    slug: "mapa",
+    label: "Mapa",
+    blurb:
+      "Hemen ikusiko duzu gune bakoitzaren posizioa eta arriskua. Layer botoiekin euriak, deformazioak edo bisitari fluxua piztu daitezke.",
   },
   {
-    name: "Scott Allan Orr",
-    role: "UCL · Klima arriskuen ikerlaria",
-    focus: "Arriskuen metrika eta atalase adimendunak.",
-    ref: "18",
+    slug: "triage",
+    label: "Triage",
+    blurb:
+      "Taula adimentsua: arrisku gorenean dauden guneak lehenetsita eta bulk ekintzak prest, CSV esportazioarekin.",
   },
   {
-    name: "Andrew Wilson",
-    role: "Oxford · EAMENA",
-    focus: "Interoperabilitatea eta lehentasunak eskala handian.",
-    ref: "19",
+    slug: "scenario",
+    label: "Eszenarioak",
+    blurb:
+      "Slider sinpleekin ikusiko duzu nola aldatzen den PRI euria, tenperatura edo turismoa aldatuta.",
   },
   {
-    name: "Andy Hooper",
-    role: "University of Leeds · COMET",
-    focus: "InSAR deformazioaren validazioa eta konfiantza semaforoa.",
-    ref: "15",
+    slug: "reports",
+    label: "Txostenak",
+    blurb: "PDF eta CSV automatikoki sortuko dira, mapa eta azalpen bisualekin.",
   },
   {
-    name: "HeritageWatch.AI",
-    role: "Planet · Microsoft · ALIPH · Iconem",
-    focus: "EO + IA alarmen esperientzia errealak.",
-    ref: "12",
+    slug: "settings",
+    label: "Ezarpenak",
+    blurb:
+      "Pisuen kontrol erraza: hazard, human, sat eta site balioek zure errealitatera moldatuko dute PRI.",
   },
 ];
 
-const rubricPlan = [
+const impactPoints = [
   {
-    title: "Identify",
+    title: "Ondarea babesteko abiadura",
     description:
-      "UNESCO, WRI eta kasu errealen datuekin frogatzen dugu beharra. Arches/EAMENA konparaketa laburra.",
-    ref: "2",
+      "Alertak eta eszenarioak 60 segundutik behera prest, kaltea gertatu aurretik erreakzionatzeko.",
   },
   {
-    title: "Design",
+    title: "Gardentasuna",
     description:
-      "Architektura argia + politika: gune sentikorren ofuskazioa eta audit log sinplea.",
-    ref: "6",
+      "Zergatik dago gune bat gorrian? Top-Driverrek 1 lerrotan erantzuten dute.",
   },
   {
-    title: "Create",
+    title: "Interoperabilitatea",
     description:
-      "Mapa, Triage, Fitxa eta Scenario Lab erabilgarriak, Δ-riesgo ikuspegiarekin.",
-  },
-  {
-    title: "Iterate",
-    description:
-      "3 feedback ziklo dokumentatu: AIA mentoria, EO/SAR adituak eta Arches/EAMENA.",
-    ref: "16",
-  },
-  {
-    title: "Communicate",
-    description:
-      "Narratiba bisuala + kasu bakarra: 0,28tik 0,66ra igo eta jarduerekin jaisteko istorioa.",
+      "CSV/GeoJSON esportazioak Arches edo EAMENA plataformekin lerrokatuta doaz.",
   },
 ];
 
@@ -180,16 +148,9 @@ const references = [
   { id: "2", label: "Nearly Three-Quarters of World Heritage Sites Are at High Risk (UNESCO-WRI)", href: "https://whc.unesco.org/en/news/2788" },
   { id: "3", label: "UNESCO recommends putting Venice on heritage danger list (The Guardian)", href: "https://www.theguardian.com/world/2023/jul/31/unesco-recommends-putting-venice-on-heritage-danger-list" },
   { id: "4", label: "The ABC Method: a risk management approach to preservation (ICCROM)", href: "https://www.iccrom.org/publication/abc-method-risk-management-approach-preservation-cultural-heritage" },
-  { id: "5", label: "ABC Method manual (ICCROM)", href: "https://www.iccrom.org/sites/default/files/2017-12/risk_manual_2016-eng.pdf" },
   { id: "6", label: "Heritage Alerts (ICOMOS)", href: "https://www.icomos.org/advocacy/heritage-alerts/" },
-  { id: "7", label: "Analysis of SAR-derived products to support emergency response (ScienceDirect)", href: "https://www.sciencedirect.com/science/article/pii/S0034425723002195" },
-  { id: "9", label: "Arches Project (Getty/WMF)", href: "https://www.archesproject.org/" },
   { id: "12", label: "HeritageWatch.AI announcement", href: "https://heritagewatch.ai/wp-content/uploads/2025/02/10022025_-Microsoft-Planet-Aliph-Iconem_Announcement.pdf" },
-  { id: "15", label: "Professor Andy Hooper (University of Leeds)", href: "https://environment.leeds.ac.uk/see/staff/1334/professor-andy-hooper" },
-  { id: "16", label: "Ask an Archaeologist – AIA", href: "https://www.archaeological.org/programs/educators/first-lego-league-challenge-2025-2026/" },
-  { id: "17", label: "May Cassar profile", href: "https://profiles.ucl.ac.uk/2305-may-cassar" },
-  { id: "18", label: "Current perspectives on risks of climate change for cultural heritage", href: "https://www.heritagescienceforum.org.uk/documents/Orr_2024_01_24.pdf" },
-  { id: "19", label: "Prof. Andrew Wilson", href: "https://eamena.org/people/prof-andrew-wilson" },
+  { id: "9", label: "Arches Project (Getty/WMF)", href: "https://www.archesproject.org/" },
 ];
 
 const referenceLookup = references.reduce<Record<string, string>>((acc, item) => {
@@ -222,14 +183,14 @@ export default function Home() {
               Klimaren eta sateliteen datuak, bisitarien presioa eta guneen balioa bateratzen ditugu erabaki
               argiak hartzeko. Helburua? Ondarea babestea kaltea gertatu aurretik.
             </p>
-            <div className="landing-actions">
-              <Link className="landing-primary" href="/app">
-                Ireki plataforma →
-              </Link>
-              <a className="landing-secondary" href="#produktua">
-                Ezagutu moduluak
-              </a>
-            </div>
+              <div className="landing-actions">
+                <Link className="landing-primary" href="/app">
+                  Ireki plataforma →
+                </Link>
+                <a className="landing-secondary" href="#soluzioa">
+                  Ezagutu moduluak
+                </a>
+              </div>
             <dl className="landing-stats">
               {heroStats.map((item) => (
                 <div key={item.label}>
@@ -274,16 +235,13 @@ export default function Home() {
         </nav>
       </section>
 
-      <section className="landing-section" id="beharra">
+      <section className="landing-section" id="arazoa">
         <header className="landing-section-header">
           <h2>Zergatik orain?</h2>
-          <p>
-            Ondare arkeologikoa presio konbinatuen menpe dago: klima muturrekoak, uraren zikloak eta bisitari
-            masiboak. Hiru datu azkar hauek erakusten dute zergatik behar dugun erabaki sistema azkarra.
-          </p>
+          <p>Hiru irudi azkar eta ulerterrazek azaltzen dute zergatik behar dugun alerta eta erantzun azkarreko sistema.</p>
         </header>
         <div className="landing-grid">
-          {contextHighlights.map((item) => (
+          {problemCards.map((item) => (
             <article className="landing-card" key={item.title}>
               <h3>{item.title}</h3>
               <p>
@@ -294,56 +252,70 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="landing-section" id="produktua">
+      <section className="landing-section" id="soluzioa">
         <header className="landing-section-header">
-          <h2>Zer egiten du ArchéoSensek?</h2>
-          <p>
-            Plataforma bakarrean batu ditugu datuak, azalpenak eta ekintza gomendioak. Modulu bakoitza bereziki
-            diseinatu dugu erabiltzaile ez-teknikoek erraz ulertu eta partekatu dezaten.
-          </p>
+          <h2>Soluzioaren laburpena</h2>
+          <p>Modulu bakoitza klik bakarrean ulertzeko pentsatuta dago: ikus, ulertu eta ekin.</p>
         </header>
         <div className="landing-module-grid">
-          {modules.map((module) => (
-            <article className="landing-card" key={module.title}>
-              <Icon className="landing-card-icon" name={module.icon} />
-              <h3>{module.title}</h3>
-              <p>{module.description}</p>
+          {solutionTiles.map((tile) => (
+            <article className="landing-card" key={tile.title}>
+              <Icon className="landing-card-icon" name={tile.icon} />
+              <h3>{tile.title}</h3>
+              <p>{tile.description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="landing-section" id="flow">
+      <section className="landing-section landing-section-split" id="pri">
         <header className="landing-section-header">
-          <h2>Nola pasatzen dira datuak → ekintza?</h2>
-          <p>4 pauso bisualek erakusten dute gure metodologia: datuak, azalpena, ekintza eta partekatzea.</p>
+          <h2>Nola kalkulatzen dugu PRI?</h2>
+          <p>Datuak → semaforoa → ekintza. Lau pausu bisual eta hitz sinpleekin azaltzen dugu.</p>
         </header>
-        <ol className="landing-timeline">
-          {workflowSteps.map((step) => (
-            <li key={step.title}>
-              <div>
-                <strong>{step.title}</strong>
-                <p>
-                  {step.description} {step.ref ? <ReferenceLink id={step.ref} /> : null}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <div className="landing-pri">
+          <ol>
+            {calculationSteps.map((step) => (
+              <li key={step.step}>
+                <span>{step.step}</span>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>
+                    {step.description} {step.ref ? <ReferenceLink id={step.ref} /> : null}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div className="landing-media">
+            <div className="landing-media-card">
+              <span>PRI formula</span>
+              <strong>hazard × vulnerability × exposure × value</strong>
+              <p>Normalizatzen dugu (0-100) eta kolore semaforo moduan erakusten dugu.</p>
+            </div>
+            <div className="landing-media-card">
+              <span>Top-Drivers</span>
+              <p>
+                Kalkuluaren ondoren, ekarpen handiena duten 3 faktoreak bistaratzen ditugu, hizkuntza arruntean.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="landing-section" id="roadmap">
+      <section className="landing-section" id="sekzioak">
         <header className="landing-section-header">
-          <h2>Roadmap · 8-10 astetan pilotua</h2>
-          <p>Iterazio azkarra eta aditu sarearekin ko-diseinua, arrisku kalkulu argia frogatzeko.</p>
+          <h2>Zer ikusiko duzu /app eremuan?</h2>
+          <p>Demoak pantaila bakoitza erakutsiko du, baina hona hemen ikuspegi bisuala.</p>
         </header>
-        <div className="landing-roadmap">
-          {roadmap.map((item) => (
-            <article key={item.title}>
-              <h3>{item.title}</h3>
-              <p>
-                {item.description} {item.ref ? <ReferenceLink id={item.ref} /> : null}
-              </p>
+        <div className="landing-screens">
+          {screenPreviews.map((screen) => (
+            <article className="landing-screen" key={screen.slug}>
+              <div className="landing-screen-visual" aria-hidden="true">
+                <span>{screen.label}</span>
+              </div>
+              <h3>{screen.label}</h3>
+              <p>{screen.blurb}</p>
             </article>
           ))}
         </div>
@@ -351,36 +323,14 @@ export default function Home() {
 
       <section className="landing-section" id="impactua">
         <header className="landing-section-header">
-          <h2>Aliatu sare globala</h2>
-          <p>
-            Ikerketa, satelite eta ondare erakundeekin harreman zuzena bilatzen dugu validazio azkarra eta inpaktu
-            neurgarria lortzeko.
-          </p>
-        </header>
-        <div className="landing-experts">
-          {expertNetwork.map((expert) => (
-            <article key={expert.name}>
-              <h3>{expert.name}</h3>
-              <p className="landing-expert-role">{expert.role}</p>
-              <p>{expert.focus}</p>
-              {expert.ref ? <ReferenceLink id={expert.ref} /> : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section" id="exceeds">
-        <header className="landing-section-header">
-          <h2>FLL UNEARTHED · EXCEEDS/5 plan argia</h2>
-          <p>Rúbrica ofizialeko bost irizpideak betetzen dituen checklista ikusgarria.</p>
+          <h2>Zein inpaktu nahi dugu?</h2>
+          <p>Helburuak argi eta labur: erabaki azkarrak, azalpen gardenak eta partekatze segurua.</p>
         </header>
         <div className="landing-grid">
-          {rubricPlan.map((item) => (
+          {impactPoints.map((item) => (
             <article className="landing-card" key={item.title}>
-              <span className="landing-badge">{item.title}</span>
-              <p>
-                {item.description} {item.ref ? <ReferenceLink id={item.ref} /> : null}
-              </p>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
             </article>
           ))}
         </div>

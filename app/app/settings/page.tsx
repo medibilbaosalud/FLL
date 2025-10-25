@@ -6,21 +6,21 @@ import { Section } from "components/ui/section";
 const settingsHighlights = [
   {
     icon: "settings" as const,
-    title: "Pisuak eta atalaseak",
-    description: "Hazard, satelite, giza presio eta balioaren pisuak doitu eta 0-100 PRIra normalizatuko ditugu.",
-    bullets: ["Slider eta input zehatzak", "Kolore semaforo pertsonalizatua"],
+    title: "Pisuen kontrola",
+    description: "Hemen egokituko dituzu hazard, satelite, giza presio eta balioaren pisuak modu errazean.",
+    bullets: ["Slider eta input zehatzak", "Kolore semaforo pertsonalizagarria"],
   },
   {
     icon: "map" as const,
     title: "Maparen hobespenak",
-    description: "Layer lehenetsiak, cluster erradioa eta gune sentikorren ofuskazio maila hemen konfiguratuko dituzu.",
+    description: "Layer lehenetsiak, cluster erradioa eta gune sentikorren babes maila hemen gordeko dira.",
     bullets: ["Gehien kontsultatutako layer ordena", "Zoom maximoa gune sentikorretarako"],
   },
   {
     icon: "table" as const,
-    title: "Esportazio & integrazioak",
-    description: "Arches/EAMENA mapaketak gordeko ditugu CSV/GeoJSON esportazio koherenteetarako.",
-    bullets: ["Field mapping ikusgarriak", "API tokenak segurtasunarekin"],
+    title: "Esportazio eta integrazioak",
+    description: "Arches/EAMENA mapaketak eta API tokenak modu seguruan gordeko dituzu atal honetan.",
+    bullets: ["Field mapping ikusgarriak", "API tokenen kudeaketa"],
   },
 ];
 
@@ -33,10 +33,10 @@ export default function SettingsPage() {
         ))}
       </div>
       <div className="mt-8 feature-card">
-        <h3>Gordetako profilak</h3>
+        <h3>Profil azkarrak</h3>
         <p>
-          Gorde konbinazio ezberdinak (kostaldea, ibar lehorra, hiri gunea...) eta aplikatu klik bakarrean mapa eta
-          triage mahaian.
+          Kostaldea, ibar lehorra edo hiri gunea bezalako preset-ak gordeko dituzu eta klik bakarrean aplikatuko dira mapa
+          eta triage mahaian.
         </p>
       </div>
     </Section>
