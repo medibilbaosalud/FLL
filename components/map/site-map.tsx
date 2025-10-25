@@ -4,8 +4,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { StyleSpecification, Map, GeoJSONSource, MapLayerMouseEvent, MapGeoJSONFeature } from "maplibre-gl";
-import maplibregl from "maplibre-gl";
+import type {
+  GeoJSONSource,
+  Map as MapLibreMap,
+  MapGeoJSONFeature,
+  MapLayerMouseEvent,
+  StyleSpecification,
+} from "maplibre-gl";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { Sheet } from "components/ui/sheet";
@@ -81,194 +86,283 @@ function riskTone(risk: number) {
 
 export default function SiteMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<Map | null>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const [selected, setSelected] = useState<SiteProperties | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { riskMin, layers } = useRiskStore((state) => ({ riskMin: state.riskMin, layers: state.layers }));
+  const filtersRef = useRef({ riskMin, layers });
 
   useEffect(() => {
-    if (typeof window === "undefined" || !containerRef.current) {
+    filtersRef.current = { riskMin, layers };
+  }, [layers, riskMin]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !containerRef.current || mapRef.current) {
       return;
     }
 
-    const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: mapStyle as StyleSpecification | string,
-      center: [-2.2, 43.1],
-      zoom: 4.5,
-      attributionControl: true,
-    });
+    let cancelled = false;
+    let map: MapLibreMap | null = null;
 
-    mapRef.current = map;
+    let loadHandler: (() => void) | null = null;
+    let clusterClick: ((event: MapLayerMouseEvent) => void) | null = null;
+    let pointClick: ((event: MapLayerMouseEvent) => void) | null = null;
+    let pointEnter: ((event: MapLayerMouseEvent) => void) | null = null;
+    let pointMove: ((event: MapLayerMouseEvent) => void) | null = null;
+    let pointLeave: (() => void) | null = null;
+    let errorListener: ((evt: { error?: Error }) => void) | null = null;
 
-    map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
-
-    map.on("load", async () => {
+    (async () => {
       try {
-        const response = await fetch("/data/sites.geojson");
-        const geojson = await response.json();
+        const maplibre = await import("maplibre-gl");
+        const { Map, NavigationControl } = maplibre;
 
-        map.addSource("sites", {
-          type: "geojson",
-          data: geojson,
-          cluster: true,
-          clusterRadius: 40,
-        });
+        map = new Map({
+          container: containerRef.current as HTMLDivElement,
+          style: mapStyle as StyleSpecification | string,
+          center: [-2.2, 43.1],
+          zoom: 4.5,
+          attributionControl: true,
+        }) as MapLibreMap;
 
-        map.addLayer({
-          id: "site-clusters",
-          type: "circle",
-          source: "sites",
-          filter: ["has", "point_count"],
-          paint: {
-            "circle-color": "#6366f1",
-            "circle-radius": [
-              "step",
-              ["get", "point_count"],
-              20,
-              10,
-              28,
-              25,
-              34,
-            ],
-            "circle-opacity": 0.82,
-          },
-        });
+        mapRef.current = map;
+        setError(null);
 
-        map.addLayer({
-          id: "site-cluster-count",
-          type: "symbol",
-          source: "sites",
-          filter: ["has", "point_count"],
-          layout: {
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-size": 14,
-          },
-          paint: {
-            "text-color": "#1e1b4b",
-          },
-        });
+        map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
 
-        map.addLayer({
-          id: "site-points",
-          type: "circle",
-          source: "sites",
-          filter: ["!", ["has", "point_count"]],
-          paint: {
-            "circle-color": [
-              "case",
-              ["<", ["coalesce", ["get", "risk"], 0], 33],
-              "#16a34a",
-              ["<", ["coalesce", ["get", "risk"], 0], 66],
-              "#f59e0b",
-              "#dc2626",
-            ],
-            "circle-radius": 10,
-            "circle-stroke-width": 1.5,
-            "circle-stroke-color": "white",
-            "circle-opacity": 0.92,
-          },
-        });
+        loadHandler = async () => {
+          try {
+            const response = await fetch("/data/sites.geojson");
+            if (!response.ok) {
+              throw new Error(`GeoJSON kargak ${response.status} kodea itzuli du`);
+            }
+            const geojson = await response.json();
 
-        const clusterVisibility = layers.clusters ? "visible" : "none";
-        map.setLayoutProperty("site-clusters", "visibility", clusterVisibility);
-        map.setLayoutProperty("site-cluster-count", "visibility", clusterVisibility);
-        map.setLayoutProperty("site-points", "visibility", layers.points ? "visible" : "none");
-        map.setFilter("site-points", [
-          "all",
-          ["!", ["has", "point_count"]],
-          [">=", ["coalesce", ["get", "risk"], 0], riskMin],
-        ]);
-      } catch (error) {
-        console.error("[map] Ezin izan da GeoJSON kargatu", error);
+            const { riskMin: initialRisk, layers: initialLayers } = filtersRef.current;
+
+            if (!map?.getSource("sites")) {
+              map?.addSource("sites", {
+                type: "geojson",
+                data: geojson,
+                cluster: true,
+                clusterRadius: 40,
+              });
+            } else {
+              (map.getSource("sites") as GeoJSONSource).setData(geojson);
+            }
+
+            if (!map?.getLayer("site-clusters")) {
+              map?.addLayer({
+                id: "site-clusters",
+                type: "circle",
+                source: "sites",
+                filter: ["has", "point_count"],
+                paint: {
+                  "circle-color": "#6366f1",
+                  "circle-radius": ["step", ["get", "point_count"], 20, 10, 28, 25, 34],
+                  "circle-opacity": 0.82,
+                },
+              });
+            }
+
+            if (!map?.getLayer("site-cluster-count")) {
+              map?.addLayer({
+                id: "site-cluster-count",
+                type: "symbol",
+                source: "sites",
+                filter: ["has", "point_count"],
+                layout: {
+                  "text-field": ["get", "point_count_abbreviated"],
+                  "text-size": 14,
+                },
+                paint: { "text-color": "#1e1b4b" },
+              });
+            }
+
+            if (!map?.getLayer("site-points")) {
+              map?.addLayer({
+                id: "site-points",
+                type: "circle",
+                source: "sites",
+                filter: ["!", ["has", "point_count"]],
+                paint: {
+                  "circle-color": [
+                    "case",
+                    ["<", ["coalesce", ["get", "risk"], 0], 33],
+                    "#16a34a",
+                    ["<", ["coalesce", ["get", "risk"], 0], 66],
+                    "#f59e0b",
+                    "#dc2626",
+                  ],
+                  "circle-radius": 10,
+                  "circle-stroke-width": 1.5,
+                  "circle-stroke-color": "white",
+                  "circle-opacity": 0.92,
+                },
+              });
+            }
+
+            const clusterVisibility = initialLayers.clusters ? "visible" : "none";
+            map?.setLayoutProperty("site-clusters", "visibility", clusterVisibility);
+            map?.setLayoutProperty("site-cluster-count", "visibility", clusterVisibility);
+            map?.setLayoutProperty("site-points", "visibility", initialLayers.points ? "visible" : "none");
+            map?.setFilter("site-points", [
+              "all",
+              ["!", ["has", "point_count"]],
+              [">=", ["coalesce", ["get", "risk"], 0], initialRisk],
+            ]);
+          } catch (loadError) {
+            console.error("[map] Ezin izan da GeoJSON kargatu", loadError);
+            if (!cancelled) {
+              setError(loadError instanceof Error ? loadError.message : "GeoJSON kargak huts egin du");
+            }
+          }
+        };
+
+        map.on("load", loadHandler);
+
+        clusterClick = (event: MapLayerMouseEvent) => {
+          const features = map?.queryRenderedFeatures(event.point, { layers: ["site-clusters"] }) ?? [];
+          const clusterFeature = features[0];
+          if (!map || !clusterFeature) return;
+          const source = map.getSource("sites") as GeoJSONSource;
+          const clusterId = clusterFeature.properties?.cluster_id;
+          if (!source || typeof clusterId !== "number") return;
+          source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+            if (err || typeof zoom !== "number") return;
+            const coords =
+              clusterFeature.geometry?.type === "Point"
+                ? (clusterFeature.geometry.coordinates as [number, number])
+                : undefined;
+            map.easeTo({ center: coords ?? event.lngLat, zoom });
+          });
+        };
+
+        pointClick = (event: MapLayerMouseEvent) => {
+          const feature = event.features?.[0];
+          const site = featureToSite(feature as MapGeoJSONFeature);
+          if (!site) return;
+          setSelected(site);
+        };
+
+        pointEnter = (event: MapLayerMouseEvent) => {
+          if (!map) return;
+          map.getCanvas().style.cursor = "pointer";
+          const feature = event.features?.[0];
+          const site = featureToSite(feature as MapGeoJSONFeature);
+          if (!site) {
+            setTooltip(null);
+            return;
+          }
+          setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
+        };
+
+        pointMove = (event: MapLayerMouseEvent) => {
+          const feature = event.features?.[0];
+          if (!feature) return;
+          const site = featureToSite(feature as MapGeoJSONFeature);
+          if (!site) return;
+          setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
+        };
+
+        pointLeave = () => {
+          if (map) {
+            map.getCanvas().style.cursor = "";
+          }
+          setTooltip(null);
+        };
+
+        map.on("click", "site-clusters", clusterClick);
+        map.on("click", "site-points", pointClick);
+        map.on("mouseenter", "site-points", pointEnter);
+        map.on("mousemove", "site-points", pointMove);
+        map.on("mouseleave", "site-points", pointLeave);
+
+        errorListener = (evt: { error?: Error }) => {
+          if (!cancelled && evt?.error) {
+            console.error("[map] runtime error", evt.error);
+            setError(evt.error.message ?? "Maparen errore ezezaguna");
+          }
+        };
+
+        map.on("error", errorListener as () => void);
+      } catch (initError) {
+        console.error("[map] inicializazioak huts egin du", initError);
+        if (!cancelled) {
+          setError(initError instanceof Error ? initError.message : "Mapa ezin izan da abiarazi");
+        }
       }
-    });
-
-    const handleClusterClick = (event: MapLayerMouseEvent) => {
-      const features = map.queryRenderedFeatures(event.point, { layers: ["site-clusters"] });
-      const clusterFeature = features[0];
-      if (!clusterFeature) return;
-      const source = map.getSource("sites") as GeoJSONSource;
-      const clusterId = clusterFeature.properties?.cluster_id;
-      if (!source || typeof clusterId !== "number") return;
-      source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-        if (err || typeof zoom !== "number") return;
-        const coords =
-          clusterFeature.geometry?.type === "Point"
-            ? (clusterFeature.geometry.coordinates as [number, number])
-            : undefined;
-        map.easeTo({ center: coords ?? event.lngLat, zoom });
-      });
-    };
-
-    const handlePointClick = (event: MapLayerMouseEvent) => {
-      const feature = event.features?.[0];
-      const site = featureToSite(feature as MapGeoJSONFeature);
-      if (!site) return;
-      setSelected(site);
-    };
-
-    const handlePointEnter = (event: MapLayerMouseEvent) => {
-      map.getCanvas().style.cursor = "pointer";
-      const feature = event.features?.[0];
-      const site = featureToSite(feature as MapGeoJSONFeature);
-      if (!site) {
-        setTooltip(null);
-        return;
-      }
-      setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
-    };
-
-    const handlePointMove = (event: MapLayerMouseEvent) => {
-      const feature = event.features?.[0];
-      if (!feature) return;
-      const site = featureToSite(feature as MapGeoJSONFeature);
-      if (!site) return;
-      setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
-    };
-
-    const clearTooltip = () => {
-      map.getCanvas().style.cursor = "";
-      setTooltip(null);
-    };
-
-    map.on("click", "site-clusters", handleClusterClick);
-    map.on("click", "site-points", handlePointClick);
-    map.on("mouseenter", "site-points", handlePointEnter);
-    map.on("mousemove", "site-points", handlePointMove);
-    map.on("mouseleave", "site-points", clearTooltip);
+    })();
 
     return () => {
-      map.off("click", "site-clusters", handleClusterClick);
-      map.off("click", "site-points", handlePointClick);
-      map.off("mouseenter", "site-points", handlePointEnter);
-      map.off("mousemove", "site-points", handlePointMove);
-      map.off("mouseleave", "site-points", clearTooltip);
-      map.remove();
+      cancelled = true;
+      if (map) {
+        if (loadHandler) {
+          map.off("load", loadHandler);
+        }
+        if (clusterClick) {
+          map.off("click", "site-clusters", clusterClick);
+        }
+        if (pointClick) {
+          map.off("click", "site-points", pointClick);
+        }
+        if (pointEnter) {
+          map.off("mouseenter", "site-points", pointEnter);
+        }
+        if (pointMove) {
+          map.off("mousemove", "site-points", pointMove);
+        }
+        if (pointLeave) {
+          map.off("mouseleave", "site-points", pointLeave);
+        }
+        if (errorListener) {
+          map.off("error", errorListener as () => void);
+        }
+        map.remove();
+      }
       mapRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) {
+    if (!map) {
       return;
     }
-    const visibility = layers.clusters ? "visible" : "none";
-    if (map.getLayer("site-clusters")) {
-      map.setLayoutProperty("site-clusters", "visibility", visibility);
+
+    const applyLayers = () => {
+      const visibility = layers.clusters ? "visible" : "none";
+      if (map.getLayer("site-clusters")) {
+        map.setLayoutProperty("site-clusters", "visibility", visibility);
+      }
+      if (map.getLayer("site-cluster-count")) {
+        map.setLayoutProperty("site-cluster-count", "visibility", visibility);
+      }
+      if (map.getLayer("site-points")) {
+        map.setLayoutProperty("site-points", "visibility", layers.points ? "visible" : "none");
+        map.setFilter("site-points", [
+          "all",
+          ["!", ["has", "point_count"]],
+          [">=", ["coalesce", ["get", "risk"], 0], riskMin],
+        ]);
+      }
+    };
+
+    if (map.isStyleLoaded()) {
+      applyLayers();
+      return;
     }
-    if (map.getLayer("site-cluster-count")) {
-      map.setLayoutProperty("site-cluster-count", "visibility", visibility);
-    }
-    if (map.getLayer("site-points")) {
-      map.setLayoutProperty("site-points", "visibility", layers.points ? "visible" : "none");
-      map.setFilter("site-points", [
-        "all",
-        ["!", ["has", "point_count"]],
-        [">=", ["coalesce", ["get", "risk"], 0], riskMin],
-      ]);
-    }
+
+    const applyOnce = () => {
+      applyLayers();
+      map.off("load", applyOnce);
+    };
+
+    map.on("load", applyOnce);
+    return () => {
+      map.off("load", applyOnce);
+    };
   }, [layers, riskMin]);
 
   const tooltipStyle = tooltip
@@ -279,6 +373,15 @@ export default function SiteMap() {
     : undefined;
 
   const badgeTone = riskTone(selected?.risk ?? 0);
+
+  if (error) {
+    return (
+      <div className="map-wrapper card" role="alert" style={{ minHeight: "420px", padding: "1.5rem" }}>
+        <h3 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Mapa ezin da kargatu</h3>
+        <p style={{ margin: 0, color: "#334155" }}>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="map-wrapper" style={{ minHeight: "420px" }}>
