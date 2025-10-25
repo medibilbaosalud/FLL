@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { useLanguage } from "components/providers/language-context";
 import { Icon, type IconName } from "components/ui/icon";
 
 interface BottomItem {
@@ -12,17 +14,27 @@ interface BottomItem {
   match?: (pathname: string, hash: string) => boolean;
 }
 
-const ITEMS: BottomItem[] = [
-  { href: "/app", label: "Hasiera", icon: "home", match: (path) => path === "/app" },
-  { href: "/app#mapa", label: "Mapa", icon: "map", match: (path, hash) => path === "/app" && hash === "#mapa" },
-  { href: "/app/triage", label: "Triage", icon: "table" },
-  { href: "/app/scenario", label: "Eszenario", icon: "flask" },
-  { href: "/app/settings", label: "Ezarpenak", icon: "settings" },
-];
+const ITEM_COPY: Record<"es" | "eu", BottomItem[]> = {
+  es: [
+    { href: "/app", label: "Inicio", icon: "home", match: (path) => path === "/app" },
+    { href: "/app#mapa", label: "Mapa", icon: "map", match: (path, hash) => path === "/app" && hash === "#mapa" },
+    { href: "/app/triage", label: "Triage", icon: "table" },
+    { href: "/app/scenario", label: "Escenarios", icon: "flask" },
+    { href: "/app/settings", label: "Ajustes", icon: "settings" },
+  ],
+  eu: [
+    { href: "/app", label: "Hasiera", icon: "home", match: (path) => path === "/app" },
+    { href: "/app#mapa", label: "Mapa", icon: "map", match: (path, hash) => path === "/app" && hash === "#mapa" },
+    { href: "/app/triage", label: "Triage", icon: "table" },
+    { href: "/app/scenario", label: "Eszenarioak", icon: "flask" },
+    { href: "/app/settings", label: "Ezarpenak", icon: "settings" },
+  ],
+};
 
 export function BottomBar() {
   const pathname = usePathname();
   const [hash, setHash] = useState<string>("");
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -34,10 +46,13 @@ export function BottomBar() {
     return () => window.removeEventListener("hashchange", update);
   }, []);
 
+  const items = useMemo(() => ITEM_COPY[language], [language]);
+  const navLabel = language === "es" ? "Navegación móvil" : "Mugikorreko nabigazioa";
+
   return (
-    <nav aria-label="Mugikorreko nabigazioa" className="app-bottom-bar glass hairline soft" role="navigation">
+    <nav aria-label={navLabel} className="app-bottom-bar glass hairline soft" role="navigation">
       <div className="bottom-nav">
-        {ITEMS.map((item) => {
+        {items.map((item) => {
           const active = item.match
             ? item.match(pathname, hash)
             : pathname === item.href || pathname.startsWith(item.href);

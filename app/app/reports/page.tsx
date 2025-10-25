@@ -1,48 +1,93 @@
+"use client";
+
 export const dynamic = "force-dynamic";
 
+import { useLanguage } from "components/providers/language-context";
 import { FeatureCard } from "components/ui/feature-card";
 import { Section } from "components/ui/section";
 
-const reportHighlights = [
-  {
-    icon: "report" as const,
-    title: "PDF ikusgarria",
-    description: "Hemen sortuko da txosten bisuala: portada, KPI laburra eta mapa-irudi garbia.",
-    bullets: ["jsPDF + autoTable maketatzea", "Sinadura eta ohar pertsonalizatuak"],
+const COPY = {
+  es: {
+    title: "Centro de informes",
+    description: "Así se verá el módulo cuando esté activo.",
+    highlights: [
+      {
+        icon: "report" as const,
+        title: "PDF impecable",
+        description: "Aquí aparecerá un informe visual con portada, KPIs y mapa listo para presentar.",
+        bullets: ["Maquetación automática", "Notas y firmas personalizables"],
+      },
+      {
+        icon: "table" as const,
+        title: "CSV limpio",
+        description: "La tabla visible se exportará en un clic para análisis adicionales.",
+        bullets: ["Formato UTF-8 con separador configurable", "Marca temporal incluida"],
+      },
+      {
+        icon: "settings" as const,
+        title: "Plantillas adaptables",
+        description: "Podrás guardar variantes para cada equipo o aliado.",
+        bullets: ["Colores y logotipos propios", "Historial de informes"],
+      },
+    ],
+    previewTitle: "Cómo lo usarás",
+    previewBody:
+      "Antes de descargar verás las páginas en miniatura y podrás añadir comentarios finales.",
+    shareTitle: "Compartir",
+    shareBody:
+      "Ofreceremos descarga directa o enlace temporal que caduca automáticamente.",
   },
-  {
-    icon: "table" as const,
-    title: "CSV garbia",
-    description: "Taulako ikuspegia klik bakarrean deskargatuko da, analisi gehiagorako prest.",
-    bullets: ["UTF-8 BOM eta ; edo , aukerak", "Deskargaren data gehituta"],
+  eu: {
+    title: "Txostenen zentroa",
+    description: "Modulua aktibo dagoenean honela ikusiko duzu.",
+    highlights: [
+      {
+        icon: "report" as const,
+        title: "PDF bikaina",
+        description: "Hemen agertuko da portada, KPI-ak eta mapa dituen txosten prest.",
+        bullets: ["Maketazio automatikoa", "Oharrak eta sinadurak pertsonalizagarri"],
+      },
+      {
+        icon: "table" as const,
+        title: "CSV garbia",
+        description: "Taula ikusgarria klik bakarrean esportatuko da azterketa gehiagorako.",
+        bullets: ["UTF-8 formatuan, bereizle aukerarekin", "Data eta ordua gehituta"],
+      },
+      {
+        icon: "settings" as const,
+        title: "Txantiloi moldagarriak",
+        description: "Stakeholder bakoitzarentzat bertsioak gordeko dituzu.",
+        bullets: ["Kolore eta logotipo propioak", "Txostenen historia"],
+      },
+    ],
+    previewTitle: "Nola erabiliko duzu",
+    previewBody:
+      "Deskargatu aurretik orri bakoitzaren miniatura ikusiko duzu eta azken oharrak idatzi ahal izango dituzu.",
+    shareTitle: "Partekatu",
+    shareBody:
+      "Deskarga zuzena edo automatikoki iraungitzen den esteka eskainiko dugu.",
   },
-  {
-    icon: "settings" as const,
-    title: "Txantiloi egokituak",
-    description: "Stakeholder bakoitzerako koloreak eta laburpenak gordeko ditugu.",
-    bullets: ["Branding koloreak eta logotipoak", "Txostenen historia ikusgarria"],
-  },
-];
+} as const;
 
 export default function ReportsPage() {
+  const { language } = useLanguage();
+  const copy = COPY[language];
+
   return (
-    <Section desc="Minutu batean partekatzeko prest" title="Txostenen zentroa">
+    <Section desc={copy.description} title={copy.title}>
       <div className="feature-grid">
-        {reportHighlights.map((item) => (
+        {copy.highlights.map((item) => (
           <FeatureCard key={item.title} {...item} />
         ))}
       </div>
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         <div className="feature-card">
-          <h3>Nola ikusiko duzu</h3>
-          <p>Sortu aurretik, orri bakoitzaren miniatura ikusiko duzu eta ohar azkarrak gehitzeko lekua izango duzu.</p>
+          <h3>{copy.previewTitle}</h3>
+          <p>{copy.previewBody}</p>
         </div>
         <div className="feature-card">
-          <h3>Deskargatu edo partekatu</h3>
-          <p>
-            Deskarga zuzena edo 48 orduko esteka partekagarria eskainiko dugu; esteka zaharrak automatikoki
-            iraungiko dira.
-          </p>
+          <h3>{copy.shareTitle}</h3>
+          <p>{copy.shareBody}</p>
         </div>
       </div>
     </Section>

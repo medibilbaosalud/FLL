@@ -11,7 +11,9 @@ export type IconName =
   | "settings"
   | "menu"
   | "search"
-  | "chevron";
+  | "chevron"
+  | "spark"
+  | "shield";
 
 const ICONS: Record<IconName, { viewBox: string; path: string }> = {
   home: {
@@ -49,6 +51,14 @@ const ICONS: Record<IconName, { viewBox: string; path: string }> = {
   chevron: {
     viewBox: "0 0 24 24",
     path: "M9 6l6 6-6 6",
+  },
+  spark: {
+    viewBox: "0 0 24 24",
+    path: "M12 3v4.5m0 9V21M5.4 5.4l3.18 3.18M15.42 15.42 18.6 18.6M3 12h4.5m9 0H21M5.4 18.6l3.18-3.18M15.42 8.58 18.6 5.4",
+  },
+  shield: {
+    viewBox: "0 0 24 24",
+    path: "M12 3 4.5 6v6c0 4.97 3.03 9.54 7.5 11.25 4.47-1.71 7.5-6.28 7.5-11.25V6z",
   },
 };
 

@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { useLanguage } from "components/providers/language-context";
 import { Button } from "components/ui/button";
 import { Icon } from "components/ui/icon";
 import { Input } from "components/ui/input";
+import { LanguageToggle } from "components/ui/language-toggle";
 
 export interface TopbarProps {
   onMobileMenu: () => void;
@@ -13,21 +16,7 @@ export interface TopbarProps {
 
 export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps) {
   const [search, setSearch] = useState("");
-  const [language, setLanguage] = useState("eu");
-  const storageKey = "lang";
-
-  useEffect(() => {
-    const stored = typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null;
-    if (stored) {
-      setLanguage(stored);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(storageKey, language);
-    }
-  }, [language, storageKey]);
+  const { language } = useLanguage();
 
   const chevronStyle = {
     width: 18,
@@ -36,25 +25,19 @@ export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps
     transition: "transform 0.3s ease",
   } as const;
 
+  const searchLabel = language === "es" ? "Buscar sitios" : "Bilatu guneak";
+  const menuLabel = language === "es" ? "Abrir navegación" : "Nabigazioa ireki";
+  const toggleLabel = collapsed
+    ? language === "es" ? "Expandir barra lateral" : "Albo-barra zabaldu"
+    : language === "es" ? "Contraer barra lateral" : "Albo-barra tolestu";
+
   return (
     <header className="app-topbar glass hairline soft">
       <div className="topbar-group">
-        <Button
-          aria-label="Ireki nabigazioa"
-          className="mobile-menu-button"
-          onClick={onMobileMenu}
-          type="button"
-          variant="icon"
-        >
+        <Button aria-label={menuLabel} className="mobile-menu-button" onClick={onMobileMenu} type="button" variant="icon">
           <Icon name="menu" style={{ width: 22, height: 22 }} />
         </Button>
-        <Button
-          aria-label={collapsed ? "Zabaldu albo-barra" : "Tolestu albo-barra"}
-          className="topbar-toggle"
-          onClick={onToggleSidebar}
-          type="button"
-          variant="icon"
-        >
+        <Button aria-label={toggleLabel} className="topbar-toggle" onClick={onToggleSidebar} type="button" variant="icon">
           <Icon name="chevron" style={chevronStyle} />
         </Button>
         <span className="topbar-title">ArchéoSense</span>
@@ -63,27 +46,18 @@ export function Topbar({ onMobileMenu, onToggleSidebar, collapsed }: TopbarProps
         <label className="topbar-search" htmlFor="dashboard-search">
           <Icon name="search" style={{ width: 18, height: 18 }} />
           <Input
-            aria-label="Bilatu guneak"
+            aria-label={searchLabel}
             id="dashboard-search"
             onChange={(event) => {
               setSearch(event.target.value);
-              console.log("[bilaketa]", event.target.value);
+              console.log("[search]", event.target.value);
             }}
-            placeholder="Bilatu guneak"
+            placeholder={searchLabel}
             type="search"
             value={search}
           />
         </label>
-        <select
-          aria-label="Hizkuntza aukeratu"
-          className="topbar-select"
-          onChange={(event) => setLanguage(event.target.value)}
-          value={language}
-        >
-          <option value="eu">EU</option>
-          <option value="es">ES</option>
-          <option value="en">EN</option>
-        </select>
+        <LanguageToggle compact />
       </div>
     </header>
   );

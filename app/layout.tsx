@@ -1,17 +1,19 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 
+import { LanguageProvider } from "components/providers/language-context";
+
 export const metadata = {
   title: "ArchéoSense",
   description: "Hasiera orria / Página inicial",
 };
 
-// Oinarrizko layout-ak hizkuntza eta estilo globalak ezartzen ditu.
+// Layout globala: hizkuntza testuingurua eta estilo koherenteak ezartzen ditu.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="eu" className="h-full">
+    <html lang="es" className="h-full">
       <body className="min-h-full bg-slate-50 text-slate-900 antialiased">
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

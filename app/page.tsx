@@ -1,233 +1,336 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+
+import { LanguageToggle } from "components/ui/language-toggle";
 import { Icon } from "components/ui/icon";
+import { useLanguage } from "components/providers/language-context";
 
-const navItems = [
-  { href: "#hasiera", label: "Hasiera" },
-  { href: "#arazoa", label: "Arazoa" },
-  { href: "#soluzioa", label: "Soluzioa" },
-  { href: "#pri", label: "PRI nola" },
-  { href: "#sekzioak", label: "Pantailak" },
-  { href: "#amaiera", label: "Ekin" },
-];
+type HeroStat = { label: string; value: string };
+type SimpleCard = { title: string; description: string; icon?: keyof typeof IconMap };
 
-const heroStats = [
-  { label: "Ondarean presioa", value: "73%", ref: "2" },
-  { label: "Alertak hilabetean", value: "+15", ref: "6" },
-  { label: "Simulazioak", value: "<30 seg", ref: "12" },
-];
+type LandingCopy = {
+  nav: { href: string; label: string }[];
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    stats: HeroStat[];
+  };
+  challenge: { title: string; description: string; cards: SimpleCard[] };
+  solution: { title: string; description: string; cards: SimpleCard[] };
+  pri: {
+    title: string;
+    description: string;
+    steps: { title: string; description: string }[];
+    noteTitle: string;
+    noteSubtitle: string;
+  };
+  previews: { title: string; description: string; label: string }[];
+  impact: { title: string; cards: SimpleCard[] };
+  cta: { title: string; description: string; primary: string; secondary: string };
+};
 
-const problemCards = [
-  {
-    title: "Klima muturrekoa",
-    description:
-      "Uholdeak, bero-boladak eta suteak gero eta maizagoak dira, eta ondarea lehenago kaltetzen dute.",
-    ref: "1",
-  },
-  {
-    title: "Uraren mehatxua",
-    description:
-      "UNESCO-WRIk ohartarazi du ondarearen %73a urarekin lotutako arrisku altuan dagoela gaur egun.",
-    ref: "2",
-  },
-  {
-    title: "Bisitarien zama",
-    description:
-      "Venezia edo Rapa Nui bezalako kasuek erakusten dute turismoak eta klimak batera arriskua biderkatzen dutela.",
-    ref: "3",
-  },
-];
+type IconName =
+  | "map"
+  | "table"
+  | "flask"
+  | "report"
+  | "settings"
+  | "home"
+  | "spark"
+  | "shield";
 
-const solutionTiles = [
-  {
-    icon: "map" as const,
-    title: "Mapa bisuala",
-    description:
-      "Semaforo koloreak, cluster adimentsuak eta " +
-      "zoom bakarrean ikusiko diren gune kritikoak.",
-  },
-  {
-    icon: "table" as const,
-    title: "Triage taula",
-    description: "Lehenetsi ekintzak PRI, presio humana eta datu konfiantzarekin.",
-  },
-  {
-    icon: "flask" as const,
-    title: "Eszenarioak",
-    description:
-      "Slider intuitiboekin probatu: ekaitza, uda lehorra edo turismoaren igoera, eta ikus nola aldatzen den arriskua.",
-  },
-  {
-    icon: "report" as const,
-    title: "Txostenak",
-    description:
-      "PDF eta CSV profesionalak automatikoki, mapa eta azalpenekin partekatzeko prest.",
-  },
-  {
-    icon: "settings" as const,
-    title: "Pertsonalizazioa",
-    description: "Pisuak eta atalaseak egokitu zure errealitatera klik gutxitan.",
-  },
-];
+const IconMap: Record<IconName, IconName> = {
+  map: "map",
+  table: "table",
+  flask: "flask",
+  report: "report",
+  settings: "settings",
+  home: "home",
+  spark: "spark",
+  shield: "shield",
+};
 
-const calculationSteps = [
-  {
-    step: "1",
-    title: "Bildu",
-    description: "Klima, satelite eta bisitari datuak automatikoki batzen dira.",
-    ref: "4",
+const COPY: Record<"es" | "eu", LandingCopy> = {
+  es: {
+    nav: [
+      { href: "#inicio", label: "Inicio" },
+      { href: "#reto", label: "Reto" },
+      { href: "#solucion", label: "Solución" },
+      { href: "#pri", label: "PRI" },
+      { href: "#app", label: "La app" },
+      { href: "#impacto", label: "Impacto" },
+    ],
+    hero: {
+      eyebrow: "ArchéoSense · Clima · Patrimonio",
+      title: "Protege el pasado con decisiones claras.",
+      description:
+        "Unimos clima, satélite y actividad humana para convertirlos en un semáforo comprensible y en planes de acción listos para actuar.",
+      ctaPrimary: "Entrar a la demo",
+      ctaSecondary: "Ver cómo funciona",
+      stats: [
+        { label: "Sitios vigilados", value: "10" },
+        { label: "Alertas al mes", value: "15" },
+        { label: "Escenarios guardados", value: "28" },
+      ],
+    },
+    challenge: {
+      title: "Por qué hace falta",
+      description:
+        "Clima extremo, saturación turística y datos dispersos. ArchéoSense resume la urgencia en un vistazo.",
+      cards: [
+        {
+          title: "Clima impredecible",
+          description: "Inundaciones, olas de calor y incendios dañan el patrimonio antes de poder reaccionar.",
+          icon: "shield",
+        },
+        {
+          title: "Demasiados datos sueltos",
+          description: "Sensores, satélite y visitas generan ruido. Necesitamos priorizar con criterio.",
+          icon: "table",
+        },
+        {
+          title: "Decisiones lentas",
+          description: "Sin un semáforo claro, el presupuesto se diluye y llegan tarde las acciones preventivas.",
+          icon: "spark",
+        },
+      ],
+    },
+    solution: {
+      title: "Qué ofrece la plataforma",
+      description: "Cinco módulos que conectan alerta temprana, explicación y respuesta.",
+      cards: [
+        { title: "Mapa vivo", description: "Clusters, colores por riesgo y capas temáticas en segundos.", icon: "map" },
+        {
+          title: "Triage inteligente",
+          description: "Ordena inspecciones y exporta CSV con lo urgente primero.",
+          icon: "table",
+        },
+        {
+          title: "Laboratorio de escenarios",
+          description: "Simula lluvia, calor o picos de turismo y ve cómo cambia el riesgo.",
+          icon: "flask",
+        },
+        {
+          title: "Informes listos",
+          description: "PDF y CSV con mapas, drivers y acciones recomendadas.",
+          icon: "report",
+        },
+        {
+          title: "Preferencias",
+          description: "Ajusta pesos y umbrales para adaptarlo a tu realidad.",
+          icon: "settings",
+        },
+      ],
+    },
+    pri: {
+      title: "Así calculamos el PRI",
+      description: "Un flujo corto explica de dónde sale cada color del semáforo.",
+      steps: [
+        { title: "Reunimos datos", description: "Clima, deformación, visitas y estado del sitio." },
+        { title: "Calculamos el índice", description: "Combinamos peligro, vulnerabilidad, exposición y valor." },
+        { title: "Explicamos el porqué", description: "Mostramos los tres factores que más empujan el riesgo." },
+        { title: "Sugerimos acciones", description: "Cada medida indica cuánto reduce el riesgo y su coste." },
+      ],
+      noteTitle: "PRI (0-100)",
+      noteSubtitle: "Normalizamos la fórmula y coloreamos según umbrales configurables.",
+    },
+    previews: [
+      {
+        label: "Inicio",
+        title: "Panel de salud",
+        description: "KPIs rápidos, alertas recientes y acceso directo al mapa vivo.",
+      },
+      {
+        label: "Mapa",
+        title: "Explora y filtra",
+        description: "Verás cada sitio por riesgo, podrás filtrar por país y abrir la ficha instantánea.",
+      },
+      {
+        label: "Triage",
+        title: "Prioriza",
+        description: "Aquí aparecerá la tabla con acciones masivas, filtros por material y exportación.",
+      },
+      {
+        label: "Escenarios",
+        title: "Simula",
+        description: "Controla sliders de lluvia, temperatura y turismo para prever qué pasará.",
+      },
+      {
+        label: "Informes",
+        title: "Comparte",
+        description: "Genera PDFs estilizados y CSV para tu equipo o aliados.",
+      },
+      {
+        label: "Ezarpenak",
+        title: "Configura",
+        description: "Define pesos del PRI, idioma y límites de color sin salir de la app.",
+      },
+    ],
+    impact: {
+      title: "Qué conseguimos",
+      cards: [
+        { title: "Actuar antes", description: "Alertas y escenarios en menos de un minuto para evitar daños." },
+        { title: "Explicar fácil", description: "El semáforo muestra riesgo y motivos con lenguaje claro." },
+        { title: "Compartir seguro", description: "Datos sensibles ofuscados por defecto y exportables cuando toca." },
+      ],
+    },
+    cta: {
+      title: "¿Listo para probar ArchéoSense?",
+      description: "Explora la demo y descubre cómo priorizar la protección del patrimonio con datos claros.",
+      primary: "Abrir demo",
+      secondary: "Escríbenos",
+    },
   },
-  {
-    step: "2",
-    title: "Ulertu",
-    description: "PRI kalkuluak semaforo kolorea eta 3 driver nagusiak erakusten ditu.",
+  eu: {
+    nav: [
+      { href: "#inicio", label: "Hasiera" },
+      { href: "#reto", label: "Erronka" },
+      { href: "#solucion", label: "Konponbidea" },
+      { href: "#pri", label: "PRI" },
+      { href: "#app", label: "Aplikazioa" },
+      { href: "#impacto", label: "Eragina" },
+    ],
+    hero: {
+      eyebrow: "ArchéoSense · Klima · Ondarea",
+      title: "Babestu aztarnategiak erabaki gardenekin.",
+      description:
+        "Klimako, sateliteko eta jarduera humanoaren datuak uztartzen ditugu semaforo ulerterrazean eta ekintza-planean.",
+      ctaPrimary: "Demoan sartu",
+      ctaSecondary: "Ikusi nola dabilen",
+      stats: [
+        { label: "Gainbegiratutako guneak", value: "10" },
+        { label: "Alertak hilabetean", value: "15" },
+        { label: "Gordetako eszenarioak", value: "28" },
+      ],
+    },
+    challenge: {
+      title: "Zergatik behar da",
+      description: "Klima muturrekoa, turismoa eta datu sakabanatuak. ArchéoSensek egoera kolpe batez laburbiltzen du.",
+      cards: [
+        {
+          title: "Klima aldakorra",
+          description: "Uholdeak, bero-boladak eta suteak kalteak eragiten dituzte garaiz erreakzionatu aurretik.",
+          icon: "shield",
+        },
+        {
+          title: "Datu gehiegi",
+          description: "Sentsore, satelite eta bisitarien informazioa irizpide argiz ordenatu behar da.",
+          icon: "table",
+        },
+        {
+          title: "Erabaki motelak",
+          description: "Semaforo argirik gabe, aurrekontua sakabanatu egiten da eta prebentzioa berandu heltzen da.",
+          icon: "spark",
+        },
+      ],
+    },
+    solution: {
+      title: "Zer eskaintzen du",
+      description: "Bost moduluk lotzen dute alerta goiztiarra, azalpena eta erantzuna.",
+      cards: [
+        { title: "Mapa bizia", description: "Cluster eta arrisku koloreak segundotan.", icon: "map" },
+        { title: "Triage adimentsua", description: "Inspekzioak ordenatu eta CSV esportatu lehentasunarekin.", icon: "table" },
+        { title: "Eszenario laborategia", description: "Euria, beroa edo turismoa aldatuz ikusi nola mugitzen den PRI.", icon: "flask" },
+        { title: "Txosten prest", description: "PDF eta CSV mapekin, driverrekin eta gomendioekin.", icon: "report" },
+        { title: "Hobespenak", description: "Pisuen eta atalaseen kontrol erraza.", icon: "settings" },
+      ],
+    },
+    pri: {
+      title: "PRI nola kalkulatzen da",
+      description: "Lau pausu labur, semaforoaren atzean dagoen logika ulertzeko.",
+      steps: [
+        { title: "Datuak batzen ditugu", description: "Klima, deformazioa, bisitariak eta gune egoera." },
+        { title: "Indizea kalkulatzen dugu", description: "Arriskua × ahultasuna × esposizioa × balioa." },
+        { title: "Zergatia azaltzen dugu", description: "Top 3 driverrek arriskua zergatik igo den erakusten dute." },
+        { title: "Ekintzak gomendatzen ditugu", description: "Neurri bakoitzak arriskua zenbat jaisten duen eta kostua agertzen da." },
+      ],
+      noteTitle: "PRI (0-100)",
+      noteSubtitle: "Formula normalizatu eta kolore semaforo bidez bistaratzen dugu.",
+    },
+    previews: [
+      { label: "Hasiera", title: "Osasun panela", description: "KPI azkarrak, azken alertak eta mapa bizira sarbide zuzena." },
+      {
+        label: "Mapa",
+        title: "Arakatu",
+        description: "Arriskuaren arabera ikusiko duzu guztia, herrialdearen arabera iragazi eta fitxa zabaldu momentuan.",
+      },
+      {
+        label: "Triage",
+        title: "Lehentasunak",
+        description: "Hemen agertuko da ekintza masiboetarako taula eta materialaren araberako iragazkia.",
+      },
+      {
+        label: "Eszenarioak",
+        title: "Simulatu",
+        description: "Euria, tenperatura eta turismo sliderrekin etorkizuneko arriskua aurreikusi.",
+      },
+      { label: "Txostenak", title: "Partekatu", description: "PDF dotoreak eta CSV-ak taldearentzat edo aliatuentzat." },
+      {
+        label: "Ezarpenak",
+        title: "Konfiguratu",
+        description: "PRI pisuak, hizkuntza eta kolore mugak unean bertan egokitu.",
+      },
+    ],
+    impact: {
+      title: "Zer lortzen dugu",
+      cards: [
+        { title: "Aurretiazko erreakzioa", description: "Alertak eta eszenarioak minutu batean erantzuteko." },
+        { title: "Azalpen gardena", description: "Semaforoak arriskua eta arrazoiak hizkera arruntean erakusten ditu." },
+        { title: "Partekatze segurua", description: "Datu sentikorrak lehenetsiz ofuskatuta eta behar denean esportagarri." },
+      ],
+    },
+    cta: {
+      title: "Prest al zaude ArchéoSense probatzeko?",
+      description: "Demoa arakatu eta ondarea babesteko lehentasunak datu argiekin antolatu.",
+      primary: "Demoa ireki",
+      secondary: "Idatzi guri",
+    },
   },
-  {
-    step: "3",
-    title: "Ekin",
-    description: "Ekintza bakoitzak Δ-arriskua, kostua eta denbora etiketa jasotzen du.",
-  },
-  {
-    step: "4",
-    title: "Partekatu",
-    description: "Txosten eta eszenario gardenei esker, erabakiak koordinatuta heltzen dira.",
-  },
-];
+};
 
-const screenPreviews = [
-  {
-    slug: "mapa",
-    label: "Mapa",
-    blurb:
-      "Hemen ikusiko duzu gune bakoitzaren posizioa eta arriskua. Layer botoiekin euriak, deformazioak edo bisitari fluxua piztu daitezke.",
-  },
-  {
-    slug: "triage",
-    label: "Triage",
-    blurb:
-      "Taula adimentsua: arrisku gorenean dauden guneak lehenetsita eta bulk ekintzak prest, CSV esportazioarekin.",
-  },
-  {
-    slug: "scenario",
-    label: "Eszenarioak",
-    blurb:
-      "Slider sinpleekin ikusiko duzu nola aldatzen den PRI euria, tenperatura edo turismoa aldatuta.",
-  },
-  {
-    slug: "reports",
-    label: "Txostenak",
-    blurb: "PDF eta CSV automatikoki sortuko dira, mapa eta azalpen bisualekin.",
-  },
-  {
-    slug: "settings",
-    label: "Ezarpenak",
-    blurb:
-      "Pisuen kontrol erraza: hazard, human, sat eta site balioek zure errealitatera moldatuko dute PRI.",
-  },
-];
+export default function HomePage() {
+  const { language } = useLanguage();
+  const copy = COPY[language];
 
-const impactPoints = [
-  {
-    title: "Ondarea babesteko abiadura",
-    description:
-      "Alertak eta eszenarioak 60 segundutik behera prest, kaltea gertatu aurretik erreakzionatzeko.",
-  },
-  {
-    title: "Gardentasuna",
-    description:
-      "Zergatik dago gune bat gorrian? Top-Driverrek 1 lerrotan erantzuten dute.",
-  },
-  {
-    title: "Interoperabilitatea",
-    description:
-      "CSV/GeoJSON esportazioak Arches edo EAMENA plataformekin lerrokatuta doaz.",
-  },
-];
-
-const references = [
-  { id: "1", label: "Climate Change and World Heritage (UNESCO)", href: "https://whc.unesco.org/en/climatechange/" },
-  { id: "2", label: "Nearly Three-Quarters of World Heritage Sites Are at High Risk (UNESCO-WRI)", href: "https://whc.unesco.org/en/news/2788" },
-  { id: "3", label: "UNESCO recommends putting Venice on heritage danger list (The Guardian)", href: "https://www.theguardian.com/world/2023/jul/31/unesco-recommends-putting-venice-on-heritage-danger-list" },
-  { id: "4", label: "The ABC Method: a risk management approach to preservation (ICCROM)", href: "https://www.iccrom.org/publication/abc-method-risk-management-approach-preservation-cultural-heritage" },
-  { id: "6", label: "Heritage Alerts (ICOMOS)", href: "https://www.icomos.org/advocacy/heritage-alerts/" },
-  { id: "12", label: "HeritageWatch.AI announcement", href: "https://heritagewatch.ai/wp-content/uploads/2025/02/10022025_-Microsoft-Planet-Aliph-Iconem_Announcement.pdf" },
-  { id: "9", label: "Arches Project (Getty/WMF)", href: "https://www.archesproject.org/" },
-];
-
-const referenceLookup = references.reduce<Record<string, string>>((acc, item) => {
-  acc[item.id] = item.href;
-  return acc;
-}, {});
-
-function ReferenceLink({ id }: { id: string }) {
-  const href = referenceLookup[id];
-  if (!href) {
-    return null;
-  }
   return (
-    <a className="landing-ref" href={href} rel="noreferrer" target="_blank">
-      [{id}]
-    </a>
-  );
-}
-
-export default function Home() {
-  return (
-    <main className="landing">
-      <section className="landing-hero" id="hasiera">
-        <div className="landing-hero-bg" />
-        <div className="landing-hero-grid">
+    <main className="landing" id="inicio">
+      <section className="landing-hero">
+        <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="landing-eyebrow">ArchéoSense · Klima · Ondarea · Erabakiak</p>
-            <h1>Arriskuaren semaforo bisuala, ondarea babesteko.</h1>
-            <p className="landing-subtitle">
-              Klimaren eta sateliteen datuak, bisitarien presioa eta guneen balioa bateratzen ditugu erabaki
-              argiak hartzeko. Helburua? Ondarea babestea kaltea gertatu aurretik.
-            </p>
-              <div className="landing-actions">
-                <Link className="landing-primary" href="/app">
-                  Ireki plataforma →
-                </Link>
-                <a className="landing-secondary" href="#soluzioa">
-                  Ezagutu moduluak
-                </a>
-              </div>
+            <div className="landing-hero-top">
+              <span className="landing-eyebrow">{copy.hero.eyebrow}</span>
+              <LanguageToggle />
+            </div>
+            <h1>{copy.hero.title}</h1>
+            <p>{copy.hero.description}</p>
+            <div className="landing-actions">
+              <Link className="landing-primary" href="/app">
+                {copy.hero.ctaPrimary}
+              </Link>
+              <a className="landing-secondary" href="#solucion">
+                {copy.hero.ctaSecondary}
+              </a>
+            </div>
             <dl className="landing-stats">
-              {heroStats.map((item) => (
-                <div key={item.label}>
-                  <dt>{item.label}</dt>
-                  <dd>
-                    {item.value}
-                    {item.ref ? <ReferenceLink id={item.ref} /> : null}
-                  </dd>
+              {copy.hero.stats.map((stat) => (
+                <div key={stat.label}>
+                  <dt>{stat.label}</dt>
+                  <dd>{stat.value}</dd>
                 </div>
               ))}
             </dl>
           </div>
-          <div className="landing-hero-card">
-            <div className="landing-hero-card-inner">
-              <span>Mapa + Triage + Txostenak</span>
-              <h2>Ikuspegi bakarra gune kritikoentzat</h2>
-              <p>
-                Kolore semaforoa, top driver azalpenak eta ekintza-planak, guztiak panel bakarrean. Mugikorretan
-                eta ordenagailuetan esperientzia bera.
-              </p>
-              <div className="landing-hero-preview">
-                <div>
-                  <span>Scenario Lab</span>
-                  <strong>+18%</strong>
-                  <small>Turismoaren igoera simulatu eta arriskuari nola eragiten dion ikusi.</small>
-                </div>
-                <div>
-                  <span>Triage board</span>
-                  <strong>3 gune</strong>
-                  <small>Gorri bihurtu berri diren guneak, ikuskapen azkarra programatzeko.</small>
-                </div>
-              </div>
-            </div>
+          <div className="landing-hero-visual">
+            <Image alt="Vista previa de ArchéoSense" height={520} src="/images/landing-hero.svg" width={560} />
           </div>
         </div>
-        <nav aria-label="Landing nabigazioa" className="landing-nav">
-          {navItems.map((item) => (
+        <nav aria-label="Secciones principales" className="landing-nav">
+          {copy.nav.map((item) => (
             <a key={item.href} href={item.href}>
               {item.label}
             </a>
@@ -235,34 +338,33 @@ export default function Home() {
         </nav>
       </section>
 
-      <section className="landing-section" id="arazoa">
+      <section className="landing-section" id="reto">
         <header className="landing-section-header">
-          <h2>Zergatik orain?</h2>
-          <p>Hiru irudi azkar eta ulerterrazek azaltzen dute zergatik behar dugun alerta eta erantzun azkarreko sistema.</p>
+          <h2>{copy.challenge.title}</h2>
+          <p>{copy.challenge.description}</p>
         </header>
         <div className="landing-grid">
-          {problemCards.map((item) => (
-            <article className="landing-card" key={item.title}>
-              <h3>{item.title}</h3>
-              <p>
-                {item.description} <ReferenceLink id={item.ref} />
-              </p>
+          {copy.challenge.cards.map((card) => (
+            <article className="landing-card" key={card.title}>
+              {card.icon ? <Icon className="landing-card-icon" name={IconMap[card.icon]} /> : null}
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="landing-section" id="soluzioa">
+      <section className="landing-section" id="solucion">
         <header className="landing-section-header">
-          <h2>Soluzioaren laburpena</h2>
-          <p>Modulu bakoitza klik bakarrean ulertzeko pentsatuta dago: ikus, ulertu eta ekin.</p>
+          <h2>{copy.solution.title}</h2>
+          <p>{copy.solution.description}</p>
         </header>
         <div className="landing-module-grid">
-          {solutionTiles.map((tile) => (
-            <article className="landing-card" key={tile.title}>
-              <Icon className="landing-card-icon" name={tile.icon} />
-              <h3>{tile.title}</h3>
-              <p>{tile.description}</p>
+          {copy.solution.cards.map((card) => (
+            <article className="landing-card" key={card.title}>
+              {card.icon ? <Icon className="landing-card-icon" name={IconMap[card.icon]} /> : null}
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
             </article>
           ))}
         </div>
@@ -270,105 +372,79 @@ export default function Home() {
 
       <section className="landing-section landing-section-split" id="pri">
         <header className="landing-section-header">
-          <h2>Nola kalkulatzen dugu PRI?</h2>
-          <p>Datuak → semaforoa → ekintza. Lau pausu bisual eta hitz sinpleekin azaltzen dugu.</p>
+          <h2>{copy.pri.title}</h2>
+          <p>{copy.pri.description}</p>
         </header>
         <div className="landing-pri">
           <ol>
-            {calculationSteps.map((step) => (
-              <li key={step.step}>
-                <span>{step.step}</span>
+            {copy.pri.steps.map((step, index) => (
+              <li key={step.title}>
+                <span>{index + 1}</span>
                 <div>
                   <strong>{step.title}</strong>
-                  <p>
-                    {step.description} {step.ref ? <ReferenceLink id={step.ref} /> : null}
-                  </p>
+                  <p>{step.description}</p>
                 </div>
               </li>
             ))}
           </ol>
           <div className="landing-media">
             <div className="landing-media-card">
-              <span>PRI formula</span>
+              <span>{copy.pri.noteTitle}</span>
               <strong>hazard × vulnerability × exposure × value</strong>
-              <p>Normalizatzen dugu (0-100) eta kolore semaforo moduan erakusten dugu.</p>
+              <p>{copy.pri.noteSubtitle}</p>
             </div>
-            <div className="landing-media-card">
-              <span>Top-Drivers</span>
-              <p>
-                Kalkuluaren ondoren, ekarpen handiena duten 3 faktoreak bistaratzen ditugu, hizkuntza arruntean.
-              </p>
-            </div>
+            <Image alt="Diagrama del flujo del PRI" height={280} src="/images/landing-pri.svg" width={360} />
           </div>
         </div>
       </section>
 
-      <section className="landing-section" id="sekzioak">
+      <section className="landing-section" id="app">
         <header className="landing-section-header">
-          <h2>Zer ikusiko duzu /app eremuan?</h2>
-          <p>Demoak pantaila bakoitza erakutsiko du, baina hona hemen ikuspegi bisuala.</p>
+          <h2>ArchéoSense app</h2>
+          <p>{language === "es" ? "Un vistazo a lo que verás en cada módulo." : "Modulu bakoitzean ikusiko duzuna"}</p>
         </header>
         <div className="landing-screens">
-          {screenPreviews.map((screen) => (
-            <article className="landing-screen" key={screen.slug}>
-              <div className="landing-screen-visual" aria-hidden="true">
+          {copy.previews.map((screen) => (
+            <article className="landing-screen" key={screen.label}>
+              <div aria-hidden="true" className="landing-screen-visual">
                 <span>{screen.label}</span>
               </div>
-              <h3>{screen.label}</h3>
-              <p>{screen.blurb}</p>
+              <h3>{screen.title}</h3>
+              <p>{screen.description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="landing-section" id="impactua">
+      <section className="landing-section" id="impacto">
         <header className="landing-section-header">
-          <h2>Zein inpaktu nahi dugu?</h2>
-          <p>Helburuak argi eta labur: erabaki azkarrak, azalpen gardenak eta partekatze segurua.</p>
+          <h2>{copy.impact.title}</h2>
         </header>
         <div className="landing-grid">
-          {impactPoints.map((item) => (
-            <article className="landing-card" key={item.title}>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
+          {copy.impact.cards.map((card) => (
+            <article className="landing-card" key={card.title}>
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="landing-section" id="amaiera">
+      <section className="landing-section" id="cta">
         <div className="landing-cta-card">
           <div>
-            <h2>Prest arriskuari aurrea hartzeko?</h2>
-            <p>
-              Plataforma bisuala, azalpen argiak eta ekintza plan zehatzak eskaintzen ditugu. Probatu demoarekin edo
-              jarri gurekin harremanetan pilotua martxan jartzeko.
-            </p>
+            <h2>{copy.cta.title}</h2>
+            <p>{copy.cta.description}</p>
           </div>
           <div className="landing-cta-actions">
             <Link className="landing-primary" href="/app">
-              Ireki demo aktiboa
+              {copy.cta.primary}
             </Link>
             <a className="landing-secondary" href="mailto:hello@archeosense.io">
-              Harremanetan jarri →
+              {copy.cta.secondary}
             </a>
           </div>
         </div>
-      </section>
-
-      <section className="landing-section" id="references">
-        <details className="landing-references">
-          <summary>Iturriak eta estekak</summary>
-          <ul>
-            {references.map((item) => (
-              <li key={item.id}>
-                <a href={item.href} rel="noreferrer" target="_blank">
-                  [{item.id}] {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </details>
       </section>
     </main>
   );

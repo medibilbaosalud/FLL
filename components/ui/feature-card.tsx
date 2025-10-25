@@ -4,7 +4,7 @@ import type { IconName } from "components/ui/icon";
 import { Icon } from "components/ui/icon";
 import type { ReactNode } from "react";
 
-interface FeatureCardProps {
+export interface FeatureCardProps {
   icon: IconName;
   title: string;
   description: string;

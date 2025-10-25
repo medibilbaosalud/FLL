@@ -1,15 +1,33 @@
 "use client";
 
 import { Button } from "components/ui/button";
+import { useLanguage } from "components/providers/language-context";
 import { useRiskStore } from "hooks/use-risk-store";
 
 export function MapControls() {
   const { riskMin, layers, setRiskMin, toggleLayer } = useRiskStore((state) => state);
+  const { language } = useLanguage();
+
+  const labels = language === "es"
+    ? {
+        threshold: "Mínimo de riesgo",
+        clusters: "Clusters",
+        points: "Puntos individuales",
+        reset: "Restablecer filtro",
+      }
+    : {
+        threshold: "Gutxieneko arriskua",
+        clusters: "Cluster geruza",
+        points: "Puntu zehatzak",
+        reset: "Iragazkia berrezarri",
+      };
 
   return (
     <div className="map-controls">
       <label htmlFor="risk-threshold">
-        <span>Gutxieneko arrisku balioa: {riskMin}</span>
+        <span>
+          {labels.threshold}: {riskMin}
+        </span>
         <input
           id="risk-threshold"
           max={100}
@@ -21,23 +39,15 @@ export function MapControls() {
         />
       </label>
       <label className="toggle-row">
-        <span>Cluster geruza</span>
-        <input
-          checked={layers.clusters}
-          onChange={() => toggleLayer("clusters")}
-          type="checkbox"
-        />
+        <span>{labels.clusters}</span>
+        <input checked={layers.clusters} onChange={() => toggleLayer("clusters")} type="checkbox" />
       </label>
       <label className="toggle-row">
-        <span>Puntu zehatzak</span>
-        <input
-          checked={layers.points}
-          onChange={() => toggleLayer("points")}
-          type="checkbox"
-        />
+        <span>{labels.points}</span>
+        <input checked={layers.points} onChange={() => toggleLayer("points")} type="checkbox" />
       </label>
       <Button onClick={() => setRiskMin(0)} type="button" variant="soft">
-        Berrezarri iragazkia
+        {labels.reset}
       </Button>
     </div>
   );

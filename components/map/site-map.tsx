@@ -11,6 +11,8 @@ import type {
   MapLayerMouseEvent,
   StyleSpecification,
 } from "maplibre-gl";
+
+import { useLanguage } from "components/providers/language-context";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { Sheet } from "components/ui/sheet";
@@ -100,8 +102,67 @@ const FALLBACK_GEOJSON: MinimalFeatureCollection = {
       },
       geometry: { type: "Point", coordinates: [-1.98, 43.32] },
     },
+    {
+      type: "Feature",
+      properties: {
+        id: "6",
+        name: "Gailurreko santutegia",
+        risk: 88,
+        biome: "Mendia",
+        description: "Elur urtzea eta lur-jausi arrisku bizia.",
+      },
+      geometry: { type: "Point", coordinates: [7.28, 45.94] },
+    },
   ],
 };
+
+const SITE_TRANSLATIONS = {
+  es: {
+    "1": { name: "Acantilados", biome: "Costa", description: "Erosión acelerada por temporales y oleaje." },
+    "2": { name: "Poblado ribereño", biome: "Ribera", description: "Inundaciones periódicas afectan a estructuras romanas." },
+    "3": { name: "Santuario del bosque", biome: "Bosque", description: "La humedad variable compromete las losas megalíticas." },
+    "4": { name: "Yacimiento dunar", biome: "Duna", description: "Viento y turismo generan presión constante sobre el sitio." },
+    "5": { name: "Galerías subterráneas", biome: "Urbano", description: "Vibraciones urbanas y tráfico amenazan la estabilidad." },
+    "6": { name: "Santuario de cumbre", biome: "Montaña", description: "Deshielo y desprendimientos suponen el principal riesgo." },
+  },
+  eu: {
+    "1": { name: "Itsaslabarrak", biome: "Kostaldea", description: "Ekaitzek eta olatuek higadura bizia eragiten dute." },
+    "2": { name: "Ibaiertzeko herrixka", biome: "Ibarbidea", description: "Uholdeek egitura erromatarrak arriskuan jartzen dituzte." },
+    "3": { name: "Basoko santutegia", biome: "Basoa", description: "Hezetasun aldaketek trikuharriari eragiten diote." },
+    "4": { name: "Dunetako aztarnategia", biome: "Duna", description: "Haizeak eta turismoak egonkortasuna kolokan jartzen dute." },
+    "5": { name: "Hiri azpiko galeriak", biome: "Hirigunea", description: "Bibrazio mekanikoek egitura arriskuan uzten dute." },
+    "6": { name: "Gailurreko santutegia", biome: "Mendia", description: "Elur urtzeak eta lur-jausiek mehatxu zuzena sortzen dute." },
+  },
+} as const;
+
+const TEXT = {
+  es: {
+    mapLabel: "Mapa de riesgo interactivo",
+    controlsTitle: "Controles",
+    badgePrefix: "Nivel de riesgo",
+    badgeSuffix: (risk: number) => `${risk}`,
+    biomeLabel: "Bioma",
+    descriptionLabel: "Resumen",
+    openSite: "Ver ficha",
+    addTriage: "Añadir a triage",
+    errorTitle: "El mapa no se pudo cargar",
+    retry: "Reintentar",
+    tooltipPri: (risk: number) => `PRI: ${risk}`,
+  },
+  eu: {
+    mapLabel: "Arrisku mapa interaktiboa",
+    controlsTitle: "Kontrolak",
+    badgePrefix: "Arrisku maila",
+    badgeSuffix: (risk: number) => `${risk}`,
+    biomeLabel: "Bioma",
+    descriptionLabel: "Laburpena",
+    openSite: "Ireki fitxa",
+    addTriage: "Gehitu triagera",
+    errorTitle: "Mapa ezin da kargatu",
+    retry: "Saiatu berriro",
+    tooltipPri: (risk: number) => `PRI: ${risk}`,
+  },
+} as const;
 
 const defaultStyle: StyleSpecification = {
   version: 8,
@@ -165,6 +226,13 @@ export default function SiteMap() {
   const { riskMin, layers } = useRiskStore((state) => ({ riskMin: state.riskMin, layers: state.layers }));
   const filtersRef = useRef({ riskMin, layers });
   const dataset = useMemo(() => FALLBACK_GEOJSON, []);
+  const { language } = useLanguage();
+  const ui = TEXT[language];
+  const translationMap = useMemo(
+    () =>
+      (SITE_TRANSLATIONS[language] as Record<string, { name?: string; biome?: string; description?: string }>) ?? {},
+    [language],
+  );
 
   useEffect(() => {
     filtersRef.current = { riskMin, layers };
@@ -361,7 +429,13 @@ export default function SiteMap() {
             setTooltip(null);
             return;
           }
-          setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
+          const localized = translationMap[site.id] ?? {};
+          setTooltip({
+            x: event.point.x,
+            y: event.point.y,
+            name: localized.name ?? site.name,
+            risk: site.risk ?? 0,
+          });
         };
 
         pointMove = (event: MapLayerMouseEvent) => {
@@ -369,7 +443,13 @@ export default function SiteMap() {
           if (!feature) return;
           const site = featureToSite(feature as MapGeoJSONFeature);
           if (!site) return;
-          setTooltip({ x: event.point.x, y: event.point.y, name: site.name, risk: site.risk ?? 0 });
+          const localized = translationMap[site.id] ?? {};
+          setTooltip({
+            x: event.point.x,
+            y: event.point.y,
+            name: localized.name ?? site.name,
+            risk: site.risk ?? 0,
+          });
         };
 
         pointLeave = () => {
@@ -430,7 +510,7 @@ export default function SiteMap() {
       }
       mapRef.current = null;
     };
-  }, []);
+  }, [dataset]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -481,42 +561,58 @@ export default function SiteMap() {
 
   const badgeTone = riskTone(selected?.risk ?? 0);
 
+  const decoratedSelected = selected ? { ...selected, ...(translationMap[selected.id] ?? {}) } : null;
+  const sheetTitleFallback = language === "es" ? "Sitio" : "Gunea";
+
   if (error) {
     return (
       <div className="map-wrapper card" role="alert" style={{ minHeight: "420px", padding: "1.5rem" }}>
-        <h3 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Mapa ezin da kargatu</h3>
+        <h3 style={{ marginTop: 0, marginBottom: "0.75rem" }}>{ui.errorTitle}</h3>
         <p style={{ margin: 0, color: "#334155" }}>{error}</p>
+        <Button onClick={() => window.location.reload()} type="button" variant="soft">
+          {ui.retry}
+        </Button>
       </div>
     );
   }
 
   return (
     <div className="map-wrapper" style={{ minHeight: "420px" }}>
-      <div className="map-container" ref={containerRef} role="img" aria-label="Arrisku mapa interaktiboa" />
+      <div className="map-container" ref={containerRef} role="img" aria-label={ui.mapLabel} />
       {tooltip ? (
         <div className="map-tooltip" style={tooltipStyle}>
           <strong>{tooltip.name}</strong>
-          <div>PRI: {tooltip.risk}</div>
+          <div>{ui.tooltipPri(tooltip.risk)}</div>
         </div>
       ) : null}
       <Sheet
         onClose={() => setSelected(null)}
-        open={Boolean(selected)}
-        title={selected?.name ?? "Gunea"}
+        open={Boolean(decoratedSelected)}
+        title={decoratedSelected?.name ?? sheetTitleFallback}
       >
-        {selected ? (
+        {decoratedSelected ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <Badge tone={badgeTone}>Arrisku maila: {selected.risk}</Badge>
-            {selected.biome ? <p style={{ margin: 0 }}>Bioma: {selected.biome}</p> : null}
-            {selected.description ? <p style={{ margin: 0 }}>{selected.description}</p> : null}
+            <Badge tone={badgeTone}>
+              {ui.badgePrefix}: {ui.badgeSuffix(decoratedSelected.risk ?? 0)}
+            </Badge>
+            {decoratedSelected.biome ? (
+              <p style={{ margin: 0 }}>
+                <strong>{ui.biomeLabel}:</strong> {decoratedSelected.biome}
+              </p>
+            ) : null}
+            {decoratedSelected.description ? (
+              <p style={{ margin: 0 }}>
+                <strong>{ui.descriptionLabel}:</strong> {decoratedSelected.description}
+              </p>
+            ) : null}
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <Link href={`/app/site/${selected.id}`}>
+              <Link href={`/app/site/${decoratedSelected.id}`}>
                 <Button type="button" variant="primary">
-                  Ireki fitxa
+                  {ui.openSite}
                 </Button>
               </Link>
-              <Button onClick={() => console.log("[triage]", selected.id)} type="button" variant="ghost">
-                Markatu Triage
+              <Button onClick={() => console.log("[triage]", decoratedSelected.id)} type="button" variant="ghost">
+                {ui.addTriage}
               </Button>
             </div>
           </div>

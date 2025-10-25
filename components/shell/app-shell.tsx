@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { BottomBar } from "components/shell/bottom-bar";
 import { Sidebar } from "components/shell/sidebar";
 import { Topbar } from "components/shell/topbar";
+import { useLanguage } from "components/providers/language-context";
 
 const COLLAPSE_KEY = "archeosense-shell-collapsed";
 
@@ -14,6 +16,7 @@ export interface AppShellProps {
 export default function AppShell({ children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -48,11 +51,13 @@ export default function AppShell({ children }: AppShellProps) {
     .filter(Boolean)
     .join(" ");
 
+  const overlayLabel = language === "es" ? "Cerrar navegación" : "Nabigazioa itxi";
+
   return (
     <div className={className}>
       {mobileOpen ? (
         <button
-          aria-label="Itxi nabigazioa"
+          aria-label={overlayLabel}
           className="mobile-overlay"
           onClick={() => setMobileOpen(false)}
           type="button"
