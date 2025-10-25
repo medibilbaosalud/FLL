@@ -12,8 +12,13 @@ const timelineIcons = [Satellite, SlidersHorizontal, FileDown, RadioReceiver];
 
 export default function Roadmap({ title, items }: RoadmapProps) {
   return (
-    <section aria-labelledby="roadmap" className="landing-container roadmap-section section-spacing">
-      <LanguageText value={title} as="h2" className="vision-heading" id="roadmap" />
+    <section
+      aria-labelledby="roadmap-heading"
+      className="landing-container roadmap-section section-spacing"
+    >
+      <div id="roadmap-heading">
+        <LanguageText value={title} as="h2" className="vision-heading" />
+      </div>
       <div className="roadmap-list">
         {items.map((item, index) => {
           const Icon = timelineIcons[index] ?? Satellite;
