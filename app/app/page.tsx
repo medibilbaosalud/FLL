@@ -27,13 +27,26 @@ export default function AppLanding() {
     makeLocalized("Plan de acción incluido", "Ekintza plana barne"),
   ];
 
+  const mapPreview = {
+    badge: makeLocalized("Vista conceptual", "Ikuspegi kontzeptuala"),
+    caption: makeLocalized(
+      "Así se verán los focos de riesgo durante el piloto demo.",
+      "Horrela ikusiko dira arriskuaren fokuak demo pilotuan."
+    ),
+    notes: [
+      makeLocalized("Cluster demo · 6 sitios", "Demo cluster-a · 6 gune"),
+      makeLocalized("Itálica 0.68 PRI", "Italica 0.68 PRI"),
+      makeLocalized("Acciones rápidas a un clic", "Ekintza azkarrak klik bakarrean"),
+    ],
+  };
+
   return (
     <main>
       <Hero
         badge={makeLocalized("Demo viva muy pronto", "Demo bizia oso laster")}
         title={makeLocalized(copy.es.heroTitle, copy.eu.heroTitle)}
         lead={makeLocalized(copy.es.heroLead, copy.eu.heroLead)}
-        primaryCta={{ label: makeLocalized(copy.es.heroPrimary, copy.eu.heroPrimary), href: "/app#vision" }}
+        primaryCta={{ label: makeLocalized(copy.es.heroPrimary, copy.eu.heroPrimary), href: "/app#mapa" }}
         secondaryCta={{ label: makeLocalized(copy.es.heroSecondary, copy.eu.heroSecondary), href: "/app/site/1" }}
         highlights={heroHighlights}
       />
@@ -58,6 +71,7 @@ export default function AppLanding() {
             body: makeLocalized(copy.es.visionItem3Body, copy.eu.visionItem3Body),
           },
         ]}
+        preview={mapPreview}
       />
       <Roadmap
         title={makeLocalized(copy.es.roadmapTitle, copy.eu.roadmapTitle)}
@@ -68,12 +82,12 @@ export default function AppLanding() {
           makeLocalized(copy.es.roadmap4, copy.eu.roadmap4),
         ]}
       />
-      <CTA
-        title={makeLocalized(copy.es.ctaTitle, copy.eu.ctaTitle)}
-        lead={makeLocalized(copy.es.ctaLead, copy.eu.ctaLead)}
-        primary={{ label: makeLocalized(copy.es.ctaPrimary, copy.eu.ctaPrimary), href: "/app#vision" }}
-        secondary={{ label: makeLocalized(copy.es.ctaSecondary, copy.eu.ctaSecondary), href: "/app/site/1" }}
-      />
+        <CTA
+          title={makeLocalized(copy.es.ctaTitle, copy.eu.ctaTitle)}
+          lead={makeLocalized(copy.es.ctaLead, copy.eu.ctaLead)}
+          primary={{ label: makeLocalized(copy.es.ctaPrimary, copy.eu.ctaPrimary), href: "/app#mapa" }}
+          secondary={{ label: makeLocalized(copy.es.ctaSecondary, copy.eu.ctaSecondary), href: "/app/site/1" }}
+        />
     </main>
   );
 }
