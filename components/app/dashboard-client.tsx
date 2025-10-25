@@ -9,10 +9,10 @@ import { Icon } from "components/ui/icon";
 const COPY = {
   es: {
     hero: {
-      tag: "Espacio de trabajo",
-      title: "Tu centro diario para cuidar los yacimientos",
+      tag: "Centro de control",
+      title: "Un panel sereno para priorizar cada yacimiento",
       description:
-        "Estamos ultimando un panel calmado donde verás el índice PRI, tendencias y alertas sin ruido. Aquí tienes un anticipo de la experiencia.",
+        "Muy pronto tendrás un tablero claro con el PRI, la confianza del dato y recordatorios accionables. Te mostramos cómo se sentirá la experiencia final.",
       primary: "Recorrido guiado",
       secondary: "Ver fichas demo",
       highlights: [
@@ -43,10 +43,10 @@ const COPY = {
       },
     },
     map: {
-      badge: "Mapa inmersivo en camino",
-      title: "Explora y prioriza sin prisas",
+      badge: "Vista geoespacial en preparación",
+      title: "Un mapa para decidir con calma",
       description:
-        "En esta vista reunirás clusters suaves, leyenda viva y panel lateral explicativo para decidir qué hacer primero.",
+        "Mostraremos cada sitio con color por riesgo, atajos al panel y explicaciones inmediatas. Mientras tanto, puedes recorrer esta maqueta para imaginar el flujo.",
       features: [
         {
           icon: "map" as const,
@@ -70,16 +70,16 @@ const COPY = {
         },
       ] as const,
       placeholder: {
-        label: "Vista previa",
-        headline: "Aquí verás MapLibre con datos locales y leyenda adaptable",
-        body: "Podrás filtrar por país, nivel de riesgo o presión humana y guardar los focos que necesites vigilar.",
+        label: "Adelanto visual",
+        headline: "Así se verá el mapa con clusters, filtros y leyenda viva",
+        body: "El panel agrupará sitios, mostrará el color del PRI y permitirá guardar rutas rápidas para actuar a tiempo.",
         chips: [
-          "Zoom cinematográfico",
-          "Controles de riesgo en vivo",
-          "Panel lateral explicativo",
-          "Atajos a la ficha",
+          "Clusters respirables",
+          "Filtro por riesgo real",
+          "Panel lateral inmediato",
+          "Enlaces a la ficha",
         ] as const,
-        note: "Diseño conceptual mientras integramos el motor interactivo.",
+        note: "Animación conceptual mientras conectamos el motor interactivo.",
       },
       actions: [
         { label: "Abrir ficha demo", href: "/app/site/1" },
@@ -130,10 +130,10 @@ const COPY = {
   },
   eu: {
     hero: {
-      tag: "Lan eremua",
-      title: "Zure eguneroko aginte-mahaia prest dago",
+      tag: "Kontrol zentroa",
+      title: "Aginte-mahai argia gune bakoitza zaintzeko",
       description:
-        "Panel lasai bat prestatzen ari gara, PRI indizea, joerak eta alertak ikus ditzazun zaratarik gabe. Hona hemen esperientziaren aurrerapen bat.",
+        "Laster izango duzu PRI indizea, datuen konfiantza eta jarduera gomendioak modu lasaiean. Hona hemen nola sentituko den.",
       primary: "Bisita gidatua",
       secondary: "Ireki demo-fitxak",
       highlights: [
@@ -164,10 +164,10 @@ const COPY = {
       },
     },
     map: {
-      badge: "Mapa murgiltzailea bidean",
-      title: "Arakatu eta lehenetsi presarik gabe",
+      badge: "Ikuspegi geoespaziala prestatzen",
+      title: "Mapa batek pausoak argitzeko",
       description:
-        "Ikuspegi honetan cluster leunak, legenda bizia eta azalpen-panelek lagunduko dizute lehenetsi beharrekoa argitzen.",
+        "Gune bakoitza arrisku kolorearekin eta azalpenekin ikusiko duzu. Maketa honek erakusten du nola integratuko diren ezaugarri nagusiak.",
       features: [
         {
           icon: "map" as const,
@@ -191,16 +191,16 @@ const COPY = {
         },
       ] as const,
       placeholder: {
-        label: "Aurrebista",
-        headline: "Hemen ikusiko duzu MapLibre datu lokal eta legenda moldakorrarekin",
-        body: "Herrialde, arrisku maila edo presio humanoaren arabera iragaziko duzu eta zaindu beharreko fokuen zerrenda gordeko duzu.",
+        label: "Aurrebista bisuala",
+        headline: "Hemen ikusiko duzu clusterrekin eta legenda bizi-biziarekin",
+        body: "Mapak guneak taldekatuko ditu, PRI kolorea erakutsiko du eta ekintzetara salto egiteko bide azkarrak eskainiko ditu.",
         chips: [
-          "Zoom zinematikoa",
-          "Arrisku-kontrolak bizirik",
-          "Alboko azalpen-panela",
-          "Fitxara bide zuzena",
+          "Cluster leunak",
+          "Arrisku iragazkia",
+          "Alboko panela",
+          "Fitxarako esteka",
         ] as const,
-        note: "Motorraren garapena amaitu bitarteko diseinu kontzeptuala.",
+        note: "Motor interaktiboa konektatu bitarteko animazio kontzeptuala.",
       },
       actions: [
         { label: "Ireki demo-fitxa", href: "/app/site/1" },
@@ -257,7 +257,7 @@ export function DashboardClient() {
 
   return (
     <div className="space-y-20 px-4 pb-24 pt-10 md:px-10">
-      <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_40px_90px_-50px_rgba(15,23,42,0.9)]">
+      <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_40px_90px_-60px_rgba(15,23,42,0.95)]">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-32 -right-20 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute -bottom-24 -left-14 h-64 w-64 rounded-full bg-indigo-500/30 blur-3xl" />
@@ -285,16 +285,16 @@ export function DashboardClient() {
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {copy.hero.highlights.map((item) => (
                 <div
-                  className="group rounded-2xl bg-white/8 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] backdrop-blur transition duration-300 hover:bg-white/12"
+                  className="group rounded-3xl border border-white/10 bg-white/8 p-5 shadow-[0_18px_45px_-25px_rgba(15,23,42,0.6)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:bg-white/12"
                   key={item.title}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">
-                      <Icon className="h-4 w-4" name={item.icon} />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-[18px] bg-white/12 text-white">
+                      <Icon className="h-3.5 w-3.5" name={item.icon} />
                     </span>
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-white">{item.title}</p>
-                      <p className="text-xs text-white/70">{item.description}</p>
+                      <p className="text-sm font-semibold text-white tracking-tight">{item.title}</p>
+                      <p className="text-xs leading-relaxed text-white/70">{item.description}</p>
                     </div>
                   </div>
                 </div>
@@ -302,7 +302,7 @@ export function DashboardClient() {
             </div>
           </div>
           <div className="relative">
-            <div className="relative rounded-[32px] bg-white/8 p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] backdrop-blur-xl">
+            <div className="relative rounded-[34px] border border-white/12 bg-white/10 p-6 shadow-[0_35px_70px_-45px_rgba(59,130,246,0.65)] backdrop-blur-xl">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-medium text-white/80">{copy.hero.preview.title}</p>
                 <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/70">
@@ -312,7 +312,7 @@ export function DashboardClient() {
               <div className="mt-6 grid gap-4">
                 {copy.hero.preview.metrics.map((metric) => (
                   <div
-                    className="rounded-2xl bg-white/10 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                    className="rounded-3xl border border-white/10 bg-white/12 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]"
                     key={metric.label}
                   >
                     <p className="text-xs uppercase tracking-[0.24em] text-white/60">{metric.label}</p>
@@ -327,7 +327,7 @@ export function DashboardClient() {
       </section>
 
       <section
-        className="relative overflow-hidden rounded-[36px] bg-white/80 p-8 shadow-card backdrop-blur md:p-12"
+        className="relative overflow-hidden rounded-[36px] bg-white/85 p-8 shadow-card backdrop-blur md:p-12"
         id="mapa"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.18),transparent_60%)]" />
@@ -343,16 +343,16 @@ export function DashboardClient() {
             <div className="grid gap-4 sm:grid-cols-2">
               {copy.map.features.map((feature) => (
                 <div
-                  className="rounded-2xl border border-slate-200/60 bg-white/80 p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-card"
+                  className="rounded-3xl border border-slate-200/70 bg-white/90 p-5 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.45)] transition duration-300 hover:-translate-y-1 hover:shadow-card"
                   key={feature.title}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900/5 text-slate-900">
-                      <Icon className="h-4 w-4" name={feature.icon} />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-[18px] bg-slate-900/5 text-slate-900">
+                      <Icon className="h-3.5 w-3.5" name={feature.icon} />
                     </span>
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-slate-900">{feature.title}</p>
-                      <p className="text-xs text-slate-600">{feature.description}</p>
+                      <p className="text-sm font-semibold text-slate-900 tracking-tight">{feature.title}</p>
+                      <p className="text-xs leading-relaxed text-slate-600">{feature.description}</p>
                     </div>
                   </div>
                 </div>
@@ -366,7 +366,7 @@ export function DashboardClient() {
               ))}
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-indigo-500 via-indigo-600 to-slate-900 text-white shadow-[0_40px_70px_-45px_rgba(30,64,175,0.65)]">
+          <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-gradient-to-br from-indigo-500 via-indigo-600 to-slate-900 text-white shadow-[0_45px_85px_-50px_rgba(30,64,175,0.7)]">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-20 -right-24 h-56 w-56 rounded-full bg-white/20 blur-3xl" />
               <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-slate-900/40 blur-3xl" />
@@ -376,18 +376,18 @@ export function DashboardClient() {
               <h3 className="text-2xl font-semibold leading-tight text-white md:text-3xl">
                 {copy.map.placeholder.headline}
               </h3>
-              <p className="text-sm text-white/75 md:text-base">{copy.map.placeholder.body}</p>
+              <p className="text-sm text-white/75 md:text-base leading-relaxed">{copy.map.placeholder.body}</p>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {copy.map.placeholder.chips.map((chip) => (
                   <li
-                    className="rounded-2xl bg-white/10 px-4 py-3 text-sm text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]"
+                    className="rounded-2xl border border-white/15 bg-white/12 px-4 py-3 text-sm text-white/80 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)]"
                     key={chip}
                   >
                     {chip}
                   </li>
                 ))}
               </ul>
-              <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs text-white/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]">
+              <div className="rounded-2xl border border-white/15 bg-white/12 px-4 py-3 text-xs text-white/70 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)]">
                 {copy.map.placeholder.note}
               </div>
             </div>
