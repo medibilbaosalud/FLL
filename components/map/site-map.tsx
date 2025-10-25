@@ -223,15 +223,17 @@ export default function SiteMap() {
         map.on("load", loadHandler);
 
         clusterClick = (event: MapLayerMouseEvent) => {
-          const features = map?.queryRenderedFeatures(event.point, { layers: ["site-clusters"] }) ?? [];
+          const mapInstance = mapRef.current;
+          if (!mapInstance) return;
+          const features = mapInstance.queryRenderedFeatures(event.point, { layers: ["site-clusters"] }) ?? [];
           const clusterFeature = features[0];
-          if (!map || !clusterFeature) return;
-          const source = map.getSource("sites") as GeoJSONSource;
+          if (!clusterFeature) return;
+          const source = mapInstance.getSource("sites") as GeoJSONSource;
           const clusterId = clusterFeature.properties?.cluster_id;
           if (!source || typeof clusterId !== "number") return;
           source.getClusterExpansionZoom(clusterId, (err, zoom) => {
             if (err || typeof zoom !== "number") return;
-            const activeMap = map;
+            const activeMap = mapRef.current;
             if (!activeMap) return;
             const coords =
               clusterFeature.geometry?.type === "Point"
@@ -249,8 +251,9 @@ export default function SiteMap() {
         };
 
         pointEnter = (event: MapLayerMouseEvent) => {
-          if (!map) return;
-          map.getCanvas().style.cursor = "pointer";
+          const mapInstance = mapRef.current;
+          if (!mapInstance) return;
+          mapInstance.getCanvas().style.cursor = "pointer";
           const feature = event.features?.[0];
           const site = featureToSite(feature as MapGeoJSONFeature);
           if (!site) {
@@ -269,8 +272,9 @@ export default function SiteMap() {
         };
 
         pointLeave = () => {
-          if (map) {
-            map.getCanvas().style.cursor = "";
+          const mapInstance = mapRef.current;
+          if (mapInstance) {
+            mapInstance.getCanvas().style.cursor = "";
           }
           setTooltip(null);
         };
