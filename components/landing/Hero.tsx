@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, LineChart, Radar, ShieldCheck, Sparkles } from "lucide-react";
 
 import { useLanguage } from "components/providers/language-context";
 import type { LocalizedString } from "lib/landing";
@@ -12,13 +12,26 @@ export type HeroCta = {
   href: string;
 };
 
+type HeroHighlight = {
+  icon: "sparkles" | "radar" | "shield" | "insight";
+  title: LocalizedString;
+  description: LocalizedString;
+};
+
+const highlightIcons = {
+  sparkles: Sparkles,
+  radar: Radar,
+  shield: ShieldCheck,
+  insight: LineChart,
+};
+
 export type HeroProps = {
   badge: LocalizedString;
   title: LocalizedString;
   lead: LocalizedString;
   primaryCta: HeroCta;
   secondaryCta: HeroCta;
-  highlights: LocalizedString[];
+  highlights: HeroHighlight[];
 };
 
 export default function Hero({ badge, title, lead, primaryCta, secondaryCta, highlights }: HeroProps) {
@@ -57,16 +70,25 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
             </Link>
           </div>
           {highlights.length > 0 && (
-            <ul className="flex flex-wrap gap-2 text-sm text-muted">
-              {highlights.map((item) => (
-                <li
-                  key={item.es}
-                  className="rounded-full border border-black/5 bg-white/70 px-3 py-1 shadow-sm"
-                >
-                  {item[language]}
-                </li>
-              ))}
-            </ul>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {highlights.map((item) => {
+                const Icon = highlightIcons[item.icon] ?? Sparkles;
+                return (
+                  <article
+                    key={item.title.es}
+                    className="flex gap-3 rounded-3xl border border-white/70 bg-white/80 p-4 shadow-sm shadow-brand/5"
+                  >
+                    <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                      <Icon size={18} aria-hidden />
+                    </span>
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-ink">{item.title[language]}</p>
+                      <p className="text-xs text-muted">{item.description[language]}</p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           )}
         </div>
         <div className="flex max-w-md flex-1 flex-col items-center gap-4">

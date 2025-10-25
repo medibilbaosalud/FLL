@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { Filter, Map, Zap } from "lucide-react";
+import {
+  Activity,
+  Filter,
+  Map,
+  MousePointerClick,
+  Target,
+  Zap,
+} from "lucide-react";
 
 import { LanguageText } from "./LanguageText";
 import type { LocalizedString } from "lib/landing";
@@ -10,10 +17,16 @@ type VisionItem = {
   body: LocalizedString;
 };
 
+type VisionPreviewCard = {
+  icon: "target" | "pulse" | "pointer";
+  title: LocalizedString;
+  body: LocalizedString;
+};
+
 type VisionPreview = {
   badge: LocalizedString;
   caption: LocalizedString;
-  notes: LocalizedString[];
+  cards: VisionPreviewCard[];
 };
 
 type VisionProps = {
@@ -29,6 +42,12 @@ const iconMap = {
   bolt: Zap,
 };
 
+const previewIconMap = {
+  target: Target,
+  pulse: Activity,
+  pointer: MousePointerClick,
+};
+
 export default function Vision({ title, lead, items, preview }: VisionProps) {
   return (
     <section
@@ -42,7 +61,7 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
           <LanguageText value={lead} as="p" className="text-base text-muted sm:text-lg" />
         </header>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
-          <article className="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/80 shadow-[0_40px_110px_-60px_rgba(37,99,235,0.45)]">
+          <article className="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/85 shadow-[0_40px_120px_-70px_rgba(37,99,235,0.45)]">
             <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand shadow-sm">
               <LanguageText value={preview.badge} />
             </div>
@@ -54,15 +73,27 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
               className="h-full w-full object-cover"
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
-            <div className="relative space-y-3 px-6 pb-6">
+            <div className="relative space-y-4 px-6 pb-6">
               <LanguageText value={preview.caption} as="p" className="text-sm font-semibold text-ink" />
-              <ul className="flex flex-wrap gap-2 text-xs text-muted">
-                {preview.notes.map((note) => (
-                  <li key={note.es} className="rounded-full border border-black/5 bg-white/80 px-3 py-1 shadow-sm">
-                    <LanguageText value={note} />
-                  </li>
-                ))}
-              </ul>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {preview.cards.map((card) => {
+                  const Icon = previewIconMap[card.icon] ?? Target;
+                  return (
+                    <div
+                      key={card.title.es}
+                      className="flex gap-3 rounded-2xl border border-white/70 bg-white/85 p-4 shadow-sm"
+                    >
+                      <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                        <Icon size={16} aria-hidden />
+                      </span>
+                      <div className="space-y-1">
+                        <LanguageText value={card.title} as="p" className="text-sm font-semibold text-ink" />
+                        <LanguageText value={card.body} as="p" className="text-xs text-muted" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </article>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">

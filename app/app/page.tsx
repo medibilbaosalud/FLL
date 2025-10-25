@@ -21,22 +21,64 @@ export default function AppLanding() {
     },
   ];
 
-  const heroHighlights: LocalizedString[] = [
-    makeLocalized("Demo viva muy pronto", "Demo bizia oso laster"),
-    makeLocalized("Alertas comprensibles", "Alerta ulergarriak"),
-    makeLocalized("Plan de acción incluido", "Ekintza plana barne"),
+  const heroHighlights = [
+    {
+      icon: "sparkles" as const,
+      title: makeLocalized("Demo viva muy pronto", "Demo bizia oso laster"),
+      description: makeLocalized(
+        "Activaremos datos reales paso a paso sin perder la calma visual.",
+        "Benetako datuak aktibatuko ditugu pausoz pauso, lasaitasuna mantenduz."
+      ),
+    },
+    {
+      icon: "radar" as const,
+      title: makeLocalized("Alertas comprensibles", "Alerta ulergarriak"),
+      description: makeLocalized(
+        "El semáforo explica qué factor empuja el riesgo y qué haremos después.",
+        "Semaforoak azaltzen du zein faktorek bultzatzen duen arriskua eta ondoren zer egingo dugun."
+      ),
+    },
+    {
+      icon: "insight" as const,
+      title: makeLocalized("Plan de acción incluido", "Ekintza plana barne"),
+      description: makeLocalized(
+        "Cada ficha sugerirá medidas claras para proteger el patrimonio a tiempo.",
+        "Fitxa bakoitzak neurri argiak proposatuko ditu ondarea garaiz babesteko."
+      ),
+    },
   ];
 
   const mapPreview = {
     badge: makeLocalized("Vista conceptual", "Ikuspegi kontzeptuala"),
     caption: makeLocalized(
-      "Así se verán los focos de riesgo durante el piloto demo.",
-      "Horrela ikusiko dira arriskuaren fokuak demo pilotuan."
+      "Así se agruparán y colorearán los focos de riesgo durante la demo.",
+      "Horrela taldekatuko eta koloreztatuko dira arrisku fokuen demoan."
     ),
-    notes: [
-      makeLocalized("Cluster demo · 6 sitios", "Demo cluster-a · 6 gune"),
-      makeLocalized("Itálica 0.68 PRI", "Italica 0.68 PRI"),
-      makeLocalized("Acciones rápidas a un clic", "Ekintza azkarrak klik bakarrean"),
+    cards: [
+      {
+        icon: "target" as const,
+        title: makeLocalized("Cluster demo · 6 sitios", "Demo clusterra · 6 gune"),
+        body: makeLocalized(
+          "Los puntos cercanos respiran juntos y muestran su estado en un solo vistazo.",
+          "Gertu dauden puntuak batera arnasten dute eta egoera begirada batean erakusten dute."
+        ),
+      },
+      {
+        icon: "pulse" as const,
+        title: makeLocalized("Itálica · PRI 0.68", "Italica · PRI 0.68"),
+        body: makeLocalized(
+          "El color ámbar indica atención prioritaria y abrirá su plan recomendado.",
+          "Anbar koloreak lehentasunezko arreta adierazten du eta gomendatutako plana irekiko du."
+        ),
+      },
+      {
+        icon: "pointer" as const,
+        title: makeLocalized("Acciones en un clic", "Ekintzak klik bakarrean"),
+        body: makeLocalized(
+          "Desde aquí saltaremos a la ficha y podremos asignar inspección o informe.",
+          "Hemendik fitxara jauzi egingo dugu eta ikuskapena edo txostena esleitu ahal izango dugu."
+        ),
+      },
     ],
   };
 
