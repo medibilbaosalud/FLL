@@ -1,37 +1,66 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import { useLanguage } from "components/providers/language-context";
 import { Badge } from "components/ui/badge";
 import { FeatureCard } from "components/ui/feature-card";
+import { Icon } from "components/ui/icon";
 
 const COPY = {
   es: {
     hero: {
       tag: "Espacio de trabajo",
-      title: "Aquí verás tu centro de mando diario",
+      title: "Tu control diario está casi listo",
       description:
-        "Estamos terminando el panel que reunirá KPI, alertas y accesos rápidos a cada módulo. Muy pronto podrás monitorizar todo a un vistazo.",
-      primary: "Ver cómo quedará",
-      secondary: "Ir a las fichas demo",
-      highlights: [
-        "Semáforo claro por prioridad",
-        "Alertas explicadas en lenguaje humano",
-        "Acciones sugeridas con impacto estimado",
+        "Muy pronto abrirás un tablero vivo con KPI, alertas y accesos directos. Mientras tanto, te mostramos cómo se sentirá.",
+      primary: "Recorrido guiado",
+      secondary: "Ver fichas demo",
+      tiles: [
+        {
+          icon: "spark" as const,
+          title: "Resumen al instante",
+          description: "Aquí aparecerá un mosaico respirable con PRI, tendencias y alertas clave.",
+        },
+        {
+          icon: "map" as const,
+          title: "Alertas explicadas",
+          description: "Cada tarjeta contará qué factor dispara el riesgo y la acción sugerida.",
+        },
+        {
+          icon: "shield" as const,
+          title: "Protección activa",
+          description: "Las zonas sensibles llegarán ofuscadas y con registro de cambios.",
+        },
       ] as const,
     },
     map: {
-      badge: "Mapa en diseño",
-      title: "Así se verá la vista geográfica",
+      badge: "Mapa en construcción",
+      title: "Así explorarás el territorio",
       description:
-        "El mapa mostrará clusters coloreados por riesgo, buscador de sitios y un panel lateral con historia rápida y acciones recomendadas.",
-      features: [
-        "Colores y clusters por nivel de riesgo",
-        "Filtros por país, material y nivel de sensibilidad",
-        "Atajos para abrir la ficha completa o programar triage",
+        "Estamos diseñando un mapa táctil con clusters, filtros y panel lateral para entender cada sitio en segundos.",
+      note: "Mientras lo terminamos, puedes abrir los ejemplos y revisar la lista prioritaria.",
+      callouts: [
+        {
+          icon: "map" as const,
+          title: "Clusters vivos",
+          description: "Colores por nivel de riesgo y zoom suave hasta cada yacimiento.",
+        },
+        {
+          icon: "table" as const,
+          title: "Panel lateral",
+          description: "Top drivers, tendencia y acciones sugeridas sin salir del mapa.",
+        },
+        {
+          icon: "search" as const,
+          title: "Filtros inteligentes",
+          description: "Búsqueda por nombre, país o material con coincidencia difusa.",
+        },
       ] as const,
+      placeholderTitle: "Mapa interactivo en progreso",
+      placeholderDescription:
+        "Aquí verás MapLibre con datos locales, leyenda adaptable y controles de riesgo que reaccionan al instante.",
+      footerNote: "Mockup conceptual mientras integramos datos reales.",
       actions: [
         { label: "Abrir ficha de ejemplo", href: "/app/site/1" },
         { label: "Ver lista prioritaria", href: "/app/triage" },
@@ -82,27 +111,56 @@ const COPY = {
   eu: {
     hero: {
       tag: "Lan eremua",
-      title: "Hemen egongo da zure eguneroko aginte mahaia",
+      title: "Zure eguneroko aginte-mahaia prest dagoenbidean",
       description:
-        "KPI, alerta eta moduluetarako sarbide bizkorrak bateratuko dituen panela amaitzen ari gara. Laster ikusiko duzu dena begirada bakarrean.",
-      primary: "Ikusi nolakoa izango den",
+        "Oso laster KPIak, alertak eta sarbide azkarrak izango dituen taula bizia zabalduko dugu. Bien bitartean, ikus nola sentituko den.",
+      primary: "Bisita gidatua",
       secondary: "Ireki demo-fitxak",
-      highlights: [
-        "Lehentasun semaforo argia",
-        "Giza hizkeran azalduko diren alertak",
-        "Eragin estimatua duten neurriak",
+      tiles: [
+        {
+          icon: "spark" as const,
+          title: "Berehalako laburpena",
+          description: "Hemen agertuko da PRIa, joerak eta alertak modu arinean.",
+        },
+        {
+          icon: "map" as const,
+          title: "Alertak ulertuta",
+          description: "Faktore eragilea eta gomendatutako ekintza hizkera lausoan azalduko dira.",
+        },
+        {
+          icon: "shield" as const,
+          title: "Babes aktiboa",
+          description: "Gune sentikorrak ofuskatuta eta aldaketen erregistroarekin ikusiko dira.",
+        },
       ] as const,
     },
     map: {
-      badge: "Mapa diseinatzen",
-      title: "Honela ikusiko duzu mapa",
+      badge: "Mapa prestatzen",
+      title: "Honela arakatuko dugu lurraldea",
       description:
-        "Mapak arriskuaren arabera koloreztutako clusterrak, bilatzailea eta alboko panel bizkorra izango ditu, gomendatutako ekintzekin.",
-      features: [
-        "Arrisku mailaren arabera kolore eta clusterra",
-        "Herrialde, material eta sentikortasunaren araberako iragazkiak",
-        "Fitxa osoa irekitzeko edo triage planifikatzeko estekak",
+        "MapLibre oinarritutako mapa eraikitzen ari gara, cluster dinamiko eta iragazki adimendunekin, gunea segundo batean ulertzeko.",
+      note: "Amaitzen dugun bitartean, ireki adibide-fitxak edo begiratu lehentasunen zerrenda.",
+      callouts: [
+        {
+          icon: "map" as const,
+          title: "Cluster biziak",
+          description: "Arrisku mailaren arabera koloreztuta eta zoom leunarekin.",
+        },
+        {
+          icon: "table" as const,
+          title: "Alboko panela",
+          description: "Top-driver, joera eta gomendioak mapatik irten gabe.",
+        },
+        {
+          icon: "search" as const,
+          title: "Iragazki adimentsuak",
+          description: "Izen, herrialde edo materialaren arabera bilaketa lausoarekin.",
+        },
       ] as const,
+      placeholderTitle: "Mapa interaktiboa martxan jartzen",
+      placeholderDescription:
+        "Hemen ikusiko duzu MapLibre datu lokalekin, legenda moldagarriarekin eta arriskuen kontrol erreaktiboekin.",
+      footerNote: "Kontzeptu-irudia datu errealak gehitu bitartean.",
       actions: [
         { label: "Ireki adibide-fitxa", href: "/app/site/1" },
         { label: "Ikusi lehentasunen zerrenda", href: "/app/triage" },
@@ -158,9 +216,10 @@ export function DashboardClient() {
 
   return (
     <div className="flex flex-col gap-14">
-      <section className="glass hairline soft rounded-3xl p-10">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-4 max-w-2xl">
+      <section className="relative overflow-hidden glass hairline soft rounded-3xl p-10">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-200/40 via-white/30 to-transparent" />
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+          <div className="space-y-5">
             <Badge tone="neutral">{copy.hero.tag}</Badge>
             <h1 className="text-3xl font-semibold leading-tight lg:text-4xl">{copy.hero.title}</h1>
             <p className="text-base text-slate-600 lg:text-lg">{copy.hero.description}</p>
@@ -173,30 +232,37 @@ export function DashboardClient() {
               </Link>
             </div>
           </div>
-          <ul className="grid w-full max-w-sm gap-3 text-sm text-slate-600">
-            {copy.hero.highlights.map((item) => (
-              <li className="glass hairline rounded-2xl px-4 py-3" key={item}>
-                {item}
-              </li>
+          <div className="grid gap-4">
+            {copy.hero.tiles.map((tile) => (
+              <div
+                className="group rounded-2xl border border-white/70 bg-white/80 p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-card"
+                key={tile.title}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-inner">
+                    <Icon className="h-5 w-5" name={tile.icon} />
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-slate-900">{tile.title}</p>
+                    <p className="text-xs text-slate-600">{tile.description}</p>
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
       <section
-        className="glass hairline rounded-3xl bg-gradient-to-br from-white/70 via-white to-indigo-50 p-8 md:p-10"
+        className="relative overflow-hidden glass hairline rounded-3xl bg-gradient-to-br from-white/75 via-white to-indigo-50 p-8 md:p-10"
         id="mapa"
       >
-        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center">
+        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
           <div className="space-y-5">
             <Badge tone="neutral">{copy.map.badge}</Badge>
             <h2 className="text-2xl font-semibold lg:text-3xl">{copy.map.title}</h2>
             <p className="text-base text-slate-600 lg:text-lg">{copy.map.description}</p>
-            <ul className="feature-card-list">
-              {copy.map.features.map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
+            <p className="text-sm text-slate-500">{copy.map.note}</p>
             <div className="flex flex-wrap gap-3 pt-2">
               {copy.map.actions.map((action) => (
                 <Link className="btn btn-soft" href={action.href} key={action.href}>
@@ -205,14 +271,35 @@ export function DashboardClient() {
               ))}
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-xs overflow-hidden rounded-3xl bg-white/70 p-6 shadow-card">
-            <Image
-              alt={language === "es" ? "Ilustración del mapa" : "Maparen irudia"}
-              className="w-full"
-              height={320}
-              src="/images/landing-hero.svg"
-              width={360}
-            />
+          <div className="relative overflow-hidden rounded-[28px] bg-slate-900 text-white shadow-card">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/30 via-slate-900 to-slate-900" />
+            <div className="relative space-y-5 p-8">
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/60">
+                  {copy.map.placeholderTitle}
+                </p>
+                <p className="mt-3 text-sm text-white/80 lg:text-base">{copy.map.placeholderDescription}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {copy.map.callouts.map((item) => (
+                  <div
+                    className="rounded-2xl border border-white/10 bg-white/5 p-4 transition duration-300 hover:border-white/20"
+                    key={item.title}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">
+                        <Icon className="h-4 w-4" name={item.icon} />
+                      </span>
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-white">{item.title}</p>
+                        <p className="text-xs text-white/70">{item.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-white/60">{copy.map.footerNote}</p>
+            </div>
           </div>
         </div>
       </section>
