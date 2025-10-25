@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { KpiCard } from "components/ui/kpi-card";
@@ -12,7 +12,7 @@ import { Section } from "components/ui/section";
 import { Skeleton } from "components/ui/skeleton";
 import { MapControls } from "components/map/controls";
 
-const SiteMap = dynamic(() => import("components/map/site-map"), {
+const SiteMap = dynamicImport(() => import("components/map/site-map"), {
   ssr: false,
   loading: () => <Skeleton style={{ height: 420, width: "100%" }} />,
 });
