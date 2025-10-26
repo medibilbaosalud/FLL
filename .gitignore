@@ -1,0 +1,15 @@
+# dependencias / builds
+node_modules/
+dist/
+build/
+tsconfig.tsbuildinfo
+*.log
+
+# datos pesados locales
+data/
+datasets/
+models/
+.checkpoints/
+.ipynb_checkpoints/
+!public/data/
+!public/data/*

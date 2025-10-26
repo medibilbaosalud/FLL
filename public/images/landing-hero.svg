@@ -1,0 +1,36 @@
+<svg width="560" height="520" viewBox="0 0 560 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="560" height="520" rx="48" fill="url(#paint0_linear)"/>
+  <g filter="url(#shadow)">
+    <rect x="60" y="80" width="440" height="280" rx="28" fill="rgba(255,255,255,0.82)"/>
+  </g>
+  <rect x="92" y="116" width="180" height="32" rx="16" fill="#e0e7ff"/>
+  <rect x="92" y="166" width="220" height="22" rx="11" fill="#f8fafc"/>
+  <rect x="92" y="198" width="280" height="22" rx="11" fill="#f1f5f9"/>
+  <rect x="92" y="230" width="320" height="22" rx="11" fill="#f1f5f9"/>
+  <rect x="92" y="278" width="132" height="20" rx="10" fill="#e0f2fe"/>
+  <rect x="232" y="278" width="96" height="20" rx="10" fill="#fee2e2"/>
+  <rect x="340" y="278" width="96" height="20" rx="10" fill="#fef3c7"/>
+  <g filter="url(#shadowSmall)">
+    <rect x="140" y="332" width="280" height="120" rx="24" fill="rgba(15,36,31,0.9)"/>
+  </g>
+  <text x="164" y="380" fill="#E2E8F0" font-family="'Inter', 'Segoe UI', sans-serif" font-size="18" font-weight="600">Scenario Lab</text>
+  <text x="164" y="410" fill="#94A3B8" font-family="'Inter', 'Segoe UI', sans-serif" font-size="14">+18% turismo · -12% PRI</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="40" y1="40" x2="520" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eef2ff"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="shadow" x="20" y="48" width="520" height="360" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feGaussianBlur in="BackgroundImageFix" stdDeviation="20"/>
+      <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur" result="shape"/>
+    </filter>
+    <filter id="shadowSmall" x="100" y="300" width="360" height="200" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feOffset dy="8"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 0.16 0"/>
+      <feBlend in2="SourceGraphic" mode="normal" result="shape"/>
+    </filter>
+  </defs>
+</svg>
