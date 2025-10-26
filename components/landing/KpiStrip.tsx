@@ -44,10 +44,10 @@ export default function KpiStrip({ items }: KpiStripProps) {
           return (
             <article
               key={item.label.es}
-              className="metric-card"
+              className="metric-card text-center sm:text-left"
               role="listitem"
             >
-              <div className="flex items-center gap-3 text-sm font-medium text-muted">
+              <div className="flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted sm:justify-start">
                 <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/15 to-blue-400/15 text-brand">
                   <Icon size={18} aria-hidden />
                 </span>

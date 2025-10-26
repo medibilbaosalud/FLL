@@ -56,16 +56,16 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
       id="mapa"
     >
       <div className="space-y-12">
-        <header className="max-w-3xl space-y-4">
+        <header className="mx-auto max-w-3xl space-y-4 text-center md:text-left">
           <LanguageText
             value={title}
             as="h2"
             className="font-display text-3xl tracking-tight text-ink sm:text-4xl"
           />
-          <LanguageText value={lead} as="p" className="text-base text-muted sm:text-lg" />
+          <LanguageText value={lead} as="p" className="text-balance text-base text-muted sm:text-lg" />
         </header>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
-          <article className="relative overflow-hidden rounded-[2.6rem] border border-white/75 bg-white/85 shadow-[0_46px_130px_-70px_rgba(37,99,235,0.5)]">
+          <article className="relative w-full overflow-hidden rounded-[2.6rem] border border-white/75 bg-white/85 shadow-[0_46px_130px_-70px_rgba(37,99,235,0.5)]">
             <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand shadow-sm">
               <LanguageText value={preview.badge} />
             </div>
@@ -78,8 +78,8 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
             <div className="relative space-y-5 px-6 pb-7">
-              <LanguageText value={preview.caption} as="p" className="text-sm font-semibold text-ink" />
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <LanguageText value={preview.caption} as="p" className="text-balance text-sm font-semibold text-ink" />
+              <div className="grid gap-3 sm:grid-cols-2">
                 {preview.cards.map((card) => {
                   const Icon = previewIconMap[card.icon] ?? Target;
                   return (
@@ -89,7 +89,7 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
                       </span>
                       <div className="space-y-1">
                         <LanguageText value={card.title} as="p" className="text-sm font-semibold text-ink" />
-                        <LanguageText value={card.body} as="p" className="text-xs text-muted" />
+                        <LanguageText value={card.body} as="p" className="text-balance text-xs text-muted" />
                       </div>
                     </div>
                   );
@@ -108,8 +108,8 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
                   <span className="feature-icon">
                     <Icon size={20} aria-hidden />
                   </span>
-                  <LanguageText value={item.title} as="h3" className="mt-4 text-lg font-semibold text-ink" />
-                  <LanguageText value={item.body} as="p" className="mt-2 text-sm text-muted" />
+                  <LanguageText value={item.title} as="h3" className="mt-4 text-balance text-lg font-semibold text-ink" />
+                  <LanguageText value={item.body} as="p" className="mt-2 text-balance text-sm text-muted" />
                 </article>
               );
             })}

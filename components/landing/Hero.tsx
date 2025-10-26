@@ -39,9 +39,9 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-surface via-white to-white">
-      <div className="pointer-events-none absolute inset-x-0 -top-24 h-80 bg-gradient-to-b from-brand/15 via-transparent to-transparent blur-3xl" />
-      <div className="relative mx-auto grid max-w-7xl gap-14 px-4 pb-16 pt-20 sm:px-6 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:items-center md:pb-24 md:pt-28 lg:px-8">
-        <div className="flex flex-col gap-8">
+      <div className="pointer-events-none absolute inset-x-0 -top-28 h-80 bg-gradient-to-b from-brand/15 via-transparent to-transparent blur-3xl" />
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-16 px-4 pb-16 pt-20 sm:px-6 md:grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:items-center md:gap-14 md:pb-24 md:pt-28 lg:px-8">
+        <div className="flex flex-col items-center gap-8 text-center md:items-start md:text-left">
           <span className="chip-muted">
             <Sparkles aria-hidden size={16} />
             {badge[language]}
@@ -49,10 +49,14 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
           <h1 className="font-display text-gradient text-4xl leading-tight tracking-tight sm:text-5xl md:text-6xl">
             {title[language]}
           </h1>
-          <p className="max-w-2xl text-base text-muted sm:text-lg">
+          <p className="text-balance max-w-xl text-base text-muted sm:max-w-2xl sm:text-lg">
             {lead[language]}
           </p>
-          <div className="flex flex-wrap items-center gap-3" role="group" aria-label="ArchéoSense hero actions">
+          <div
+            className="flex flex-wrap items-center justify-center gap-3 md:justify-start"
+            role="group"
+            aria-label="ArchéoSense hero actions"
+          >
             <Link
               href={primaryCta.href}
               aria-label={primaryCta.label[language]}
@@ -70,7 +74,7 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
             </Link>
           </div>
           {highlights.length > 0 && (
-            <div className="feature-grid">
+            <div className="feature-grid w-full max-w-xl justify-items-stretch sm:max-w-2xl md:max-w-none">
               {highlights.map((item) => {
                 const Icon = highlightIcons[item.icon] ?? Sparkles;
                 return (
@@ -78,15 +82,15 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
                     <span className="feature-icon">
                       <Icon size={18} aria-hidden />
                     </span>
-                    <h3 className="mt-4 font-semibold text-ink">{item.title[language]}</h3>
-                    <p className="text-sm text-muted">{item.description[language]}</p>
+                    <h3 className="mt-4 text-balance font-semibold text-ink">{item.title[language]}</h3>
+                    <p className="text-balance text-sm text-muted">{item.description[language]}</p>
                   </article>
                 );
               })}
             </div>
           )}
         </div>
-        <div className="flex w-full max-w-md flex-col items-center gap-4">
+        <div className="flex w-full max-w-sm flex-col items-center gap-4 sm:max-w-md md:max-w-lg">
           <div className="relative w-full overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/75 shadow-[0_38px_90px_-50px_rgba(37,99,235,0.55)]">
             <Image
               src="/images/landing-hero.svg"
