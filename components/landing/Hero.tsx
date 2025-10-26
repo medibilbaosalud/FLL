@@ -74,11 +74,11 @@ export default function Hero({ badge, title, lead, primaryCta, secondaryCta, hig
             </Link>
           </div>
           {highlights.length > 0 && (
-            <div className="feature-grid w-full max-w-xl justify-items-stretch sm:max-w-2xl md:max-w-none">
+            <div className="feature-grid hero-highlight-grid w-full sm:max-w-2xl md:max-w-none">
               {highlights.map((item) => {
                 const Icon = highlightIcons[item.icon] ?? Sparkles;
                 return (
-                  <article key={item.title.es} className="feature-card">
+                  <article key={item.title.es} className="feature-card w-full">
                     <span className="feature-icon">
                       <Icon size={18} aria-hidden />
                     </span>

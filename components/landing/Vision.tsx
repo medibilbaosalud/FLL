@@ -65,7 +65,7 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
           <LanguageText value={lead} as="p" className="text-balance text-base text-muted sm:text-lg" />
         </header>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
-          <article className="relative w-full overflow-hidden rounded-[2.6rem] border border-white/75 bg-white/85 shadow-[0_46px_130px_-70px_rgba(37,99,235,0.5)]">
+          <article className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[2.6rem] border border-white/75 bg-white/85 shadow-[0_46px_130px_-70px_rgba(37,99,235,0.5)] lg:max-w-none">
             <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand shadow-sm">
               <LanguageText value={preview.badge} />
             </div>
@@ -79,7 +79,7 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
             <div className="relative space-y-5 px-6 pb-7">
               <LanguageText value={preview.caption} as="p" className="text-balance text-sm font-semibold text-ink" />
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 place-items-center sm:grid-cols-2 sm:place-items-stretch">
                 {preview.cards.map((card) => {
                   const Icon = previewIconMap[card.icon] ?? Target;
                   return (
@@ -97,13 +97,13 @@ export default function Vision({ title, lead, items, preview }: VisionProps) {
               </div>
             </div>
           </article>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="grid place-items-center gap-4 sm:grid-cols-2 sm:place-items-stretch lg:grid-cols-1">
             {items.map((item) => {
               const Icon = iconMap[item.icon];
               return (
                 <article
                   key={item.title.es}
-                  className="feature-card"
+                  className="feature-card w-full"
                 >
                   <span className="feature-icon">
                     <Icon size={20} aria-hidden />

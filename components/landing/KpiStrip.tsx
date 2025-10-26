@@ -38,13 +38,13 @@ export default function KpiStrip({ items }: KpiStripProps) {
       <h2 id="status-strip" className="sr-only">
         Estado general
       </h2>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" role="list">
+      <div className="grid place-items-center gap-4 sm:grid-cols-2 sm:place-items-stretch xl:grid-cols-4" role="list">
         {items.slice(0, 4).map((item, index) => {
           const Icon = icons[index] ?? Map;
           return (
             <article
               key={item.label.es}
-              className="metric-card text-center sm:text-left"
+              className="metric-card w-full text-center sm:text-left"
               role="listitem"
             >
               <div className="flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted sm:justify-start">

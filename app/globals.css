@@ -31,6 +31,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 a {
@@ -234,6 +235,12 @@ select:focus-visible {
   }
 }
 
+@media (min-width: 1024px) {
+  .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .feature-card {
   position: relative;
   padding: 1.4rem;
@@ -245,6 +252,22 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+}
+
+.hero-highlight-grid {
+  margin-inline: auto;
+}
+
+@media (max-width: 767px) {
+  .hero-highlight-grid {
+    justify-items: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-highlight-grid {
+    justify-items: stretch;
+  }
 }
 
 .feature-card:hover {
@@ -264,6 +287,14 @@ select:focus-visible {
 }
 
 @media (max-width: 767px) {
+  .feature-card,
+  .map-preview-card,
+  .timeline-card,
+  .metric-card {
+    width: min(100%, 22rem);
+    margin-inline: auto;
+  }
+
   .feature-card {
     align-items: center;
     text-align: center;
@@ -275,12 +306,18 @@ select:focus-visible {
 
   .map-preview-card {
     flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
+    align-items: center;
+    text-align: center;
+    gap: 0.9rem;
   }
 
   .map-preview-icon {
     margin-bottom: 0.5rem;
+  }
+
+  .metric-card {
+    align-items: center;
+    text-align: center;
   }
 }
 
